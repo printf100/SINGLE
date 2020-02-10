@@ -25,7 +25,7 @@
 </head>
 <body>
 
-	<h1>나 혼자 산다</h1>
+	<h1>SINGLE :: 나 혼자 산다</h1>
 	<a href="/SINGLE/member/joinpage.do">회원가입</a>
 	<a href="/SINGLE/member/loginpage.do">로그인</a>
 

@@ -11,10 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.single.model.biz.user.MemberBiz;
-import com.single.model.biz.user.MemberBizImpl;
-import com.single.model.dto.user.KakaoMemberDTO;
-import com.single.model.dto.user.MemberDTO;
+import com.single.model.biz.member.MemberBiz;
+import com.single.model.biz.member.MemberBizImpl;
+import com.single.model.dto.member.KakaoMemberDTO;
+import com.single.model.dto.member.MemberDTO;
 
 /*
  * Member Controller
@@ -75,7 +75,7 @@ public class MemberController extends HttpServlet {
 	// 회원가입 페이지로 이동
 	private void joinpage(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		dispatch("/views/user/join.jsp", request, response);
+		dispatch("/views/member/join.jsp", request, response);
 	}
 
 	// 회원가입 처리
@@ -139,7 +139,7 @@ public class MemberController extends HttpServlet {
 	// 로그인 페이지로 이동
 	private void loginpage(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		dispatch("/views/user/login.jsp", request, response);
+		dispatch("/views/member/login.jsp", request, response);
 	}
 
 	// 로그인 처리

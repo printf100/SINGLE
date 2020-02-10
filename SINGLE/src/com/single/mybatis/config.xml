@@ -7,9 +7,9 @@
 	<properties resource="com/single/mybatis/db.properties"></properties>
 	
 	<typeAliases>
-		<typeAlias type="com.single.model.dto.MemberDTO" alias="MEMBER"/>
-		<typeAlias type="com.single.model.dto.KakaoMemberDTO" alias="KAKAOMEMBER"/>
-		<typeAlias type="com.single.model.dto.NaverMemberDTO" alias="NAVERMEMBER"/>
+		<typeAlias type="com.single.model.dto.member.MemberDTO" alias="MEMBER"/>
+		<typeAlias type="com.single.model.dto.member.KakaoMemberDTO" alias="KAKAOMEMBER"/>
+		<typeAlias type="com.single.model.dto.member.NaverMemberDTO" alias="NAVERMEMBER"/>
 	</typeAliases>
 
 	<environments default="development">

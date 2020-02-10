@@ -6,9 +6,9 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<c:set var="sessionLoginMember" value="${sessionScope.loginMember }"></c:set>
-<c:set var="sessionLoginKakao" value="${sessionScope.loginKakao }"></c:set>
-<c:set var="sessionLoginNaver" value="${sessionScope.loginNaver }"></c:set>
+<!-- START :: include header -->
+<%@include file="/views/form/header.jsp" %>
+<!-- END :: include header -->
     
 <!DOCTYPE html>
 <html>
@@ -16,22 +16,22 @@
 <meta charset="UTF-8">
 <title>MAIN</title>
 
-<!-- START :: css -->
-<link href="/SINGLE/resources/css/master.css" rel="stylesheet" type="text/css">
-<!-- END :: css -->
+<!-- START :: JAVASCRIPT -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.js"></script>
+<script type="text/javascript">
 
-<!-- START :: 잘못된 접근을 막기 위함 -->
-<c:if test="${empty sessionLoginMember && empty sessionLoginKakao && empty sessionLoginNaver }">
-	<jsp:forward page="/main/mainpage.do"></jsp:forward>
-</c:if>
-<!-- END :: 잘못된 접근을 막기 위함 -->
+</script>
+<!-- END :: JAVASCRIPT -->
 
 </head>
 <body>
 
-	<a href="/SINGLE/member/logout.do">로그아웃</a>
 	<c:out value="${sessionLoginMember.MEMBER_NICKNAME }"></c:out>
 	<c:out value="${sessionLoginKakao.KAKAO_ID }"></c:out>
+	
+<!-- START :: include footer -->
+<%@include file="/views/form/footer.jsp" %>
+<!-- END :: include footer -->
 	
 </body>
 </html>
