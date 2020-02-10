@@ -10,14 +10,13 @@
 <meta charset="UTF-8">
 <title>회원가입</title>
 
-<!-- START :: css -->
+<!-- START :: CSS -->
 <link href="/SINGLE/resources/css/master.css" rel="stylesheet" type="text/css">
-<!-- END :: css -->
+<!-- END :: CSS -->
 
 <!-- START :: JAVASCRIPT -->
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.js"></script>
 <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
-
 <!-- END :: JAVASCRIPT -->
 
 </head>
@@ -92,7 +91,7 @@
 			</div>
 
 			<input type="submit" value="가입">
-			<input type="button" onclick="location.href='/SINGLE/home/home.do'" value="취소">
+			<input type="button" onclick="location.href='/SINGLE/main/mainpage.do'" value="취소">
 		</form>
 		
 		<!-- SNS 회원가입시 팝업창으로 전송되는 form (SNS 회원가입은 무조건 일반회원으로 가입) -->
@@ -105,7 +104,7 @@
 			<input type="hidden" name="MEMBER_VERIFY" value="2">
 		</form>
 		
-		<!-- 팝업창에서 전송되는 form -->
+		<!-- 팝업창에서 전송된 form -->
 		<form action="/SINGLE/member/snsjoin.do" method="post" id="snsjoinhiddenForm">
 			<input type="hidden" name="snsType">
 			<input type="hidden" name="MEMBER_VERIFY">
@@ -124,9 +123,9 @@
 
 	<script type='text/javascript'>
       //<![CDATA[
-        // 사용할 앱의 JavaScript 키를 설정해 주세요.
+        // 사용할 앱의 JavaScript 키
         Kakao.init('e279f4719a19c18fde6278302eaeb6d8');
-        // 카카오 로그인 버튼을 생성합니다.
+        // 카카오 로그인 버튼 생성
         Kakao.Auth.createLoginButton({
           container: '#kakao-login-btn',
           success: function(authObj) {
@@ -138,7 +137,6 @@
             		console.log(res.id);
             		console.log(res.properties.nickname);
             		console.log(res.kaccount_email);
-            		//console.log(res.kakao_account.gender);
             		console.log(authObj.access_token);
 
             		// snshiddenForm에 value값 셋팅
@@ -165,7 +163,7 @@
 	      function kakaologout() {
 	    	  Kakao.Auth.logout(function() {
 	    		  setTimeout(function() {
-	    			  location.href="/SINGLE/home/home.do";
+	    			  location.href="/SINGLE/main/mainpage.do";
 	    		  }, 1000);
 	    	  });
 	      }

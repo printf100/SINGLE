@@ -115,15 +115,15 @@ public class MemberController extends HttpServlet {
 		String access_token = request.getParameter("access_token");
 
 		System.out.println(snsType);
-		
-		if(snsType.equals("KAKAO")) {
+
+		if (snsType.equals("KAKAO")) {
 			KakaoMemberDTO kakao_member = new KakaoMemberDTO(MEMBER_VERIFY, MEMBER_EMAIL, MEMBER_NAME, MEMBER_NICKNAME,
 					MEMBER_GENDER, SNS_ID, SNS_NICKNAME);
-			
+
 			System.out.println(kakao_member);
-			
+
 			int res = biz.kakaoJoin(kakao_member);
-			
+
 			if (res > 0) {
 				// 회원가입 후 자동로그인
 				session = request.getSession();
@@ -132,7 +132,7 @@ public class MemberController extends HttpServlet {
 				jsResponse("KAKAO 회원가입 성공", "/SINGLE/main/mainpage.do", response);
 			} else {
 				jsResponse("KAKAO 회원가입 실패", "/SINGLE/member/joinpage.do", response);
-			}			
+			}
 		}
 	}
 

@@ -25,9 +25,9 @@ public class MainController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	HttpSession session;
 
-    public MainController() {
-    }
-    
+	public MainController() {
+	}
+
 	private void processRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
@@ -37,25 +37,26 @@ public class MainController extends HttpServlet {
 		if (command.endsWith("/mainpage.do")) {
 			mainpage(request, response);
 		}
-		
+
 	}
-	
+
 	// 메인페이지로 이동
-	private void mainpage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	
+	private void mainpage(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
 		session = request.getSession();
-		
-		if(session.getAttribute("loginMember") != null || session.getAttribute("loginKakao") != null || session.getAttribute("loginNaver") != null) {
+
+		if (session.getAttribute("loginMember") != null || session.getAttribute("loginKakao") != null
+				|| session.getAttribute("loginNaver") != null) {
 			// 로그인 상태일 때
-			dispatch("/views/main/main.jsp", request, response);			
+			dispatch("/views/main/main.jsp", request, response);
 		} else {
 			// 로그아웃 상태일 때
 			dispatch("/views/home/home.jsp", request, response);
 		}
-		
+
 	}
 
-	
 	/*
 	 * Servlet Basic Template : PLEASE DO NOT MODIFY !!!!!
 	 */
