@@ -1,0 +1,139 @@
+package com.single.model.dto.user;
+
+import java.sql.Date;
+
+public class MemberDTO {
+	private int MEMBER_CODE;
+
+	private int MEMBER_VERIFY;
+	private String MEMBER_EMAIL;
+	private String MEMBER_PASSWORD;
+	private String MEMBER_NAME;
+	private String MEMBER_NICKNAME;
+	private String MEMBER_GENDER;
+	
+	private Date MEMBER_REGDATE;
+	private String MEMBER_ENABLED;
+	
+	public MemberDTO() {
+	}
+
+	// 웹 회원가입 시 이용
+	public MemberDTO(int mEMBER_VERIFY, String mEMBER_EMAIL, String mEMBER_PASSWORD, String mEMBER_NAME,
+			String mEMBER_NICKNAME, String mEMBER_GENDER) {
+		super();
+		MEMBER_VERIFY = mEMBER_VERIFY;
+		MEMBER_EMAIL = mEMBER_EMAIL;
+		MEMBER_PASSWORD = mEMBER_PASSWORD;
+		MEMBER_NAME = mEMBER_NAME;
+		MEMBER_NICKNAME = mEMBER_NICKNAME;
+		MEMBER_GENDER = mEMBER_GENDER;
+	}
+	
+	// SNS 회원가입 시 이용
+	public MemberDTO(int mEMBER_VERIFY, String mEMBER_EMAIL, String mEMBER_NAME,
+			String mEMBER_NICKNAME, String mEMBER_GENDER) {
+		super();
+		MEMBER_VERIFY = mEMBER_VERIFY;
+		MEMBER_EMAIL = mEMBER_EMAIL;
+		MEMBER_NAME = mEMBER_NAME;
+		MEMBER_NICKNAME = mEMBER_NICKNAME;
+		MEMBER_GENDER = mEMBER_GENDER;
+	}
+
+	public MemberDTO(int mEMBER_CODE, int mEMBER_VERIFY, String mEMBER_EMAIL, String mEMBER_PASSWORD,
+			String mEMBER_NAME, String mEMBER_NICKNAME, String mEMBER_GENDER, Date mEMBER_REGDATE,
+			String mEMBER_ENABLED) {
+		super();
+		MEMBER_CODE = mEMBER_CODE;
+		MEMBER_VERIFY = mEMBER_VERIFY;
+		MEMBER_EMAIL = mEMBER_EMAIL;
+		MEMBER_PASSWORD = mEMBER_PASSWORD;
+		MEMBER_NAME = mEMBER_NAME;
+		MEMBER_NICKNAME = mEMBER_NICKNAME;
+		MEMBER_GENDER = mEMBER_GENDER;
+		MEMBER_REGDATE = mEMBER_REGDATE;
+		MEMBER_ENABLED = mEMBER_ENABLED;
+	}
+
+	@Override
+	public String toString() {
+		return "MemberDTO [MEMBER_CODE=" + MEMBER_CODE + ", MEMBER_VERIFY=" + MEMBER_VERIFY + ", MEMBER_EMAIL="
+				+ MEMBER_EMAIL + ", MEMBER_PASSWORD=" + MEMBER_PASSWORD + ", MEMBER_NAME=" + MEMBER_NAME
+				+ ", MEMBER_NICKNAME=" + MEMBER_NICKNAME + ", MEMBER_GENDER=" + MEMBER_GENDER + ", MEMBER_REGDATE="
+				+ MEMBER_REGDATE + ", MEMBER_ENABLED=" + MEMBER_ENABLED + "]";
+	}
+
+	public int getMEMBER_CODE() {
+		return MEMBER_CODE;
+	}
+
+	public void setMEMBER_CODE(int mEMBER_CODE) {
+		MEMBER_CODE = mEMBER_CODE;
+	}
+
+	public int getMEMBER_VERIFY() {
+		return MEMBER_VERIFY;
+	}
+
+	public void setMEMBER_VERIFY(int mEMBER_VERIFY) {
+		MEMBER_VERIFY = mEMBER_VERIFY;
+	}
+
+	public String getMEMBER_EMAIL() {
+		return MEMBER_EMAIL;
+	}
+
+	public void setMEMBER_EMAIL(String mEMBER_EMAIL) {
+		MEMBER_EMAIL = mEMBER_EMAIL;
+	}
+
+	public String getMEMBER_PASSWORD() {
+		return MEMBER_PASSWORD;
+	}
+
+	public void setMEMBER_PASSWORD(String mEMBER_PASSWORD) {
+		MEMBER_PASSWORD = mEMBER_PASSWORD;
+	}
+
+	public String getMEMBER_NAME() {
+		return MEMBER_NAME;
+	}
+
+	public void setMEMBER_NAME(String mEMBER_NAME) {
+		MEMBER_NAME = mEMBER_NAME;
+	}
+
+	public String getMEMBER_NICKNAME() {
+		return MEMBER_NICKNAME;
+	}
+
+	public void setMEMBER_NICKNAME(String mEMBER_NICKNAME) {
+		MEMBER_NICKNAME = mEMBER_NICKNAME;
+	}
+
+	public String getMEMBER_GENDER() {
+		return MEMBER_GENDER;
+	}
+
+	public void setMEMBER_GENDER(String mEMBER_GENDER) {
+		MEMBER_GENDER = mEMBER_GENDER;
+	}
+
+	public Date getMEMBER_REGDATE() {
+		return MEMBER_REGDATE;
+	}
+
+	public void setMEMBER_REGDATE(Date mEMBER_REGDATE) {
+		MEMBER_REGDATE = mEMBER_REGDATE;
+	}
+
+	public String getMEMBER_ENABLED() {
+		return MEMBER_ENABLED;
+	}
+
+	public void setMEMBER_ENABLED(String mEMBER_ENABLED) {
+		MEMBER_ENABLED = mEMBER_ENABLED;
+	}
+
+}

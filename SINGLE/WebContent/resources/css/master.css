@@ -1,0 +1,24 @@
+* {
+   padding: 0px;
+   margin: 0px;
+}
+/* 시멘틱 태그 기본 css */
+header, section, footer, nav, article {
+   border: 1px dotted red;
+   margin: 5px;
+   /* text-align: center; */
+}
+/* 블록 기본 css */
+div, span, p {
+   border: 1px dotted blue;
+   margin: 10px;
+}
+
+a {
+   text-decoration: none;
+}
+
+li {
+   /* list-style: none; */
+   
+}
