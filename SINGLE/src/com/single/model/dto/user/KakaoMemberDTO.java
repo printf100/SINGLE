@@ -21,7 +21,7 @@ public class KakaoMemberDTO {
 	public KakaoMemberDTO() {
 	}
 
-	// Ä«Ä«¿À È¸¿ø°¡ÀÔ ½Ã ÀÌ¿ë
+	// ì¹´ì¹´ì˜¤ íšŒì›ê°€ì… ì‹œ ì´ìš©
 	public KakaoMemberDTO(int mEMBER_VERIFY, String mEMBER_EMAIL, String mEMBER_NAME, String mEMBER_NICKNAME,
 			String mEMBER_GENDER, String kAKAO_ID, String kAKAO_NICKNAME) {
 		super();

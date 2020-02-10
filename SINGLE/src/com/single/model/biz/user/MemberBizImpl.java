@@ -7,7 +7,7 @@ import com.single.model.dto.user.MemberDTO;
 import com.single.model.dto.user.NaverMemberDTO;
 
 public class MemberBizImpl implements MemberBiz {
-	
+
 	MemberDAO dao = new MemberDAOImpl();
 
 	@Override
@@ -15,10 +15,10 @@ public class MemberBizImpl implements MemberBiz {
 		return dao.memberJoin(member);
 	}
 
-	// KAKAO È¸¿ø°¡ÀÔ Ã³¸®
+	// KAKAO íšŒì›ê°€ìž… ì²˜ë¦¬
 	@Override
 	public int kakaoJoin(KakaoMemberDTO kakao_member) {
-		
+
 		MemberDTO member = new MemberDTO();
 		KakaoMemberDTO kakao = new KakaoMemberDTO();
 
@@ -27,23 +27,23 @@ public class MemberBizImpl implements MemberBiz {
 		member.setMEMBER_NAME(kakao_member.getMEMBER_NAME());
 		member.setMEMBER_NICKNAME(kakao_member.getMEMBER_NICKNAME());
 		member.setMEMBER_GENDER(kakao_member.getMEMBER_GENDER());
-		
+
 		int kakao_res = 0;
 		int res = dao.memberJoinWithSNS(member);
-		
-		if(res > 0) {
+
+		if (res > 0) {
 			MemberDTO new_member = dao.getMemberCode(kakao_member.getMEMBER_EMAIL());
 
 			kakao.setMEMBER_CODE(new_member.getMEMBER_CODE());
 			kakao.setKAKAO_ID(kakao_member.getKAKAO_ID());
 			kakao.setKAKAO_NICKNAME(kakao_member.getKAKAO_NICKNAME());
-			
+
 			kakao_res = dao.kakaoJoin(kakao);
 		}
-		
+
 		return kakao_res;
 	}
-	
+
 	@Override
 	public int naverJoin(NaverMemberDTO naver_member) {
 		// TODO Auto-generated method stub
@@ -59,7 +59,7 @@ public class MemberBizImpl implements MemberBiz {
 	public int nicknameCheck(String NEW_NICKNAME) {
 		return 0;
 	}
-	
+
 	@Override
 	public MemberDTO memberLogin(MemberDTO member) {
 		return dao.memberLogin(member);

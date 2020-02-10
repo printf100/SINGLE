@@ -18,17 +18,17 @@ import com.single.model.dto.user.MemberDTO;
 
 /*
  * Member Controller
- * È¸¿ø °ü·Ã ±â´ÉÀ» È£ÃâÇÏ±â À§ÇÔ
+ * íšŒì› ê´€ë ¨ ê¸°ëŠ¥ì„ í˜¸ì¶œí•˜ê¸° ìœ„í•¨
  */
 @WebServlet(//
 		name = "member", //
 		urlPatterns = { //
-				"joinpage.do", // join.jsp·Î ÀÌµ¿
-				"join.do", // È¸¿ø°¡ÀÔ Ã³¸®
-				"snsjoin.do", // SNS È¸¿ø°¡ÀÔ Ã³¸®
-				"loginpage.do", // login.jsp·Î ÀÌµ¿
-				"login.do", // ·Î±×ÀÎ Ã³¸®
-				"logout.do" // ·Î±×¾Æ¿ô Ã³¸®
+				"joinpage.do", // join.jspë¡œ ì´ë™
+				"join.do", // íšŒì›ê°€ì… ì²˜ë¦¬
+				"snsjoin.do", // SNS íšŒì›ê°€ì… ì²˜ë¦¬
+				"loginpage.do", // login.jspë¡œ ì´ë™
+				"login.do", // ë¡œê·¸ì¸ ì²˜ë¦¬
+				"logout.do" // ë¡œê·¸ì•„ì›ƒ ì²˜ë¦¬
 		})
 
 public class MemberController extends HttpServlet {
@@ -72,13 +72,13 @@ public class MemberController extends HttpServlet {
 
 	}
 
-	// È¸¿ø°¡ÀÔ ÆäÀÌÁö·Î ÀÌµ¿
+	// íšŒì›ê°€ì… í˜ì´ì§€ë¡œ ì´ë™
 	private void joinpage(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		dispatch("/views/user/join.jsp", request, response);
 	}
 
-	// È¸¿ø°¡ÀÔ Ã³¸®
+	// íšŒì›ê°€ì… ì²˜ë¦¬
 	private void doJoin(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 		int MEMBER_VERIFY = Integer.parseInt(request.getParameter("MEMBER_VERIFY"));
@@ -94,13 +94,13 @@ public class MemberController extends HttpServlet {
 		int res = biz.memberJoin(new_member);
 
 		if (res > 0) {
-			jsResponse("È¸¿ø°¡ÀÔ ¼º°ø", "/SINGLE/member/loginpage.do", response);
+			jsResponse("íšŒì›ê°€ì… ì„±ê³µ", "/SINGLE/member/loginpage.do", response);
 		} else {
-			jsResponse("È¸¿ø°¡ÀÔ ½ÇÆĞ", "/SINGLE/member/joinpage.do", response);
+			jsResponse("íšŒì›ê°€ì… ì‹¤íŒ¨", "/SINGLE/member/joinpage.do", response);
 		}
 	}
 
-	// SNS È¸¿ø°¡ÀÔ Ã³¸®
+	// SNS íšŒì›ê°€ì… ì²˜ë¦¬
 	private void doSNSJoin(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 		int MEMBER_VERIFY = Integer.parseInt(request.getParameter("MEMBER_VERIFY"));
@@ -125,24 +125,24 @@ public class MemberController extends HttpServlet {
 			int res = biz.kakaoJoin(kakao_member);
 
 			if (res > 0) {
-				// È¸¿ø°¡ÀÔ ÈÄ ÀÚµ¿·Î±×ÀÎ
+				// íšŒì›ê°€ì… í›„ ìë™ë¡œê·¸ì¸
 				session = request.getSession();
 				session.setAttribute("loginKakao", kakao_member);
 				session.setAttribute("access_token", access_token);
-				jsResponse("KAKAO È¸¿ø°¡ÀÔ ¼º°ø", "/SINGLE/main/mainpage.do", response);
+				jsResponse("KAKAO íšŒì›ê°€ì… ì„±ê³µ", "/SINGLE/main/mainpage.do", response);
 			} else {
-				jsResponse("KAKAO È¸¿ø°¡ÀÔ ½ÇÆĞ", "/SINGLE/member/joinpage.do", response);
+				jsResponse("KAKAO íšŒì›ê°€ì… ì‹¤íŒ¨", "/SINGLE/member/joinpage.do", response);
 			}
 		}
 	}
 
-	// ·Î±×ÀÎ ÆäÀÌÁö·Î ÀÌµ¿
+	// ë¡œê·¸ì¸ í˜ì´ì§€ë¡œ ì´ë™
 	private void loginpage(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		dispatch("/views/user/login.jsp", request, response);
 	}
 
-	// ·Î±×ÀÎ Ã³¸®
+	// ë¡œê·¸ì¸ ì²˜ë¦¬
 	private void doLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 		MemberDTO member = new MemberDTO();
@@ -158,17 +158,17 @@ public class MemberController extends HttpServlet {
 		if (loginMember != null) {
 			session = request.getSession();
 			session.setAttribute("loginMember", loginMember);
-			jsResponse("·Î±×ÀÎ ¼º°ø", "/SINGLE/main/mainpage.do", response);
+			jsResponse("ë¡œê·¸ì¸ ì„±ê³µ", "/SINGLE/main/mainpage.do", response);
 		} else {
-			jsResponse("·Î±×ÀÎ ½ÇÆĞ", "/SINGLE/member/loginpage.do", response);
+			jsResponse("ë¡œê·¸ì¸ ì‹¤íŒ¨", "/SINGLE/member/loginpage.do", response);
 		}
 
 	}
 
-	// ·Î±×¾Æ¿ô Ã³¸®
+	// ë¡œê·¸ì•„ì›ƒ ì²˜ë¦¬
 	private void doLogout(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		request.getSession().invalidate();
-		jsResponse("·Î±×¾Æ¿ô", "/SINGLE/main/mainpage.do", response);
+		jsResponse("ë¡œê·¸ì•„ì›ƒ", "/SINGLE/main/mainpage.do", response);
 	}
 
 	/*

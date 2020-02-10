@@ -11,13 +11,13 @@ public class NaverMemberDTO {
 	private String MEMBER_NAME;
 	private String MEMBER_NICKNAME;
 	private String MEMBER_GENDER;
-	
+
 	private Date MEMBER_REGDATE;
 	private String MEMBER_ENABLED;
-	
+
 	private String NAVER_ID;
 	private String NAVER_NICKNAME;
-	
+
 	public NaverMemberDTO() {
 	}
 
@@ -134,5 +134,5 @@ public class NaverMemberDTO {
 	public void setNAVER_NICKNAME(String nAVER_NICKNAME) {
 		NAVER_NICKNAME = nAVER_NICKNAME;
 	}
-	
+
 }

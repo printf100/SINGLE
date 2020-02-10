@@ -12,10 +12,10 @@ public class MemberDAOImpl extends SqlMapConfig implements MemberDAO {
 	final String namespace = "com.single.member-mapper";
 
 	/*
-	 * È¸¿ø°¡ÀÔ °ü·Ã
+	 * íšŒì›ê°€ì… ê´€ë ¨
 	 */
 
-	// È¸¿ø°¡ÀÔ Ã³¸®
+	// íšŒì›ê°€ì… ì²˜ë¦¬
 	@Override
 	public int memberJoin(MemberDTO member) {
 
@@ -66,36 +66,36 @@ public class MemberDAOImpl extends SqlMapConfig implements MemberDAO {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-	
+
 	@Override
 	public MemberDTO getMemberCode(String MEMBER_EMAIL) {
 
 		SqlSession session = getSqlSessionFactory().openSession(false);
 
 		MemberDTO memberCode = session.selectOne(namespace + ".getMemberCode", MEMBER_EMAIL);
-	
+
 		session.close();
 
 		return memberCode;
 	}
 
-	// ÀÌ¸ŞÀÏ Áßº¹ Ã¼Å©
+	// ì´ë©”ì¼ ì¤‘ë³µ ì²´í¬
 	@Override
 	public int emailCheck(String NEW_EMAIL) {
 		return 0;
 	}
 
-	// º°¸í Áßº¹ Ã¼Å©
+	// ë³„ëª… ì¤‘ë³µ ì²´í¬
 	@Override
 	public int nicknameCheck(String NEW_NICKNAME) {
 		return 0;
 	}
 
 	/*
-	 * ·Î±×ÀÎ °ü·Ã
+	 * ë¡œê·¸ì¸ ê´€ë ¨
 	 */
 
-	// ·Î±×ÀÎ Ã³¸®
+	// ë¡œê·¸ì¸ ì²˜ë¦¬
 	@Override
 	public MemberDTO memberLogin(MemberDTO member) {
 
@@ -108,7 +108,7 @@ public class MemberDAOImpl extends SqlMapConfig implements MemberDAO {
 		return loginMember;
 	}
 
-	// ·Î±×ÀÎ ÇÑ È¸¿øÀÇ Á¤º¸ Á¶È¸
+	// ë¡œê·¸ì¸ í•œ íšŒì›ì˜ ì •ë³´ ì¡°íšŒ
 	@Override
 	public MemberDTO loginMember(int MEMBER_CODE) {
 		return null;

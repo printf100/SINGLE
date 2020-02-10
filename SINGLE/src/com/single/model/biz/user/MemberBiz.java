@@ -7,32 +7,31 @@ import com.single.model.dto.user.NaverMemberDTO;
 public interface MemberBiz {
 
 	/*
-	 * È¸¿ø°¡ÀÔ °ü·Ã
+	 * íšŒì›ê°€ì… ê´€ë ¨
 	 */
-	
-	// È¸¿ø°¡ÀÔ Ã³¸®
+
+	// íšŒì›ê°€ì… ì²˜ë¦¬
 	public int memberJoin(MemberDTO dto);
 
-	// KAKAO È¸¿ø°¡ÀÔ Ã³¸®
+	// KAKAO íšŒì›ê°€ì… ì²˜ë¦¬
 	public int kakaoJoin(KakaoMemberDTO kakao_member);
 
-	// NAVER È¸¿ø°¡ÀÔ Ã³¸®
+	// NAVER íšŒì›ê°€ì… ì²˜ë¦¬
 	public int naverJoin(NaverMemberDTO naver_member);
-	
-	// ÀÌ¸ŞÀÏ Áßº¹ Ã¼Å©
+
+	// ì´ë©”ì¼ ì¤‘ë³µ ì²´í¬
 	public int emailCheck(String NEW_EMAIL);
-	
-	// º°¸í Áßº¹ Ã¼Å©
+
+	// ë³„ëª… ì¤‘ë³µ ì²´í¬
 	public int nicknameCheck(String NEW_NICKNAME);
-	
-	
+
 	/*
-	 * ·Î±×ÀÎ °ü·Ã
+	 * ë¡œê·¸ì¸ ê´€ë ¨
 	 */
-	
-	// ·Î±×ÀÎ Ã³¸®
+
+	// ë¡œê·¸ì¸ ì²˜ë¦¬
 	public MemberDTO memberLogin(MemberDTO member);
-	
-	// ·Î±×ÀÎ ÇÑ È¸¿øÀÇ Á¤º¸ Á¶È¸
+
+	// ë¡œê·¸ì¸ í•œ íšŒì›ì˜ ì •ë³´ ì¡°íšŒ
 	public MemberDTO loginMember(int MEMBER_CODE);
 }

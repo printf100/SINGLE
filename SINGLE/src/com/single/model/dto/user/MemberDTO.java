@@ -11,14 +11,14 @@ public class MemberDTO {
 	private String MEMBER_NAME;
 	private String MEMBER_NICKNAME;
 	private String MEMBER_GENDER;
-	
+
 	private Date MEMBER_REGDATE;
 	private String MEMBER_ENABLED;
-	
+
 	public MemberDTO() {
 	}
 
-	// ю╔ х╦©Ь╟║ют ╫ц юл©К
+	// Л⌡╧ М ▄Л⌡░Й╟─Л·┘ Л▀° Л²╢Л ╘
 	public MemberDTO(int mEMBER_VERIFY, String mEMBER_EMAIL, String mEMBER_PASSWORD, String mEMBER_NAME,
 			String mEMBER_NICKNAME, String mEMBER_GENDER) {
 		super();
@@ -29,10 +29,10 @@ public class MemberDTO {
 		MEMBER_NICKNAME = mEMBER_NICKNAME;
 		MEMBER_GENDER = mEMBER_GENDER;
 	}
-	
-	// SNS х╦©Ь╟║ют ╫ц юл©К
-	public MemberDTO(int mEMBER_VERIFY, String mEMBER_EMAIL, String mEMBER_NAME,
-			String mEMBER_NICKNAME, String mEMBER_GENDER) {
+
+	// SNS М ▄Л⌡░Й╟─Л·┘ Л▀° Л²╢Л ╘
+	public MemberDTO(int mEMBER_VERIFY, String mEMBER_EMAIL, String mEMBER_NAME, String mEMBER_NICKNAME,
+			String mEMBER_GENDER) {
 		super();
 		MEMBER_VERIFY = mEMBER_VERIFY;
 		MEMBER_EMAIL = mEMBER_EMAIL;

@@ -13,12 +13,12 @@ import javax.servlet.http.HttpSession;
 
 /*
  * Main Controller
- * ·Î±×ÀÎ ÈÄ ¸ŞÀÎÈ­¸éÀ» È£ÃâÇÏ±â À§ÇÔ
+ * ë¡œê·¸ì¸ í›„ ë©”ì¸í™”ë©´ì„ í˜¸ì¶œí•˜ê¸° ìœ„í•¨
  */
 @WebServlet(//
 		name = "main", //
 		urlPatterns = { //
-				"mainpage.do" // main.jsp·Î ÀÌµ¿
+				"mainpage.do" // main.jspë¡œ ì´ë™
 		})
 
 public class MainController extends HttpServlet {
@@ -40,7 +40,7 @@ public class MainController extends HttpServlet {
 
 	}
 
-	// ¸ŞÀÎÆäÀÌÁö·Î ÀÌµ¿
+	// ë©”ì¸í˜ì´ì§€ë¡œ ì´ë™
 	private void mainpage(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
@@ -48,10 +48,10 @@ public class MainController extends HttpServlet {
 
 		if (session.getAttribute("loginMember") != null || session.getAttribute("loginKakao") != null
 				|| session.getAttribute("loginNaver") != null) {
-			// ·Î±×ÀÎ »óÅÂÀÏ ¶§
+			// ë¡œê·¸ì¸ ìƒíƒœì¼ ë•Œ
 			dispatch("/views/main/main.jsp", request, response);
 		} else {
-			// ·Î±×¾Æ¿ô »óÅÂÀÏ ¶§
+			// ë¡œê·¸ì•„ì›ƒ ìƒíƒœì¼ ë•Œ
 			dispatch("/views/home/home.jsp", request, response);
 		}
 
