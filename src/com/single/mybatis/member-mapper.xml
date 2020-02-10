@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.single.member-mapper">
+
+	<select id="login" parameterType="MEMBER" resultType="MEMBER">
+		SELECT *
+		FROM MEMBER
+		WHERE MEMBER_EMAIL = #{MEMBER_EMAIL} AND MEMBER_PASSWORD = #{MEMBER_PASSWORD}
+	</select>
+
+	<insert id="join" parameterType="MEMBER">
+		INSERT INTO MEMBER
+		VALUES (MEMBER_CODE_SEQ.NEXTVAL, #{MEMBER_VERIFY}, #{MEMBER_EMAIL}, #{MEMBER_PASSWORD}, #{MEMBER_NAME}, #{MEMBER_NICKNAME}, #{MEMBER_GENDER}, SYSDATE, 'Y')
+	</insert>
+
+	<insert id="joinWithSns" parameterType="MEMBER">
+		INSERT INTO	MEMBER (MEMBER_CODE, MEMBER_VERIFY, MEMBER_EMAIL, MEMBER_NAME, MEMBER_NICKNAME, MEMBER_GENDER, MEMBER_REGDATE, MEMBER_ENABLED)
+		VALUES (MEMBER_CODE_SEQ.NEXTVAL, #{MEMBER_VERIFY}, #{MEMBER_EMAIL}, #{MEMBER_NAME}, #{MEMBER_NICKNAME}, #{MEMBER_GENDER}, SYSDATE, 'Y')
+	</insert>
+
+	<insert id="kakaojoin" parameterType="KAKAOMEMBER">
+		INSERT INTO KAKAOMEMBER
+		VALUES (#{MEMBER_CODE}, #{KAKAO_ID}, #{KAKAO_NICKNAME})
+	</insert>
+	
+	<select id="getMemberCode" parameterType="MEMBER" resultType="MEMBER">
+		SELECT *
+		FROM MEMBER
+		WHERE MEMBER_EMAIL = #{MEMBER_EMAIL}
+	</select>
+
+</mapper>
