@@ -32,6 +32,18 @@ public interface MemberBiz {
 	// 로그인 처리
 	public MemberDTO memberLogin(MemberDTO member);
 
-	// 로그인 한 회원의 정보 조회
+	// KAKAO 아이디 중복 체크
+	public int kakaoIdCheck(String KAKAO_ID);
+
+	// NAVER 아이디 중복 체크
+	public int naverIdCheck(String NAVER_ID);
+
+	// 로그인 한 회원의 정보 가져오기
 	public MemberDTO loginMember(int MEMBER_CODE);
+	
+	// KAKAO 로그인 한 회원의 정보 가져오기
+	public KakaoMemberDTO kakaoLoginMember(String KAKAO_ID);
+	
+	// NAVER 로그인 한 회원의 정보 가져오기
+	public NaverMemberDTO naverLoginMember(String NAVER_ID);
 }

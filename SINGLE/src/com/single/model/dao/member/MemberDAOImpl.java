@@ -31,6 +31,7 @@ public class MemberDAOImpl extends SqlMapConfig implements MemberDAO {
 		return res;
 	}
 
+	// SNS 회원가입 처리 (비밀번호 없이 MEMBER 테이블에 INSERT)
 	@Override
 	public int memberJoinWithSNS(MemberDTO member) {
 
@@ -46,6 +47,7 @@ public class MemberDAOImpl extends SqlMapConfig implements MemberDAO {
 		return res;
 	}
 
+	// KAKAO 회원가입 처리
 	@Override
 	public int kakaoJoin(KakaoMemberDTO kakao_member) {
 
@@ -61,12 +63,23 @@ public class MemberDAOImpl extends SqlMapConfig implements MemberDAO {
 		return res;
 	}
 
+	// NAVER 회원가입 처리
 	@Override
 	public int naverJoin(NaverMemberDTO naver_member) {
-		// TODO Auto-generated method stub
-		return 0;
+
+		SqlSession session = getSqlSessionFactory().openSession(false);
+
+		int res = session.insert(namespace + ".naverjoin", naver_member);
+		if (res > 0) {
+			session.commit();
+		}
+
+		session.close();
+
+		return res;
 	}
 
+	// 이메일로 회원번호 가져오기 (SNS 회원가입 시 FK인 회원번호를 넣기 위함)
 	@Override
 	public MemberDTO getMemberCode(String MEMBER_EMAIL) {
 
@@ -82,13 +95,27 @@ public class MemberDAOImpl extends SqlMapConfig implements MemberDAO {
 	// 이메일 중복 체크
 	@Override
 	public int emailCheck(String NEW_EMAIL) {
-		return 0;
+
+		SqlSession session = getSqlSessionFactory().openSession(false);
+
+		int email = session.selectOne(namespace + ".getEmail", NEW_EMAIL);
+		
+		session.close();
+
+		return email;
 	}
 
 	// 별명 중복 체크
 	@Override
 	public int nicknameCheck(String NEW_NICKNAME) {
-		return 0;
+
+		SqlSession session = getSqlSessionFactory().openSession(false);
+
+		int nickname = session.selectOne(namespace + ".getNick", NEW_NICKNAME);
+		
+		session.close();
+
+		return nickname;
 	}
 
 	/*
@@ -108,10 +135,69 @@ public class MemberDAOImpl extends SqlMapConfig implements MemberDAO {
 		return loginMember;
 	}
 
+	// KAKAO 아이디 중복체크
+	@Override
+	public int kakaoIdCheck(String KAKAO_ID) {
+
+		SqlSession session = getSqlSessionFactory().openSession(false);
+
+		int kakao_id = session.selectOne(namespace + ".getKakaoId", KAKAO_ID);
+
+		session.close();
+
+		return kakao_id;
+	}
+
+	// NAVER 아이디 중복체크
+	@Override
+	public int naverIdCheck(String NAVER_ID) {
+
+		SqlSession session = getSqlSessionFactory().openSession(false);
+
+		int naver_id = session.selectOne(namespace + ".getNaverId", NAVER_ID);
+
+		session.close();
+
+		return naver_id;
+	}
+
 	// 로그인 한 회원의 정보 조회
 	@Override
 	public MemberDTO loginMember(int MEMBER_CODE) {
-		return null;
+
+		SqlSession session = getSqlSessionFactory().openSession(false);
+
+		MemberDTO loginMember = session.selectOne(namespace + ".getLoginMember", MEMBER_CODE);
+
+		session.close();
+
+		return loginMember;
+	}
+
+	// KAKAO 로그인 한 회원의 정보 가져오기
+	@Override
+	public KakaoMemberDTO kakaoLoginMember(String KAKAO_ID) {
+
+		SqlSession session = getSqlSessionFactory().openSession(false);
+
+		KakaoMemberDTO kakaoLoginMember = session.selectOne(namespace + ".getKakaoLoginMember", KAKAO_ID);
+
+		session.close();
+
+		return kakaoLoginMember;
+	}
+
+	// NAVER 로그인 한 회원의 정보 가져오기
+	@Override
+	public NaverMemberDTO naverLoginMember(String NAVER_ID) {
+
+		SqlSession session = getSqlSessionFactory().openSession(false);
+
+		NaverMemberDTO naverLoginMember = session.selectOne(namespace + ".getNaverLoginMember", NAVER_ID);
+
+		session.close();
+
+		return naverLoginMember;
 	}
 
 }

@@ -33,6 +33,75 @@
 			$("#MEMBER_EMAIL").val(SNS_EMAIL);
 		}
 		
+		$("#SUBMIT").attr("disabled", "disabled");
+		
+		// 이메일 체크
+		$("#MEMBER_EMAIL").blur(function() {
+			
+			if($("#MEMBER_EMAIL").val() != null && $("#MEMBER_EMAIL").val() != ""){
+				// 이메일 중복 체크
+				$.ajax({
+					type: "POST",
+					url: "/SINGLE/member/emailCheck.do",
+					data: { MEMBER_EMAIL : $("#MEMBER_EMAIL").val() },
+					dataType: "JSON",
+					success: function(msg) {
+						
+						if(msg.result > 0) {
+							$("#email_check").text("이미 사용중인 이메일입니다.");
+							$("#email_check").attr("style", "color:red");
+							
+							$("#SUBMIT").attr("disabled", "disabled");
+						} else {
+							$("#email_check").text("사용 가능한 이메일입니다.");
+							$("#email_check").attr("style", "color:blue");
+							
+							$("#SUBMIT").removeAttr("disabled");
+						}
+					},
+					error: function() {
+						alert("이메일 중복체크 통신 실패");
+					}
+				});
+			} else {
+				$("#email_check").text("필수 정보입니다.");
+				$("#email_check").attr("style", "color:red");
+			}
+		});
+		
+		// 닉네임 체크
+		$("#MEMBER_NICKNAME").blur(function() {
+			
+			if($("#MEMBER_NICKNAME").val() != null && $("#MEMBER_NICKNAME").val() != "") {
+				// 닉네임 중복 체크
+				$.ajax({
+					type: "POST",
+					url: "/SINGLE/member/nickCheck.do",
+					data: { MEMBER_NICKNAME : $("#MEMBER_NICKNAME").val() },
+					dataType: "JSON",
+					success: function(msg) {
+						if(msg.result == 1) {
+							$("#nick_check").text("이미 사용중인 닉네임입니다.");
+							$("#nick_check").attr("style", "color:red");
+							
+							$("#SUBMIT").attr("disabled", "disabled");
+						} else {
+							$("#nick_check").text("사용 가능한 닉네임입니다.");
+							$("#nick_check").attr("style", "color:blue");
+							
+							$("#SUBMIT").removeAttr("disabled");
+						}
+					},
+					error: function() {
+						alert("닉네임 중복 체크 통신 실패");
+					}
+				});
+			} else {
+				$("#nick_check").text("필수 정보입니다.");
+				$("#nick_check").attr("style", "color:red");
+			}
+		});
+		
 		$("#snsjoinForm").submit(function(e) {
 			e.preventDefault();
 			
@@ -54,38 +123,6 @@
 			$(opener.document).find("#snsjoinhiddenForm").submit();
 			
 			close();
-			
-			// 로그인 체크 아쟉스 구현해야됨!!!!!!!!!!!!!
-			/* $.ajax({
-
-				type : "POST",
-				url : "",
-				data : {
-					MEMBER_VERIFY : MEMBER_VERIFY,
-					MEMBER_EMAIL : MEMBER_EMAIL,
-					MEMBER_NAME : MEMBER_NAME,
-					MEMBER_NICKNAME : MEMBER_NICKNAME,
-					MEMBER_GENDER : MEMBER_GENDER,
-					
-					snsType : snsType,
-					SNS_ID : SNS_ID,
-					SNS_NICKNAME : SNS_NICKNAME,
-					access_token : access_token
-				},
-				dataType : "JSON",
-
-				success : function(args) {
-					alert("SNS 회원가입 성공");
-				},
-
-				error : function(request, status, error) {
-					alert("통신 실패");
-					alert("code : " + request.status
-							+ "\n" + "message : "
-							+ request.responseText
-							+ "\n" + "error : " + error);
-				}
-			}) */
 		});
 	});
 
@@ -124,7 +161,7 @@
 			<div>
 				<input type="text" id="MEMBER_NICKNAME" name="MEMBER_NICKNAME" placeholder="별명" autocomplete="off" required/>
 			</div>
-			<div class="check_font" id="nick_check"></div>
+			<div class="check_font" id="nick_check"></div><!-- 경고문이 들어갈 공간 -->
 			
 			<div>
 				<label for="MEMBER_GENDER">성별</label>
@@ -134,7 +171,7 @@
 				<input type="radio" id="MEMBER_GENDER" name="MEMBER_GENDER" value="F">여자
 			</div>
 
-			<input type="submit" value="가입">
+			<input type="submit" id="SUBMIT" value="가입">
 		</form>		
 	</div>
 

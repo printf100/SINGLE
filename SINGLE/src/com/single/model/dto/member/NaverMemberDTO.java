@@ -21,6 +21,19 @@ public class NaverMemberDTO {
 	public NaverMemberDTO() {
 	}
 
+	// 네이버 회원가입 시 이용
+	public NaverMemberDTO(int mEMBER_VERIFY, String mEMBER_EMAIL, String mEMBER_NAME, String mEMBER_NICKNAME,
+			String mEMBER_GENDER, String nAVER_ID, String nAVER_NICKNAME) {
+		super();
+		MEMBER_VERIFY = mEMBER_VERIFY;
+		MEMBER_EMAIL = mEMBER_EMAIL;
+		MEMBER_NAME = mEMBER_NAME;
+		MEMBER_NICKNAME = mEMBER_NICKNAME;
+		MEMBER_GENDER = mEMBER_GENDER;
+		NAVER_ID = nAVER_ID;
+		NAVER_NICKNAME = nAVER_NICKNAME;
+	}
+
 	public NaverMemberDTO(int mEMBER_CODE, int mEMBER_VERIFY, String mEMBER_EMAIL, String mEMBER_PASSWORD,
 			String mEMBER_NAME, String mEMBER_NICKNAME, String mEMBER_GENDER, Date mEMBER_REGDATE,
 			String mEMBER_ENABLED, String nAVER_ID, String nAVER_NICKNAME) {

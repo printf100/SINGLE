@@ -14,7 +14,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>MAIN</title>
+<title>SINGLE</title>
 
 <!-- START :: JAVASCRIPT -->
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.js"></script>
@@ -27,7 +27,10 @@
 <body>
 
 	<c:out value="${sessionLoginMember.MEMBER_NICKNAME }"></c:out>
+	<c:out value="${sessionLoginKakao.MEMBER_NICKNAME }"></c:out>
 	<c:out value="${sessionLoginKakao.KAKAO_ID }"></c:out>
+	<c:out value="${sessionLoginNaver.MEMBER_NICKNAME }"></c:out>
+	<c:out value="${sessionLoginNaver.NAVER_ID }"></c:out>
 	
 <!-- START :: include footer -->
 <%@include file="/views/form/footer.jsp" %>

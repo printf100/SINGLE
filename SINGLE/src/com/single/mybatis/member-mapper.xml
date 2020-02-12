@@ -2,31 +2,91 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.single.member-mapper">
 
-	<select id="login" parameterType="MEMBER" resultType="MEMBER">
-		SELECT *
-		FROM MEMBER
-		WHERE MEMBER_EMAIL = #{MEMBER_EMAIL} AND MEMBER_PASSWORD = #{MEMBER_PASSWORD}
-	</select>
-
+	<!-- 회원가입 처리 -->
 	<insert id="join" parameterType="MEMBER">
 		INSERT INTO MEMBER
 		VALUES (MEMBER_CODE_SEQ.NEXTVAL, #{MEMBER_VERIFY}, #{MEMBER_EMAIL}, #{MEMBER_PASSWORD}, #{MEMBER_NAME}, #{MEMBER_NICKNAME}, #{MEMBER_GENDER}, SYSDATE, 'Y')
 	</insert>
 
+	<!-- SNS 회원가입 처리 -->
 	<insert id="joinWithSns" parameterType="MEMBER">
 		INSERT INTO	MEMBER (MEMBER_CODE, MEMBER_VERIFY, MEMBER_EMAIL, MEMBER_NAME, MEMBER_NICKNAME, MEMBER_GENDER, MEMBER_REGDATE, MEMBER_ENABLED)
 		VALUES (MEMBER_CODE_SEQ.NEXTVAL, #{MEMBER_VERIFY}, #{MEMBER_EMAIL}, #{MEMBER_NAME}, #{MEMBER_NICKNAME}, #{MEMBER_GENDER}, SYSDATE, 'Y')
 	</insert>
 
+	<!-- KAKAO 회원가입 처리 -->
 	<insert id="kakaojoin" parameterType="KAKAOMEMBER">
 		INSERT INTO KAKAOMEMBER
 		VALUES (#{MEMBER_CODE}, #{KAKAO_ID}, #{KAKAO_NICKNAME})
 	</insert>
 	
+	<!-- NAVER 회원가입 처리 -->
+	<insert id="naverjoin" parameterType="NAVERMEMBER">
+		INSERT INTO NAVERMEMBER
+		VALUES (#{MEMBER_CODE}, #{NAVER_ID}, #{NAVER_NICKNAME})
+	</insert>
+	
+	<!-- 이메일로 회원번호 가져오기 -->
 	<select id="getMemberCode" parameterType="MEMBER" resultType="MEMBER">
 		SELECT *
 		FROM MEMBER
 		WHERE MEMBER_EMAIL = #{MEMBER_EMAIL}
+	</select>
+	
+	<!-- 이메일 중복 체크 -->
+	<select id="getEmail" resultType="int">
+		SELECT COUNT(*)
+		FROM MEMBER
+		WHERE MEMBER_EMAIL = #{MEMBER_EMAIL}
+	</select>
+	
+	<!-- 별명 중복 체크 -->
+	<select id="getNick" resultType="int">
+		SELECT COUNT(*)
+		FROM MEMBER
+		WHERE MEMBER_NICKNAME = #{MEMBER_NICKNAME}
+	</select>
+	
+	<!-- 로그인 처리 -->
+	<select id="login" parameterType="MEMBER" resultType="MEMBER">
+		SELECT *
+		FROM MEMBER
+		WHERE MEMBER_EMAIL = #{MEMBER_EMAIL} AND MEMBER_PASSWORD = #{MEMBER_PASSWORD}
+	</select>
+	
+	<!-- KAKAO 아이디 중복체크 -->
+	<select id="getKakaoId" resultType="int">
+		SELECT COUNT(*)
+		FROM KAKAOMEMBER
+		WHERE KAKAO_ID = #{KAKAO_ID}
+	</select>
+	
+	<!-- NAVER 아이디 중복체크 -->
+	<select id="getNaverId" resultType="int">
+		SELECT COUNT(*)
+		FROM NAVERMEMBER
+		WHERE NAVER_ID = #{NAVER_ID}
+	</select>
+	
+	<!-- 로그인 한 회원의 정보 -->
+	<select id="getLoginMember" parameterType="String" resultType="KAKAOMEMBER">
+		SELECT *
+		FROM MEMBER
+		WHERE MEMBER_EMAIL = #{MEMBER_EMAIL}
+	</select>
+
+	<!-- KAKAO 로그인 한 회원의 정보 -->
+	<select id="getKakaoLoginMember" parameterType="String" resultType="KAKAOMEMBER">
+		SELECT *
+		FROM MEMBER JOIN KAKAOMEMBER USING (MEMBER_CODE)
+		WHERE KAKAO_ID = #{KAKAO_ID}
+	</select>
+	
+	<!-- NAVER 로그인 한 멤버의 정보 -->
+	<select id="getNaverLoginMember" parameterType="String" resultType="NAVERMEMBER">
+		SELECT *
+		FROM MEMBER JOIN NAVERMEMBER USING (MEMBER_CODE)
+		WHERE NAVER_ID = #{NAVER_ID}
 	</select>
 
 </mapper>
