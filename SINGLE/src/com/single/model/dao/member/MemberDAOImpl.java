@@ -4,6 +4,7 @@ import org.apache.ibatis.session.SqlSession;
 
 import com.single.model.dto.member.KakaoMemberDTO;
 import com.single.model.dto.member.MemberDTO;
+import com.single.model.dto.member.MemberProfileDTO;
 import com.single.model.dto.member.NaverMemberDTO;
 import com.single.mybatis.SqlMapConfig;
 
@@ -99,7 +100,7 @@ public class MemberDAOImpl extends SqlMapConfig implements MemberDAO {
 		SqlSession session = getSqlSessionFactory().openSession(false);
 
 		int email = session.selectOne(namespace + ".getEmail", NEW_EMAIL);
-		
+
 		session.close();
 
 		return email;
@@ -112,7 +113,7 @@ public class MemberDAOImpl extends SqlMapConfig implements MemberDAO {
 		SqlSession session = getSqlSessionFactory().openSession(false);
 
 		int nickname = session.selectOne(namespace + ".getNick", NEW_NICKNAME);
-		
+
 		session.close();
 
 		return nickname;
@@ -198,6 +199,87 @@ public class MemberDAOImpl extends SqlMapConfig implements MemberDAO {
 		session.close();
 
 		return naverLoginMember;
+	}
+
+	/*
+	 * 회원 정보, 프로필 관련
+	 */
+
+	// 회원 정보, 프로필 가져오기
+	@Override
+	public MemberProfileDTO selectMemberProfile(int MEMBER_CODE) {
+
+		SqlSession session = getSqlSessionFactory().openSession(false);
+
+		MemberProfileDTO memberProfile = session.selectOne(namespace + ".getMemberProfile", MEMBER_CODE);
+
+		session.close();
+
+		return memberProfile;
+	}
+
+	// 프로필 정보 NULL 셋팅
+	@Override
+	public int insertMemberProfile(MemberProfileDTO memberProfile) {
+
+		SqlSession session = getSqlSessionFactory().openSession(false);
+
+		int res = session.insert(namespace + ".insertMemberProfile", memberProfile);
+		if (res > 0) {
+			session.commit();
+		}
+
+		session.close();
+
+		return res;
+	}
+
+	// 프로필 정보 수정하기
+	@Override
+	public int updateMemberProfile(MemberProfileDTO memberProfile) {
+
+		SqlSession session = getSqlSessionFactory().openSession(false);
+
+		int res = session.update(namespace + ".updateMemberProfile", memberProfile);
+		if (res > 0) {
+			session.commit();
+		}
+
+		session.close();
+
+		return res;
+	}
+
+	// 회원 정보 수정하기
+	@Override
+	public int updateMemberInfo(MemberDTO member) {
+
+		SqlSession session = getSqlSessionFactory().openSession(false);
+
+		int res = session.update(namespace + ".updateMemberInfo", member);
+		if (res > 0) {
+			session.commit();
+		}
+
+		session.close();
+
+		return res;
+	}
+
+	// 비밀번호 수정하기
+	@Override
+	public int updateMemberPW(MemberDTO new_pw) {
+		
+		SqlSession session = getSqlSessionFactory().openSession(false);
+
+		int res = session.update(namespace + ".updateMemberPW", new_pw);
+		if (res > 0) {
+			session.commit();
+		}
+
+		session.close();
+		
+		return res;
 	}
 
 }

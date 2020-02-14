@@ -25,7 +25,7 @@
 <link href="/SINGLE/resources/css/master.css" rel="stylesheet" type="text/css">
 	<style type="text/css">
 	
-		div {
+		#header {
 			background-color: plum;
 			height: 50px;
 		}
@@ -47,7 +47,7 @@
 </head>
 <body>
 
-	<div>
+	<div id="header">
 		<span>
 			<a href="/SINGLE/main/mainpage.do">SINGLE</a>
 		</span>
@@ -59,7 +59,7 @@
 					<a href="#">CHATTING</a>
 					<a href="#">BOARD</a>
 					<a href="#">LIFE</a>
-					<a href="#">MYPAGE</a>
+					<a href="/SINGLE/member/profilepage.do">MYPAGE</a>
 					<a href="/SINGLE/member/logout.do">로그아웃</a>
 				</span>				
 			</c:when>

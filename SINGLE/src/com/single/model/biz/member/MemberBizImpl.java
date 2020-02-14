@@ -4,31 +4,46 @@ import com.single.model.dao.member.MemberDAO;
 import com.single.model.dao.member.MemberDAOImpl;
 import com.single.model.dto.member.KakaoMemberDTO;
 import com.single.model.dto.member.MemberDTO;
+import com.single.model.dto.member.MemberProfileDTO;
 import com.single.model.dto.member.NaverMemberDTO;
 import com.single.util.SHA256.SHA256_Util;
 
 public class MemberBizImpl implements MemberBiz {
 
 	MemberDAO dao = new MemberDAOImpl();
+	SHA256_Util sha = new SHA256_Util();
 
 	/*
 	 * 회원가입 관련
 	 */
 
-	// 회원가입 처리
+	// 회원가입 처리 + 회원 프로필 정보 NULL 셋팅
 	@Override
 	public int memberJoin(MemberDTO member) {
 
 		// 비밀번호 암호화
-		SHA256_Util sha = new SHA256_Util();
-		String encrypedPW = sha.encryptSHA256(member.getMEMBER_PASSWORD());
-		member.setMEMBER_PASSWORD(encrypedPW);
-		System.out.println("MemberBizImpl - memberJoin() 비밀번호 : " + encrypedPW);
+		member.setMEMBER_PASSWORD(new SHA256_Util().encryptSHA256(member.getMEMBER_PASSWORD()));
+		System.out.println("MemberBizImpl - memberJoin() 암호화된 비밀번호 : "
+				+ new SHA256_Util().encryptSHA256(member.getMEMBER_PASSWORD()));
 
-		return dao.memberJoin(member);
+		int profile_res = 0;
+		int res = dao.memberJoin(member);
+
+		if (res > 0) {
+			MemberDTO new_member = dao.getMemberCode(member.getMEMBER_EMAIL());
+
+			MemberProfileDTO member_profile = new MemberProfileDTO(new_member.getMEMBER_CODE(), "", "", "", "", "", "");
+			profile_res = dao.insertMemberProfile(member_profile);
+
+			return profile_res;
+
+		} else {
+			return res;
+		}
+
 	}
 
-	// KAKAO 회원가입 처리
+	// KAKAO 회원가입 처리 + 회원 프로필 정보 NULL 셋팅
 	@Override
 	public int kakaoJoin(KakaoMemberDTO kakao_member) {
 
@@ -42,6 +57,7 @@ public class MemberBizImpl implements MemberBiz {
 		member.setMEMBER_GENDER(kakao_member.getMEMBER_GENDER());
 
 		int kakao_res = 0;
+		int profile_res = 0;
 		int res = dao.memberJoinWithSNS(member);
 
 		if (res > 0) {
@@ -52,12 +68,18 @@ public class MemberBizImpl implements MemberBiz {
 			kakao.setKAKAO_NICKNAME(kakao_member.getKAKAO_NICKNAME());
 
 			kakao_res = dao.kakaoJoin(kakao);
-		}
 
-		return kakao_res;
+			MemberProfileDTO member_profile = new MemberProfileDTO(new_member.getMEMBER_CODE(), "", "", "", "", "", "");
+			profile_res = dao.insertMemberProfile(member_profile);
+
+			return (kakao_res > 0 && profile_res > 0) ? 1 : 0;
+
+		} else {
+			return res;
+		}
 	}
 
-	// NAVER 회원가입 처리
+	// NAVER 회원가입 처리 + 회원 프로필 정보 NULL 셋팅
 	@Override
 	public int naverJoin(NaverMemberDTO naver_member) {
 
@@ -71,6 +93,7 @@ public class MemberBizImpl implements MemberBiz {
 		member.setMEMBER_GENDER(naver_member.getMEMBER_GENDER());
 
 		int naver_res = 0;
+		int profile_res = 0;
 		int res = dao.memberJoinWithSNS(member);
 
 		if (res > 0) {
@@ -81,9 +104,15 @@ public class MemberBizImpl implements MemberBiz {
 			naver.setNAVER_NICKNAME(naver_member.getNAVER_NICKNAME());
 
 			naver_res = dao.naverJoin(naver);
-		}
 
-		return naver_res;
+			MemberProfileDTO member_profile = new MemberProfileDTO(new_member.getMEMBER_CODE(), "", "", "", "", "", "");
+			profile_res = dao.insertMemberProfile(member_profile);
+
+			return (naver_res > 0 && profile_res > 0) ? 1 : 0;
+
+		} else {
+			return res;
+		}
 	}
 
 	// 이메일 중복 체크
@@ -107,11 +136,10 @@ public class MemberBizImpl implements MemberBiz {
 	public MemberDTO memberLogin(MemberDTO member) {
 
 		// 비밀번호 암호화
-		SHA256_Util sha = new SHA256_Util();
-		String encrypedPW = sha.encryptSHA256(member.getMEMBER_PASSWORD());
-		member.setMEMBER_PASSWORD(encrypedPW);
-		System.out.println("MemberBizImpl - memberLogin() 비밀번호 : " + encrypedPW);
-		
+		member.setMEMBER_PASSWORD(new SHA256_Util().encryptSHA256(member.getMEMBER_PASSWORD()));
+		System.out.println("MemberBizImpl - memberLogin() 암호화된 비밀번호 : "
+				+ new SHA256_Util().encryptSHA256(member.getMEMBER_PASSWORD()));
+
 		return dao.memberLogin(member);
 	}
 
@@ -143,6 +171,46 @@ public class MemberBizImpl implements MemberBiz {
 	@Override
 	public NaverMemberDTO naverLoginMember(String NAVER_ID) {
 		return dao.naverLoginMember(NAVER_ID);
+	}
+
+	/*
+	 * 회원 정보, 프로필 관련
+	 */
+
+	// 회원 정보, 프로필 가져오기
+	@Override
+	public MemberProfileDTO selectMemberProfile(int MEMBER_CODE) {
+		return dao.selectMemberProfile(MEMBER_CODE);
+	}
+
+	// 프로필 정보 입력하기
+	@Override
+	public int insertMemberProfile(MemberProfileDTO memberProfile) {
+		return dao.insertMemberProfile(memberProfile);
+	}
+
+	// 프로필 정보 수정하기
+	@Override
+	public int updateMemberProfile(MemberProfileDTO memberProfile) {
+		return dao.updateMemberProfile(memberProfile);
+	}
+
+	// 회원 정보 수정하기
+	@Override
+	public int updateMemberInfo(MemberDTO member) {
+		return dao.updateMemberInfo(member);
+	}
+
+	// 비밀번호 수정하기
+	@Override
+	public int updateMemberPW(MemberDTO new_pw) {
+
+		// 비밀번호 암호화
+		new_pw.setMEMBER_PASSWORD(new SHA256_Util().encryptSHA256(new_pw.getMEMBER_PASSWORD()));
+		System.out.println("MemberBizImpl - memberLogin() 암호화된 비밀번호 : "
+				+ new SHA256_Util().encryptSHA256(new_pw.getMEMBER_PASSWORD()));
+
+		return dao.updateMemberPW(new_pw);
 	}
 
 }

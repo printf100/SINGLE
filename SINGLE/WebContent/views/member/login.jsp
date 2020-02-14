@@ -42,8 +42,6 @@
 			var hidden_MEMBER_EMAIL = $("#loginhiddenForm input[name='MEMBER_EMAIL']").val(MEMBER_EMAIL);
 			var hidden_MEMBER_PASSWORD = $("#loginhiddenForm input[name='MEMBER_PASSWORD']").val(rsa.encrypt(MEMBER_PASSWORD)); // 비밀번호 암호화
 			
-			alert("암호화된 비밀번호 : " + hidden_MEMBER_PASSWORD.val());
-
 			// 로그인 체크
 			$.ajax({
 				type: "POST",
@@ -196,7 +194,7 @@
                         		$("#snsloginhiddenForm").submit();
                         		
             				} else {	// 회원가입 팝업 띄우고 회원가입 진행
-            					alert("가입 이력이 없습니다.");
+            					alert("가입 이력이 없습니다. 회원가입을 진행합니다.");
             				
             					// snshiddenForm에 value값 셋팅
                         		$("#snshiddenForm input[name='snsType']").val("KAKAO");

@@ -63,7 +63,7 @@
 					$(opener.document).find("#snsloginhiddenForm").submit();
             		
 				} else {	// 회원가입 팝업 띄우고 회원가입 진행
-					alert("가입 이력이 없습니다.");
+					alert("가입 이력이 없습니다. 회원가입을 진행합니다.");
 				
 					// snshiddenForm에 value값 셋팅
             		$(opener.document).find("#snshiddenForm input[name='snsType']").val("NAVER");

@@ -32,58 +32,85 @@
 		rsa.setPublic("${modulus}", "${exponent}");
 		
 		$("#SUBMIT").attr("disabled", "disabled");
+		$("#email_auth").attr("disabled", "disabled");
 		
 		// 이메일 정규식
 		var regExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;	
 		
 		// 이메일 체크
-		$("#MEMBER_EMAIL").focus(function() {
+		$("#MEMBER_EMAIL").keyup(function() {
 			
-			$("#MEMBER_EMAIL").blur(function() {
-				if($("#MEMBER_EMAIL").val() != null && $("#MEMBER_EMAIL").val() != ""){
+			if($("#MEMBER_EMAIL").val() != null && $("#MEMBER_EMAIL").val() != ""){
+				
+				// 이메일 형식인지 체크
+				if(regExp.test($("#MEMBER_EMAIL").val())) {
 					
-					// 이메일 형식인지 체크
-					if(regExp.test($("#MEMBER_EMAIL").val())) {
-
-						// 이메일 중복 체크
-						$.ajax({
-							type: "POST",
-							url: "/SINGLE/member/emailCheck.do",
-							data: { MEMBER_EMAIL : $("#MEMBER_EMAIL").val() },
-							dataType: "JSON",
-							success: function(msg) {
+					// 이메일 중복 체크
+					$.ajax({
+						type: "POST",
+						url: "/SINGLE/member/emailCheck.do",
+						data: { MEMBER_EMAIL : $("#MEMBER_EMAIL").val() },
+						dataType: "JSON",
+						success: function(msg) {
+							
+							if(msg.result > 0) {
+								$("#email_check").text("이미 사용중인 이메일입니다.");
+								$("#email_check").attr("style", "color:red");
 								
-								if(msg.result > 0) {
-									$("#email_check").text("이미 사용중인 이메일입니다.");
-									$("#email_check").attr("style", "color:red");
-									
-									$("#SUBMIT").attr("disabled", "disabled");
-								} else {
-									$("#email_check").text("사용 가능한 이메일입니다.");
-									$("#email_check").attr("style", "color:blue");
-									
-									$("#SUBMIT").removeAttr("disabled");
-								}
-							},
-							error: function() {
-								alert("이메일 중복체크 통신 실패");
+							} else {
+								$("#email_auth").removeAttr("disabled");
+								
+								$("#email_check").text("사용 가능한 이메일입니다. 이메일 인증을 진행해주세요.");
+								$("#email_check").attr("style", "color:blue");
 							}
-						});
-						
-					} else {
-						$("#email_check").text("이메일 형식이 아닙니다.");
-						$("#email_check").attr("style", "color:red");
-					}
+						},
+						error: function() {
+							alert("이메일 중복체크 통신 실패");
+						}
+					});
 					
 				} else {
-					$("#email_check").text("필수 정보입니다.");
+					$("#email_auth").attr("disabled", "disabled");
+					
+					$("#email_check").text("이메일 형식이 아닙니다.");
 					$("#email_check").attr("style", "color:red");
+				}
+				
+			} else {
+				$("#email_check").text("필수 정보입니다.");
+				$("#email_check").attr("style", "color:red");
+			}
+		});
+		
+		$("#email_auth").click(function() {
+			
+			$("#email_check").text("이메일 인증 진행중...");
+			$("#email_check").attr("style", "color:green");
+			
+			// 이메일 인증
+			$.ajax({
+				type: "POST",
+				url: "/SINGLE/member/emailAuth.do",
+				data: { MEMBER_EMAIL : $("#MEMBER_EMAIL").val() },
+				dataType: "JSON",
+				success: function(msg) {
+					alert("입력하신 이메일로 인증번호가 전송되었습니다.")
+					//alert("authNum : " + msg.authNum);
+					$("#emailAuthHiddenForm input[name='authNum']").val(msg.authNum);
+					
+					var url = "/SINGLE/views/member/joinemailauth.jsp";
+            		var title = "";
+            		var prop = "top=200px,left=600px,width=500px,height=500px";
+            		window.open(url, title, prop);
+				},
+				error: function() {
+					alert("이메일 인증 통신 실패");
 				}
 			});
 		});
 		
 		// 비밀번호 체크
-		$("#MEMBER_PASSWORD,#PW_CONFIRM").blur(function() {
+		$("#MEMBER_PASSWORD,#PW_CONFIRM").keyup(function() {
 			var MEMBER_PASSWORD = $("#MEMBER_PASSWORD").val();
 			var PW_CONFIRM = $("#PW_CONFIRM").val();
 			
@@ -100,7 +127,7 @@
 		});
 		
 		// 닉네임 체크
-		$("#MEMBER_NICKNAME").blur(function() {
+		$("#MEMBER_NICKNAME").keyup(function() {
 			
 			if($("#MEMBER_NICKNAME").val() != null && $("#MEMBER_NICKNAME").val() != "") {			
 				// 닉네임 중복 체크
@@ -141,7 +168,7 @@
 			var MEMBER_PASSWORD = $(this).find("#MEMBER_PASSWORD").val();
 			var MEMBER_NAME = $(this).find("#MEMBER_NAME").val();
 			var MEMBER_NICKNAME = $(this).find("#MEMBER_NICKNAME").val();
-			var MEMBER_GENDER = $(this).find("#MEMBER_GENDER").val();
+			var MEMBER_GENDER = $(this).find("input:radio[name='MEMBER_GENDER']:checked").val();
 	
 			// 사용자가 입력한 form에서 hidden form으로 셋팅
 			$("#joinhiddenForm input[name='MEMBER_EMAIL']").val(MEMBER_EMAIL);
@@ -170,8 +197,6 @@
 		<!-- 카카오 로그인 -->
 		<div>
 			<a id="kakao-login-btn"></a>
-			<a type="button" onclick="kakaologout()">카카오톡 로그아웃</a>
-			<a href="https://developers.kakao.com/logout">완전로그아웃</a>
 		</div>
 		
 		<!-- 네이버 로그인 -->
@@ -186,7 +211,8 @@
 				<label for="MEMBER_EMAIL">이메일</label>
 			</div>
 			<div>
-			    <input type="text" id="MEMBER_EMAIL" name="MEMBER_EMAIL" placeholder="example@example.com" autofocus autocomplete="off" required />
+			    <input type="text" id="MEMBER_EMAIL" name="MEMBER_EMAIL" placeholder="example@example.com" autofocus autocomplete="off" required="required" />
+			    <input type="button" id="email_auth" value="이메일 인증" >
 			</div>
 			<div class="check_font" id="email_check"></div><!-- 경고문이 들어갈 공간 -->
 
@@ -194,14 +220,14 @@
 				<label for="MEMBER_PASSWORD">비밀번호</label>
 			</div>
 			<div>
-			    <input type="password" id="MEMBER_PASSWORD" name="MEMBER_PASSWORD" placeholder="" autocomplete="off" required />
+			    <input type="password" id="MEMBER_PASSWORD" name="MEMBER_PASSWORD" placeholder="" autocomplete="off" required="required" />
 			</div>
 			
 			<div>
 				<label for="MEMBER_PASSWORD">비밀번호 확인</label>
 			</div>
 			<div>
-			    <input type="password" id="PW_CONFIRM" placeholder="" autocomplete="off" required />
+			    <input type="password" id="PW_CONFIRM" placeholder="" autocomplete="off" required="required" />
 			</div>
 			<div class="check_font" id="pw_check"></div><!-- 경고문이 들어갈 공간 -->
 
@@ -209,14 +235,14 @@
 				<label for="MEMBER_NAME">이름</label>
 			</div>
 			<div>
-				<input type="text" id="MEMBER_NAME" name="MEMBER_NAME" placeholder="이름" autocomplete="off" required/>
+				<input type="text" id="MEMBER_NAME" name="MEMBER_NAME" placeholder="이름" autocomplete="off" required="required" />
 			</div>
 			
 			<div>
 				<label for="MEMBER_NICKNAME">닉네임</label>
 			</div>
 			<div>
-				<input type="text" id="MEMBER_NICKNAME" name="MEMBER_NICKNAME" placeholder="별명" autocomplete="off" required/>
+				<input type="text" id="MEMBER_NICKNAME" name="MEMBER_NICKNAME" placeholder="별명" autocomplete="off" required="required" />
 			</div>
 			<div class="check_font" id="nick_check"></div><!-- 경고문이 들어갈 공간 -->
 			
@@ -224,14 +250,26 @@
 				<label for="MEMBER_GENDER">성별</label>
 			</div>
 			<div>
-				<input type="radio" id="MEMBER_GENDER" name="MEMBER_GENDER" value="M">남자
-				<input type="radio" id="MEMBER_GENDER" name="MEMBER_GENDER" value="F">여자
+				<div>
+					<input type="radio" name="MEMBER_GENDER" value="M" required="required">
+					<label for="MEMBER_GENDER">남자</label>
+				</div>
+				<div>
+					<input type="radio" name="MEMBER_GENDER" value="F" required="required">
+					<label for="MEMBER_GENDER">여자</label>
+				</div>
 			</div>
 
 			<input type="submit" id="SUBMIT" value="가입">
 			<input type="button" onclick="location.href='/SINGLE/main/mainpage.do'" value="취소">
 		</form>
 		<!-- END :: 사용자에게 입력받는 form -->
+		
+		<!-- START :: 이메일 인증번호 hidden form -->
+		<form action="#" id="emailAuthHiddenForm">
+			<input type="hidden" name="authNum">
+		</form>
+		<!-- END :: 이메일 인증번호 hidden form -->
 		
 		<!-- START :: 사이트 회원가입시 컨트롤러로 실제 전송되는 form -->
 		<form action="/SINGLE/member/join.do" method="post" id="joinhiddenForm">

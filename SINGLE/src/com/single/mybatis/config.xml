@@ -10,6 +10,7 @@
 		<typeAlias type="com.single.model.dto.member.MemberDTO" alias="MEMBER"/>
 		<typeAlias type="com.single.model.dto.member.KakaoMemberDTO" alias="KAKAOMEMBER"/>
 		<typeAlias type="com.single.model.dto.member.NaverMemberDTO" alias="NAVERMEMBER"/>
+		<typeAlias type="com.single.model.dto.member.MemberProfileDTO" alias="MEMBERPROFILE"/>
 	</typeAliases>
 
 	<environments default="development">

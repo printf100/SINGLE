@@ -2,6 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.single.member-mapper">
 
+	<!-- 회원가입 -->
+	
 	<!-- 회원가입 처리 -->
 	<insert id="join" parameterType="MEMBER">
 		INSERT INTO MEMBER
@@ -47,6 +49,9 @@
 		WHERE MEMBER_NICKNAME = #{MEMBER_NICKNAME}
 	</select>
 	
+	
+	<!-- 로그인 -->
+	
 	<!-- 로그인 처리 -->
 	<select id="login" parameterType="MEMBER" resultType="MEMBER">
 		SELECT *
@@ -69,10 +74,10 @@
 	</select>
 	
 	<!-- 로그인 한 회원의 정보 -->
-	<select id="getLoginMember" parameterType="String" resultType="KAKAOMEMBER">
+	<select id="getLoginMember" parameterType="int" resultType="MEMBER">
 		SELECT *
 		FROM MEMBER
-		WHERE MEMBER_EMAIL = #{MEMBER_EMAIL}
+		WHERE MEMBER_CODE = #{MEMBER_CODE}
 	</select>
 
 	<!-- KAKAO 로그인 한 회원의 정보 -->
@@ -88,5 +93,50 @@
 		FROM MEMBER JOIN NAVERMEMBER USING (MEMBER_CODE)
 		WHERE NAVER_ID = #{NAVER_ID}
 	</select>
+	
+	
+	<!-- 회원 정보, 프로필 -->
+	
+	<!-- 로그인 한 회원의 정보, 프로필 -->
+	<select id="getMemberProfile" resultType="MEMBERPROFILE">
+		SELECT *
+		FROM MEMBER JOIN MEMBERPROFILE USING(MEMBER_CODE)
+		WHERE MEMBER_CODE = #{MEMBER_CODE}
+	</select>
+	
+	<!-- 회원가입 시 프로필 생성하기 -->
+	<insert id="insertMemberProfile" parameterType="MEMBERPROFILE">
+		INSERT INTO MEMBERPROFILE
+		VALUES (#{MEMBER_CODE}, #{MPROFILE_INTRODUCE}, #{MPROFILE_LATITUDE}, #{MPROFILE_LONGITUDE}, #{MPROFILE_IMG_NAME}, #{MPROFILE_IMG_SERVERNAME}, #{MPROFILE_IMG_PATH})
+	</insert>
+	
+	<!-- 회원 프로필 수정하기 -->
+	<update id="updateMemberProfile" parameterType="MEMBERPROFILE">
+		UPDATE MEMBERPROFILE
+		SET MPROFILE_INTRODUCE = #{MPROFILE_INTRODUCE},
+			MPROFILE_LATITUDE = #{MPROFILE_LATITUDE},
+			MPROFILE_LONGITUDE = #{MPROFILE_LONGITUDE},
+			MPROFILE_IMG_NAME = #{MPROFILE_IMG_NAME},
+			MPROFILE_IMG_SERVERNAME = #{MPROFILE_IMG_SERVERNAME},
+			MPROFILE_IMG_PATH = #{MPROFILE_IMG_PATH}
+		WHERE MEMBER_CODE = #{MEMBER_CODE}
+	</update>
+	
+	<!-- 회원 정보 수정하기 -->
+	<update id="updateMemberInfo" parameterType="MEMBER">
+		UPDATE MEMBER
+		SET MEMBER_PASSWORD = #{MEMBER_PASSWORD},
+			MEMBER_NAME = #{MEMBER_NAME},
+			MEMBER_NICKNAME = #{MEMBER_NICKNAME},
+			MEMBER_GENDER = #{MEMBER_GENDER}
+		WHERE MEMBER_CODE = #{MEMBER_CODE}
+	</update>
+	
+	<!-- 비밀번호 수정하기 -->
+	<update id="updateMemberPW" parameterType="MEMBER">
+		UPDATE MEMBER
+		SET MEMBER_PASSWORD = #{MEMBER_PASSWORD}
+		WHERE MEMBER_CODE = #{MEMBER_CODE}
+	</update>
 
 </mapper>
