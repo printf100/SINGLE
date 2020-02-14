@@ -57,8 +57,9 @@
 				<span>
 					<a href="#">MAP</a>
 					<a href="#">CHATTING</a>
-					<a href="#">BOARD</a>
+					<a href="/SINGLE/board/noticepage.do">BOARD</a>
 					<a href="#">LIFE</a>
+					<a href="/SINGLE/festival/festivalpage.do">FESTIVAL</a>
 					<a href="/SINGLE/member/profilepage.do">MYPAGE</a>
 					<a href="/SINGLE/member/logout.do">로그아웃</a>
 				</span>				
