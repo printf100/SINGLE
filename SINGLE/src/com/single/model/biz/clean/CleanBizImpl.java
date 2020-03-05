@@ -39,7 +39,5 @@ public class CleanBizImpl implements CleanBiz {
 	public int updateClean(CleanDTO cleandto) {
 		return dao.updateClean(cleandto);
 	}
-	
-	
 
 }

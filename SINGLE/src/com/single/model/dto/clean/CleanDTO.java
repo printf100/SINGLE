@@ -1,26 +1,25 @@
 package com.single.model.dto.clean;
 
 public class CleanDTO {
-	private  int   CLEAN_CODE;
-	private  int   MEMBER_CODE;
+	private int CLEAN_CODE;
+	private int MEMBER_CODE;
 	private String CLEAN_POSTCODE;
 	private String CLEAN_ADDRESS;
 	private String CLEAN_DETAIL_ADDRESS;
 	private String CLEAN_TIME;
 	private String CLEAN_REGDATE;
-	private  int   CLEAN_MANAGER;
+	private int CLEAN_MANAGER;
 
 	public CleanDTO() {
 	}
 
 	@Override
 	public String toString() {
-		return "CleanDTO [CLEAN_CODE=" + CLEAN_CODE + ", MEMBER_CODE=" + MEMBER_CODE + ", CLEAN_POSTCODE=" + CLEAN_POSTCODE
-				+ ", CLEAN_ADDRESS=" + CLEAN_ADDRESS + ", CLEAN_DETAIL_ADDRESS=" + CLEAN_DETAIL_ADDRESS + ", CLEAN_TIME="
-				+ CLEAN_TIME + ", CLEAN_REGDATE=" + CLEAN_REGDATE + ", CLEAN_MANAGER=" + CLEAN_MANAGER + "]";
+		return "CleanDTO [CLEAN_CODE=" + CLEAN_CODE + ", MEMBER_CODE=" + MEMBER_CODE + ", CLEAN_POSTCODE="
+				+ CLEAN_POSTCODE + ", CLEAN_ADDRESS=" + CLEAN_ADDRESS + ", CLEAN_DETAIL_ADDRESS=" + CLEAN_DETAIL_ADDRESS
+				+ ", CLEAN_TIME=" + CLEAN_TIME + ", CLEAN_REGDATE=" + CLEAN_REGDATE + ", CLEAN_MANAGER=" + CLEAN_MANAGER
+				+ "]";
 	}
-
-
 
 	public int getCLEAN_CODE() {
 		return CLEAN_CODE;
@@ -78,17 +77,12 @@ public class CleanDTO {
 		CLEAN_REGDATE = cLEAN_REGDATE;
 	}
 
-
 	public int getCLEAN_MANAGER() {
 		return CLEAN_MANAGER;
 	}
 
-
 	public void setCLEAN_MANAGER(int cLEAN_MANAGER) {
 		CLEAN_MANAGER = cLEAN_MANAGER;
 	}
-	
-	
 
-	
 }

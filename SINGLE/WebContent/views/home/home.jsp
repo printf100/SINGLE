@@ -14,7 +14,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>HOME</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SINGLE</title>
 
 <!-- START :: 로그인 상태일 때 이 화면으로 오면 안되기 때문 -->
 <c:if test="${not empty sessionLoginMember || not empty sessionLoginKakao || not empty sessionLoginNaver }">
@@ -22,13 +23,39 @@
 </c:if>
 <!-- END :: 로그인 상태일 때 이 화면으로 오면 안되기 때문 -->
 
+<!-- START :: CSS -->
+<link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<link href="/SINGLE/resources/css/master.css" rel="stylesheet" type="text/css">
 <style type="text/css">
-
-	#container {
-		text-align: center;
+	
+	body {
+		background: #F5F5F5;
+	}
+	
+	.container {
+		height: auto;
+		background: white;
+		min-width: 300px;
+		max-width: 520px;
+		padding: 50px;
+		margin-top: 180px;
+		box-shadow: 5px 5px 5px #999;
+		border: 10px solid #46b8da;
+		border-radius: 5px;
+	}
+	
+	.join-link {
+		margin-top: 10px;
+	}
+	
+	#kakao-login-btn {
+		width: 185px;
+		margin-right: 15px;
 	}
 
 </style>
+<!-- END :: CSS -->
 
 <!-- START :: JAVASCRIPT -->
 <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
@@ -92,46 +119,35 @@
 </head>
 <body>
 
-	<div id="container">
-		<h1>SINGLE :: 나 혼자 산다</h1>
+	<div class="container">
+		<div class="text-info text-center form-group">
+			<p style="color:#46b8da; font-weight: 1000; font-size: 30pt;">로그인
+			<p style="color:gray;">SINGLE에 오신 것을 환영합니다.
+		</div>
 		
 		<!-- 사용자에게 입력받는 form -->
 		<form id="loginForm" action="/SINGLE/member/login.do" method="post">
-			<div class="login-input">
-				<div>
-					<label for="MEMBER_EMAIL">이메일</label>
-				</div>
-				<div>
-					<input type="text" id="MEMBER_EMAIL" name="MEMBER_EMAIL" placeholder="example@example.com">
-				</div>
-				<div>
-					<label for="MEMBER_PASSWORD">비밀번호</label>
-					<!-- <a href="/SINGLE/member/pwResetpage.do" style="color:blue; font-size:8pt;">비밀번호 재설정</a> -->
-				</div>
-				<div>
-					<input type="password" id="MEMBER_PASSWORD" name="MEMBER_PASSWORD" placeholder="">
-				</div>
+			<div class="form-group">
+				<label for="MEMBER_EMAIL">이메일</label>
+				<input type="text" class="form-control" id="MEMBER_EMAIL" name="MEMBER_EMAIL" placeholder="example@example.com">
 			</div>
-	
-			<div class="check_font" id="login_check"></div><!-- 경고문이 들어갈 공간 -->
-			<input type="submit" value="로그인">
+			<div class="form-group">
+				<label for="MEMBER_PASSWORD">비밀번호</label>
+				<a href="/SINGLE/member/pwResetpage.do" style="color: #46b8da; font-size:8pt; float: right;">비밀번호 재설정</a>
+				<input type="password" class="form-control" id="MEMBER_PASSWORD" name="MEMBER_PASSWORD" placeholder="">
+				<div class="check_font" id="login_check"></div><!-- 경고문이 들어갈 공간 -->
+			</div>
+			<button type="submit" class="btn btn-info btn-block">로그인</button>		
 		</form>
 		
-		<div>
-			<p style="color: gray; font-size: 9pt;">아직 계정이 없으신가요?
-			<a href="/SINGLE/member/joinpage.do">계정 만들기 ></a>
+		<div class="join-link">
+			<p style="color: gray; font-size: 10pt;">아직 계정이 없으신가요?
+			<a href="/SINGLE/member/joinpage.do" style="color: #46b8da; font-size: 9pt;">계정 만들기 ></a>
 		</div>
 		
 		<!-- START :: SNS 로그인 버튼 -->
-		<!-- 카카오 로그인 -->
-		<div>
-			<a id="kakao-login-btn"></a>
-		</div>
-		
-		<!-- 네이버 로그인 -->
-		<div>
-			<a id="naver_id_login"></a>
-		</div>
+		<!-- SNS 로그인 -->
+		<span id="kakao-login-btn"></span><span id="naver_id_login"></span>
 		<!-- END :: SNS 로그인 버튼 -->
 	</div>
 		
@@ -164,7 +180,7 @@
 	<!-- 팝업창에서 전송된 form -->
 	<form action="/SINGLE/member/snsjoin.do" method="post" id="snsjoinhiddenForm">
 		<input type="hidden" name="snsType">
-		<input type="hidden" name="MEMBER_VERIFY">
+		<input type="hidden" name="MEMBER_VERIFY" value="2">
 		<input type="hidden" name="MEMBER_EMAIL">
 		<input type="hidden" name="MEMBER_NAME">
 		<input type="hidden" name="MEMBER_NICKNAME">
@@ -179,16 +195,18 @@
 </body>
 
 <script type='text/javascript'>
+
 	/*
-		카카오 로그인
+	*	카카오 로그인
 	*/
+
 	Kakao.init('e279f4719a19c18fde6278302eaeb6d8');
     // 카카오 로그인 버튼 생성
     Kakao.Auth.createLoginButton({
     	container: '#kakao-login-btn',
         success: function(authObj) {
         	Kakao.API.request({
-           		url:'/v1/user/me',
+           		url:'/v2/user/me',
            		success:function(res) {
             		console.log(res.id);
             		console.log(res.properties.nickname);
@@ -225,7 +243,7 @@
                         		
                         		var url = "/SINGLE/views/member/snsjoin.jsp";
                         		var title = "";
-                        		var prop = "top=200px,left=600px,width=500px,height=500px";
+                        		var prop = "top=200px,left=600px,width=600px,height=650px";
                         		window.open(url, title, prop);
             				}
             			},
@@ -249,7 +267,7 @@
 
 		var state = naver_id_login.getUniqState();
 
-		naver_id_login.setButton("green", 3, 48);
+		naver_id_login.setButton("green", 3, 40);
 		naver_id_login.setDomain("http://localhost:8090/SINGLE");
 		naver_id_login.setState(state);
 		naver_id_login.setPopup();

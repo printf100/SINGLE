@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.single.resale-mapper">
+
+	<!-- 중고 게시판 관련 -->
+	
+	<!-- 중고 게시판 리스트 -->
+	<select id="ResaleSelectList" resultType="RESALE">
+		SELECT *
+		FROM RESALE JOIN MEMBER USING(MEMBER_CODE)
+		ORDER BY RESALE_CODE DESC
+	</select>
+	
+	<!-- 중고 게시판 메인 리스트 -->
+	<select id="ResaleMainList" resultType="RESALE">
+		SELECT B.*
+		FROM (SELECT A.*, ROWNUM AS RNUM
+		FROM (SELECT * FROM RESALE ORDER BY RESALE_LIKE DESC) A) B
+		WHERE RNUM BETWEEN 1 AND 8
+	</select>
+	
+	<!-- 중고 게시판 글 하나 출력 -->
+	<select id="ResaleSelectOne" resultType="RESALE">
+		SELECT *
+		FROM RESALE JOIN MEMBER USING(MEMBER_CODE)
+		WHERE RESALE_CODE = #{RESALE_CODE} 
+	</select>
+	
+	<!-- 중고 게시판 글 보기 -->
+	<insert id="ResaleWrite" parameterType="RESALE">
+		INSERT INTO RESALE
+		VALUES(RESALE_CODE_SEQ.NEXTVAL, #{MEMBER_CODE}, #{RESALE_TITLE}, #{RESALE_CONTENT}, #{RESALE_ADDRESS}, #{RESALE_PRICE}, #{RESALE_IMG_ORIGINAL}, #{RESALE_IMG_SERVER}, 0, SYSDATE, 0)
+	</insert>
+	
+	<!-- 중고 게시판 파일 재첨부 후 수정 -->
+	<update id="ResaleUpdate" parameterType="RESALE">
+		UPDATE RESALE SET RESALE_TITLE=#{RESALE_TITLE}, RESALE_CONTENT=#{RESALE_CONTENT}, RESALE_PRICE = #{RESALE_PRICE}, RESALE_ADDRESS = #{RESALE_ADDRESS}, RESALE_IMG_ORIGINAL=#{RESALE_IMG_ORIGINAL}, RESALE_IMG_SERVER=#{RESALE_IMG_SERVER}
+		WHERE RESALE_CODE=#{RESALE_CODE} AND MEMBER_CODE = #{MEMBER_CODE}
+	</update>
+	
+	<!-- 중고 게시판 원본파일 그대로 수정 -->
+	<update id="ResaleUpdateNo" parameterType="RESALE">
+		UPDATE RESALE SET RESALE_TITLE=#{RESALE_TITLE}, RESALE_CONTENT=#{RESALE_CONTENT}, RESALE_PRICE = #{RESALE_PRICE}, RESALE_ADDRESS = #{RESALE_ADDRESS}
+		WHERE RESALE_CODE=#{RESALE_CODE} AND MEMBER_CODE = #{MEMBER_CODE}
+	</update>
+	
+	<!-- 중고 게시판 글 삭제 -->
+	<delete id="ResaleDelete" parameterType="RESALE">
+		DELETE FROM RESALE 
+		WHERE RESALE_CODE = #{RESALE_CODE} 
+	</delete>
+	
+	<!-- 중고 게시판 조회수 증가 -->
+	<update id="updateResaleCountView" parameterType="int">
+		UPDATE RESALE SET RESALE_COUNTVIEW = RESALE_COUNTVIEW + 1 
+		WHERE RESALE_CODE = #{RESALE_CODE} 
+	</update>
+	
+	<!-- 중고 게시판 전체 데이터 가져오기 -->
+	<select id="getResaleDataCount" resultType="int">
+		SELECT COUNT(*)
+		FROM RESALE
+	</select>
+	
+	<!-- 중고 게시판 검색어 출력 -->
+	<select id="getResaleDataCountWithMap" resultType="int">
+		SELECT COUNT(*)
+		FROM RESALE 
+		WHERE 
+			<if test="how == 0">
+				RESALE_TITLE LIKE '%'||#{kwd}||'%' 
+			</if>
+			<if test="how == 1">
+				RESALE_CONTENT LIKE '%'||#{kwd}||'%' 
+			</if>
+			<if test="how == 2">
+				RESALE_TITLE LIKE '%'||#{kwd}||'%' OR RESALE_CONTENT LIKE '%'||#{kwd}||'%'
+			</if>
+			<if test="how == 3">
+				MEMBER_CODE LIKE '%'||#{kwd}||'%' 
+			</if>
+	</select>
+	
+	<!-- 중고 게시판 검색어 출력 -->
+	<select id="ResaleSearchList" parameterType="map" resultType="RESALE">
+		SELECT COUNT(*)
+		FROM RESALE 
+		WHERE 
+			<if test="how == 0">
+				RESALE_TITLE LIKE '%'||#{kwd}||'%' 
+			</if>
+			<if test="how == 1">
+				RESALE_CONTENT LIKE '%'||#{kwd}||'%' 
+			</if>
+			<if test="how == 2">
+				RESALE_TITLE LIKE '%'||#{kwd}||'%' OR RESALE_CONTENT LIKE '%'||#{kwd}||'%'
+			</if>
+			<if test="how == 3">
+				MEMBER_CODE LIKE '%'||#{kwd}||'%' 
+			</if>
+	</select>
+	
+	<!-- 중고 게시판 이미지 파일 경로 구하기 -->
+	<select id="ResaleSelectOneFile" resultType="RESALE">
+		SELECT * 
+		FROM RESALE
+		WHERE RESALE_CODE = #{RESALE_CODE} AND RESALE_IMG_SERVER = #{RESALE_IMG_SERVER}
+	</select>
+	
+	<!-- 중고 게시판 닉네임 구하기 -->
+	<select id="getResaleNickname" resultType="MEMBER">
+		SELECT MEMBER_NICKNAME
+		FROM RESALE JOIN MEMBER USING(MEMBER_CODE)
+		WHERE RESALE_CODE = #{RESALE_CODE}
+	</select>
+	
+	
+	<!-- 관심 리스트 관련 -->
+	
+	
+	<!-- 관심도 관심 증가 -->
+	<update id="updateInterest" parameterType="int">
+		UPDATE RESALE SET RESALE_LIKE = RESALE_LIKE + 1
+		WHERE RESALE_CODE = #{RESALE_CODE}
+	</update>
+	
+	<!-- 관심 리스트 등록 -->
+	<insert id="insertInterest" parameterType="LIKES">
+		INSERT INTO LIKES
+		VALUES(#{MEMBER_CODE}, #{RESALE_CODE})
+	</insert>
+	
+	<!-- 관심 리스트 리스트 출력 -->
+	<select id="interestList" resultType="LIKES">
+		SELECT *
+		FROM RESALE R, LIKES L
+		WHERE R.RESALE_CODE = L.RESALE_CODE
+		AND L.MEMBER_CODE = #{MEMBER_CODE}
+	</select>
+	
+	<!-- 관심 리스트 글 하나 출력 -->
+	<select id="selectInterest" resultType="LIKES">
+		SELECT *
+		FROM LIKES JOIN RESALE USING(RESALE_CODE)
+		WHERE RESALE_CODE = #{RESALE_CODE}
+	</select>
+	
+	<!-- 관심 리스트 선택 삭제 -->
+	<delete id="multiDelete" parameterType="map">
+		DELETE FROM LIKES
+		WHERE MEMBER_CODE = #{MEMBER_CODE}
+		AND RESALE_CODE IN
+		<foreach collection="RESALE_CODE" item="RESALE_CODE" open="(" separator=", " close=")">
+			#{RESALE_CODE}
+		</foreach>
+	</delete>
+	
+	<!-- 관심 리스트  이미 등록한 리스트인지 판별 -->
+	<select id="stopInterest" resultType="int">
+		SELECT COUNT(*)
+		FROM LIKES
+		WHERE MEMBER_CODE = #{MEMBER_CODE} AND RESALE_CODE = #{RESALE_CODE} 
+	</select>
+	
+</mapper>

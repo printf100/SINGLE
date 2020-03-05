@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.single.food-mapper">
+	
+	<insert id="foodInsert" parameterType="FOOD">
+		INSERT INTO FOOD
+		VALUES(FOOD_SEQ.NEXTVAL, #{food_name}, #{food_content}, #{food_image_name}, #{food_image_realname} , #{food_x} , #{food_y} , #{member_code})
+	</insert>
+	
+	<select id="selectFoodList" resultType="FOOD">
+		SELECT * FROM FOOD F, MEMBER M
+		WHERE F.MEMBER_CODE = M.MEMBER_CODE
+	</select>
+	
+	<select id="myFoodList" resultType="FOOD" >
+		SELECT * FROM FOOD F, MEMBER M
+		WHERE F.MEMBER_CODE = M.MEMBER_CODE AND M.MEMBER_CODE = #{member_code}
+	</select>
+	
+	<select id="selectOneFood" parameterType="int" resultType="FOOD">
+		SELECT * 
+		FROM FOOD
+		WHERE MARKER_CODE = #{marker_code} 
+	</select>  
+	 
+	<update id="myFoodUpdate" parameterType="FOOD">
+  		UPDATE FOOD
+  		SET FOOD_NAME = #{food_name}, FOOD_CONTENT = #{food_content}, FOOD_IMAGE_NAME = #{food_image_name}, FOOD_IMAGE_REALNAME = #{food_image_realname}
+  		WHERE MARKER_CODE = #{marker_code} 
+ 	</update>
+   
+	<delete id="myFoodDelte" parameterType="FOOD">
+  		DELETE FROM FOOD
+  		WHERE MARKER_CODE=#{marker_code}
+	</delete>
+</mapper> 

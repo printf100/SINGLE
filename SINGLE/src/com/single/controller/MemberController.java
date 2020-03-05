@@ -1,5 +1,6 @@
 package com.single.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.InvalidKeyException;
@@ -44,7 +45,6 @@ import com.single.util.email.SendEmail;
 				"nickCheck.do", // 닉네임 중복 체크
 				"join.do", // 회원가입 처리
 				"snsjoin.do", // SNS 회원가입 처리
-				"loginpage.do", // login.jsp로 이동
 				"login.do", // 로그인 처리
 				"snschk.do", // SNS 아이디 중복체크
 				"snslogin.do", // SNS 로그인 처리
@@ -108,10 +108,6 @@ public class MemberController extends HttpServlet {
 		/*
 		 * 로그인
 		 */
-
-		else if (command.endsWith("/loginpage.do")) {
-			loginpage(request, response);
-		}
 
 		else if (command.endsWith("/login.do")) {
 			doLogin(request, response);
@@ -292,7 +288,7 @@ public class MemberController extends HttpServlet {
 
 		if (res > 0) {
 			session.removeAttribute("RSAprivateKey");
-			jsResponse("회원가입 성공", "/SINGLE/member/loginpage.do", response);
+			jsResponse("회원가입 성공", "/SINGLE/main/mainpage.do", response);
 		} else {
 			jsResponse("회원가입 실패", "/SINGLE/member/joinpage.do", response);
 		}
@@ -323,10 +319,6 @@ public class MemberController extends HttpServlet {
 			int res = biz.kakaoJoin(kakao_member);
 
 			if (res > 0) {
-				// 회원가입 후 자동로그인
-				session = request.getSession();
-				session.setAttribute("loginKakao", kakao_member);
-				session.setAttribute("access_token", access_token);
 				jsResponse("KAKAO 회원가입 성공", "/SINGLE/main/mainpage.do", response);
 			} else {
 				jsResponse("KAKAO 회원가입 실패", "/SINGLE/member/joinpage.do", response);
@@ -342,9 +334,6 @@ public class MemberController extends HttpServlet {
 			int res = biz.naverJoin(naver_member);
 
 			if (res > 0) {
-				// 회원가입 후 자동로그인
-				session = request.getSession();
-				session.setAttribute("loginNaver", naver_member);
 				jsResponse("NAVER 회원가입 성공", "/SINGLE/main/mainpage.do", response);
 			} else {
 				jsResponse("NAVER 회원가입 실패", "/SINGLE/member/joinpage.do", response);
@@ -355,25 +344,6 @@ public class MemberController extends HttpServlet {
 	/*
 	 * 로그인
 	 */
-
-	// 로그인 페이지로 이동
-	private void loginpage(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-
-		// 기존 생성되어있는 privateKey가 있다면 session에서 파기!
-		session = request.getSession();
-
-		if (session.getAttribute("RSAprivateKey") != null)
-			session.removeAttribute("RSAprivateKey");
-
-		// 새로운 RSA 객체 생성
-		RSA rsa = rsaUtil.createRSA();
-		request.setAttribute("modulus", rsa.getModulus());
-		request.setAttribute("exponent", rsa.getExponent());
-		session.setAttribute("RSAprivateKey", rsa.getPrivateKey());
-
-		dispatch("/views/member/login.jsp", request, response);
-	}
 
 	// 로그인 처리
 	private void doLogin(HttpServletRequest request, HttpServletResponse response)
@@ -410,6 +380,7 @@ public class MemberController extends HttpServlet {
 		if (loginMember != null) {
 			MemberProfileDTO profile = biz.selectMemberProfile(loginMember.getMEMBER_CODE());
 			System.out.println(profile);
+			
 			obj.put("result", 1);
 			loginMember.setMEMBER_PASSWORD(""); // 세션에는 비밀번호를 담아다니지 않도록! 위험위험
 			profile.setMEMBER_PASSWORD("");
@@ -418,6 +389,8 @@ public class MemberController extends HttpServlet {
 			session.setAttribute("loginMember", loginMember);
 			session.setAttribute("profile", profile);
 			session.removeAttribute("RSAprivateKey");
+			
+			session.setMaxInactiveInterval(60*60);
 		} else {
 			obj.put("result", 0);
 		}
@@ -466,9 +439,14 @@ public class MemberController extends HttpServlet {
 			KakaoMemberDTO kakao_member = biz.kakaoLoginMember(SNS_ID);
 
 			if (kakao_member != null) {
+				MemberProfileDTO profile = biz.selectMemberProfile(kakao_member.getMEMBER_CODE());
+				
 				session = request.getSession();
 				session.setAttribute("loginKakao", kakao_member);
+				session.setAttribute("profile", profile);
 				session.setAttribute("access_token", access_token);
+				session.setMaxInactiveInterval(60*60);
+				
 				jsResponse("KAKAO 로그인 성공", "/SINGLE/main/mainpage.do", response);
 			} else {
 				jsResponse("KAKAO 로그인 실패", "/SINGLE/member/loginpage.do", response);
@@ -479,8 +457,13 @@ public class MemberController extends HttpServlet {
 			NaverMemberDTO naver_member = biz.naverLoginMember(SNS_ID);
 
 			if (naver_member != null) {
+				MemberProfileDTO profile = biz.selectMemberProfile(naver_member.getMEMBER_CODE());
+				
 				session = request.getSession();
 				session.setAttribute("loginNaver", naver_member);
+				session.setAttribute("profile", profile);
+				session.setMaxInactiveInterval(60*60);
+				
 				jsResponse("NAVER 로그인 성공", "/SINGLE/main/mainpage.do", response);
 			} else {
 				jsResponse("NAVER 로그인 실패", "/SINGLE/member/loginpage.do", response);
@@ -540,6 +523,11 @@ public class MemberController extends HttpServlet {
 
 		String encoding = "UTF-8";
 		int maxSize = 1024 * 1024 * 3;
+		
+		File file;
+		if(!(file = new File(MPROFILE_IMG_PATH)).isDirectory()) {
+			file.mkdirs();
+		}
 
 		MultipartRequest mr = null;
 
@@ -587,7 +575,6 @@ public class MemberController extends HttpServlet {
 		update_profileimg.setMPROFILE_IMG_SERVERNAME((MPROFILE_IMG_SERVERNAME == null) ? "" : MPROFILE_IMG_SERVERNAME);
 		update_profileimg.setMPROFILE_IMG_PATH((MPROFILE_IMG_PATH == null) ? "" : MPROFILE_IMG_PATH);
 
-		// JSON
 		JSONObject obj = new JSONObject();
 		
 		int update_res = biz.updateProfileImg(update_profileimg);
@@ -596,9 +583,6 @@ public class MemberController extends HttpServlet {
 			
 		String res = obj.toJSONString();
 		System.out.println("doProfileImgUpdate 결과 : " + res);
-		
-		session.removeAttribute("profile");
-		session.setAttribute("profile", biz.selectMemberProfile(MEMBER_CODE));
 
 		PrintWriter out = response.getWriter();
 		out.println(obj);
@@ -622,17 +606,19 @@ public class MemberController extends HttpServlet {
 		update_nickname.setMEMBER_CODE(MEMBER_CODE);
 		update_nickname.setMEMBER_NICKNAME((MEMBER_NICKNAME == null) ? "" : MEMBER_NICKNAME);
 
+		int res = 0;
 		int intro_res = biz.updateProfileIntro(update_intro);
 		int nickname_res = biz.updateNickname(update_nickname);
 		
 		if (intro_res > 0 && nickname_res > 0) {
-			session.removeAttribute("profile");
-			session.setAttribute("profile", biz.selectMemberProfile(MEMBER_CODE));
-			jsResponse("프로필 수정이 완료되었습니다.", "/SINGLE/member/profilepage.do", response);
-		} else {
-			jsResponse("프로필 수정을 실패하였습니다.", "/SINGLE/member/profilepage.do", response);
+			res = 1;
 		}
-
+		
+		JSONObject obj = new JSONObject();
+		obj.put("result", res);
+		
+		PrintWriter out = response.getWriter();
+		out.println(obj);
 	}
 
 	// 프로필 내위치 수정 처리
@@ -653,7 +639,6 @@ public class MemberController extends HttpServlet {
 		update_profileloc.setMPROFILE_LATITUDE((MPROFILE_LATITUDE == null) ? "" : MPROFILE_LATITUDE);
 		update_profileloc.setMPROFILE_LONGITUDE((MPROFILE_LONGITUDE == null) ? "" : MPROFILE_LONGITUDE);
 
-		// JSON
 		JSONObject obj = new JSONObject();
 		
 		int update_res = biz.updateProfileLoc(update_profileloc);
@@ -661,9 +646,6 @@ public class MemberController extends HttpServlet {
 			
 		String res = obj.toJSONString();
 		System.out.println("doProfileLocUpdate 결과 : " + res);
-		
-		session.removeAttribute("profile");
-		session.setAttribute("profile", biz.selectMemberProfile(MEMBER_CODE));
 
 		PrintWriter out = response.getWriter();
 		out.println(obj);
@@ -704,8 +686,25 @@ public class MemberController extends HttpServlet {
 	}
 
 	// 회원정보 수정 처리
-	private void doInfoUpdate(HttpServletRequest request, HttpServletResponse response) {
+	private void doInfoUpdate(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+		int MEMBER_CODE = Integer.parseInt(request.getParameter("MEMBER_CODE"));
+		
+		String MEMBER_NAME = request.getParameter("MEMBER_NAME");
+		String MEMBER_GENDER = request.getParameter("MEMBER_GENDER");
+		
+		MemberDTO new_info = new MemberDTO();
+		new_info.setMEMBER_NAME(MEMBER_NAME);
+		new_info.setMEMBER_GENDER(MEMBER_GENDER);
+		new_info.setMEMBER_CODE(MEMBER_CODE);
+		
+		int res = biz.updateMemberInfo(new_info);
+		
+		JSONObject obj = new JSONObject();
+		obj.put("result", res);
+		
+		PrintWriter out = response.getWriter();
+		out.println(obj);
 	}
 
 	// 회원 비밀번호 변경 화면으로 이동

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.single.note-mapper">
+
+	<!-- 쪽지 보내기 -->
+	<insert id="sendNote" parameterType="NOTE">
+		INSERT INTO NOTE
+		VALUES (NOTE_CODE_SEQ.NEXTVAL, #{NOTE_FROM_CODE}, #{NOTE_TO_CODE}, #{NOTE_TITLE}, #{NOTE_CONTENT}, SYSDATE, 'N')
+	</insert>
+	
+	<!-- NOTE_CODE 가져오기 (mylist에 insert하기 위함) -->
+	<select id="getNoteCode" parameterType="int" resultType="NOTE">
+		SELECT *
+		FROM NOTE
+		WHERE NOTE_FROM_CODE = #{MEMBER_CODE}
+		AND NOTE_SENDDATE = (SELECT MAX(NOTE_SENDDATE)
+											FROM NOTE
+											WHERE NOTE_FROM_CODE = #{MEMBER_CODE})
+	</select>
+	
+	<!-- mylist에 추가 -->
+	<insert id="addMyNote">
+		INSERT INTO MYNOTELIST
+		VALUES (#{MEMBER_CODE}, #{NOTE_CODE}, #{NOTE_VERIFY})
+	</insert>
+	
+	<!-- 받은 쪽지함 -->
+	<select id="noteInList" parameterType="int" resultType="NOTE">
+		SELECT N.NOTE_CODE, N.NOTE_FROM_CODE, M.MEMBER_NICKNAME NOTE_FROM_NICKNAME, N.NOTE_TITLE, N.NOTE_CONTENT, N.NOTE_SENDDATE, N.NOTE_READ
+		FROM MYNOTELIST ML, NOTE N, MEMBER M
+		WHERE ML.NOTE_CODE = N.NOTE_CODE
+		AND N.NOTE_FROM_CODE = M.MEMBER_CODE
+		AND NOTE_TO_CODE = #{MEMBER_CODE}
+		AND NOTE_VERIFY = 'IN'
+		ORDER BY NOTE_CODE DESC
+	</select>
+	
+	<!-- 받은 쪽지 총 갯수 -->
+	<select id="noteInCount" parameterType="int" resultType="int">
+		SELECT COUNT(*)
+		FROM MYNOTELIST
+		WHERE MEMBER_CODE = #{MEMBER_CODE}
+		AND NOTE_VERIFY = 'IN'
+	</select>
+
+	<!-- 안 읽은 받은 쪽지 갯수 -->
+	<select id="noteInUnreadCount" parameterType="int" resultType="int">
+		SELECT COUNT(*)
+		FROM MYNOTELIST JOIN NOTE USING (NOTE_CODE)
+		WHERE MEMBER_CODE = #{MEMBER_CODE}
+		AND NOTE_VERIFY = 'IN'
+		AND NOTE_READ = 'N'
+	</select>
+	
+	<!-- 받은 쪽지 내용 -->
+	<select id="noteInDetail" parameterType="int" resultType="NOTE">
+		SELECT N.NOTE_CODE, N.NOTE_FROM_CODE, M.MEMBER_NICKNAME NOTE_FROM_NICKNAME, N.NOTE_TITLE, N.NOTE_CONTENT, N.NOTE_SENDDATE, N.NOTE_READ
+		FROM NOTE N, MEMBER M
+		WHERE N.NOTE_FROM_CODE = M.MEMBER_CODE
+		AND NOTE_CODE = #{NOTE_CODE}
+	</select>
+	
+	<!-- 보낸 쪽지함 -->
+	<select id="noteOutList" parameterType="int" resultType="NOTE">
+		SELECT N.NOTE_CODE, N.NOTE_FROM_CODE, M.MEMBER_NICKNAME NOTE_TO_NICKNAME, N.NOTE_TITLE, N.NOTE_CONTENT, N.NOTE_SENDDATE, N.NOTE_READ
+		FROM MYNOTELIST ML, NOTE N, MEMBER M
+		WHERE ML.NOTE_CODE = N.NOTE_CODE
+		AND N.NOTE_TO_CODE = M.MEMBER_CODE
+		AND NOTE_FROM_CODE = #{MEMBER_CODE}
+		AND NOTE_VERIFY = 'OUT'
+		ORDER BY NOTE_CODE DESC
+	</select>
+	
+	<!-- 보낸 쪽지 총 갯수 -->
+	<select id="noteOutCount" parameterType="int" resultType="int">
+		SELECT COUNT(*)
+		FROM MYNOTELIST
+		WHERE MEMBER_CODE = #{MEMBER_CODE}
+		AND NOTE_VERIFY = 'OUT'
+	</select>
+	
+	<!-- 보낸 쪽지 내용 -->
+	<select id="noteOutDetail" parameterType="int" resultType="NOTE">
+		SELECT N.NOTE_CODE, N.NOTE_TO_CODE, M.MEMBER_NICKNAME NOTE_TO_NICKNAME, N.NOTE_TITLE, N.NOTE_CONTENT, N.NOTE_SENDDATE, N.NOTE_READ
+		FROM NOTE N, MEMBER M
+		WHERE N.NOTE_TO_CODE = M.MEMBER_CODE
+		AND NOTE_CODE = #{NOTE_CODE}
+	</select>
+	
+	<!-- 쪽지 읽음 상태 가져오기 -->
+	<select id="getReadStatus" parameterType="int" resultType="String">
+		SELECT NOTE_READ
+		FROM NOTE
+		WHERE NOTE_CODE = #{NOTE_CODE}
+	</select>
+	
+	<!-- 쪽지 읽음 처리 -->
+	<update id="updateReadStatus" parameterType="int">
+		UPDATE NOTE
+		SET NOTE_READ = 'Y'
+		WHERE NOTE_CODE = #{NOTE_CODE}
+	</update>
+	
+	<!-- mylist에서 쪽지 삭제하기 -->
+	<delete id="deleteNote" parameterType="int">
+		DELETE FROM MYNOTELIST
+		WHERE NOTE_CODE = #{NOTE_CODE}
+	</delete>
+	
+</mapper>

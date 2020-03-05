@@ -18,12 +18,12 @@ public class SendEmail {
 	public void sendEmail(String MEMBER_EMAIL, String auth) {
 
 		String host = "smtp.gmail.com";
-		String subject = "SINGLE 인증번호 전송";
-		String fromName = "SINGLE 관리자";
+		String subject = "[SINGLE] 회원가입 인증번호 안내 메일";
+		String fromName = "SINGLE";
 		String from = "seungah1994@gmail.com"; // 보내는 메일
 		String to = MEMBER_EMAIL;
 
-		String content = "인증번호 [ " + auth + " ] 를 팝업창에 입력해주세요.";
+		String content = "<p style='font-size:12pt'>인증번호 [ " + auth + " ] 를 팝업창에 입력해주세요.</p>";
 
 		Properties props = new Properties();
 
@@ -63,18 +63,19 @@ public class SendEmail {
 	public void sendPwEmail(String CONFIRM_EMAIL, String MEMBER_NAME) {
 		
 		String host = "smtp.gmail.com";
-		String subject = "SINGLE 인증번호 전송";
-		String fromName = "SINGLE 관리자";
+		String subject = "[SINGLE] 비밀번호 재설정 안내 메일";
+		String fromName = "SINGLE";
 		String from = "seungah1994@gmail.com"; // 보내는 메일
 		String to = CONFIRM_EMAIL;
 
 		 String content = "<div>"
-		            + "<h1>SINGLE</h1>"
-		            + "<h2>비밀번호 재설정 안내</h2>"
-		            + "<p>안녕하세요 " + MEMBER_NAME + "님</p>"
-		            + "<p>본 메일은 비밀번호 재설정을 위해 SINGLE에서 발송하는 메일입니다. 본인이 요청한 메일이 아니라면 개인정보 보호를 위해 비밀번호를 재설정해주세요. 비밀번호를 다시 설정하려면 '비밀번호 재설정' 링크를 클릭해주세요.</p>"
-		            + "<a href='http://localhost:8090/SINGLE/member/pwResetEmailpage.do'>비밀번호 재설정</a>"
-		            + "</div>";
+					            + "<h2>비밀번호 재설정 안내</h2>"
+					            + "<p style='font-size:10pt'>안녕하세요 " + MEMBER_NAME + "님</p>"
+					            + "<p style='font-size:10pt'>본 메일은 비밀번호 재설정을 위해 SINGLE에서 발송하는 메일입니다.</p>"
+					            + "<p style='font-size:10pt'>본인이 요청한 메일이 아니라면 개인정보 보호를 위해 비밀번호를 재설정해주세요.</p>"
+					            + "<p style='font-size:10pt'>비밀번호를 다시 설정하려면 '비밀번호 재설정' 링크를 클릭해주세요.</p><br><br>"
+					            + "<a href='http://localhost:8090/SINGLE/member/pwResetEmailpage.do' style='color: white; text-decoration: none; border-radius: 3px; background-color: #46b8da; padding: 10px 14px; border: none;'>비밀번호 재설정</a>"
+					            + "</div>";
 
 
 		Properties props = new Properties();

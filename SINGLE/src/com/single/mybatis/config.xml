@@ -7,23 +7,37 @@
 	<properties resource="com/single/mybatis/db.properties"></properties>
 	
 	<typeAliases>
+	
 		<!-- 회원 테이블 -->
 		<typeAlias type="com.single.model.dto.member.MemberDTO" alias="MEMBER"/>
 		<typeAlias type="com.single.model.dto.member.KakaoMemberDTO" alias="KAKAOMEMBER"/>
 		<typeAlias type="com.single.model.dto.member.NaverMemberDTO" alias="NAVERMEMBER"/>
 		<typeAlias type="com.single.model.dto.member.MemberProfileDTO" alias="MEMBERPROFILE"/>
+
+		<!-- 게시판 테이블 -->
+		<typeAlias type="com.single.model.dto.board.BoardDTO" alias="BOARD"/>
+		<typeAlias type="com.single.model.dto.board.FileDTO" alias="FILE"/>
+		<typeAlias type="com.single.model.dto.board.ReplyDTO" alias="REPLY"/>
+		<typeAlias type="com.single.model.dto.board.ResaleDTO" alias="RESALE"/>
+		<typeAlias type="com.single.model.dto.board.LikeDTO" alias="LIKES"/>
+		<typeAlias type="com.single.model.dto.board.ReplyDTO" alias="REPLY"/>
+		<typeAlias type="com.single.model.dto.board.ReplyLikesDTO" alias="REPLYLIKES"/>
 		
 		<!-- 채팅 테이블 -->
-		<typeAlias type="com.single.model.dto.chat.ChatDTO" alias="CHAT"/>
 		<typeAlias type="com.single.model.dto.chat.ChatRoomDTO" alias="CHATROOM"/>
 		<typeAlias type="com.single.model.dto.chat.ChatMessageDTO" alias="CHATMESSAGE"/>
 		<typeAlias type="com.single.model.dto.chat.MyChatroomListDTO" alias="MYCHATROOMLIST"/>
-
-
+		
+		<!-- 쪽지 테이블 -->
+		<typeAlias type="com.single.model.dto.note.NoteDTO" alias="NOTE"/>
+		<typeAlias type="com.single.model.dto.note.MyNoteListDTO" alias="MYNOTELIST"/>
+		
+		<!-- 식재료 테이블 -->
+		<typeAlias type="com.single.model.dto.map.FoodDto" alias="FOOD"/>
+		
 		<!-- 세탁 테이블 -->
 		<typeAlias type="com.single.model.dto.wash.WashDTO" alias="WASH"/>
 		<typeAlias type="com.single.model.dto.clean.CleanDTO" alias="CLEAN"/>
-		
 		
 	</typeAliases>
 
@@ -41,7 +55,12 @@
 	
 	<mappers>
 		<mapper resource="com/single/mybatis/member-mapper.xml" />
+		<mapper resource="com/single/mybatis/notice-mapper.xml"/>
+		<mapper resource="com/single/mybatis/resale-mapper.xml"/>
+		<mapper resource="com/single/mybatis/reply-mapper.xml"/>
 		<mapper resource="com/single/mybatis/chat-mapper.xml"/>
-		<mapper resource="com/single/mybatis/life-mapper.xml"/>
+		<mapper resource="com/single/mybatis/note-mapper.xml"/>
+		<mapper resource="com/single/mybatis/food-mapper.xml" />
+		<mapper resource="com/single/mybatis/life-mapper.xml"/> 
 	</mappers>
 </configuration>

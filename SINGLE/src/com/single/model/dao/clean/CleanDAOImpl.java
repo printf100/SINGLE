@@ -13,17 +13,17 @@ public class CleanDAOImpl extends SqlMapConfig implements CleanDAO {
 
 	@Override
 	public int reservClean(CleanDTO info) {
-		
+
 		SqlSession session = getSqlSessionFactory().openSession(false);
 
 		int res = session.insert(namespace + ".reservClean", info);
-		
+
 		if (res > 0) {
 			session.commit();
 		}
-		
+
 		session.close();
-		
+
 		return res;
 	}
 
@@ -32,13 +32,13 @@ public class CleanDAOImpl extends SqlMapConfig implements CleanDAO {
 		SqlSession session = getSqlSessionFactory().openSession(false);
 
 		int res = session.delete(namespace + ".reservCancel", CLEAN_CODE);
-		
+
 		if (res > 0) {
 			session.commit();
 		}
-		
+
 		session.close();
-		
+
 		return res;
 	}
 
@@ -46,12 +46,10 @@ public class CleanDAOImpl extends SqlMapConfig implements CleanDAO {
 	public CleanDTO getCleanCode(int MEMBER_CODE) {
 		SqlSession session = getSqlSessionFactory().openSession(false);
 
-		CleanDTO dto= session.selectOne(namespace + ".getCleanCode", MEMBER_CODE);
-		
-		
-		
+		CleanDTO dto = session.selectOne(namespace + ".getCleanCode", MEMBER_CODE);
+
 		session.close();
-		
+
 		return dto;
 	}
 
@@ -60,10 +58,9 @@ public class CleanDAOImpl extends SqlMapConfig implements CleanDAO {
 		SqlSession session = getSqlSessionFactory().openSession(false);
 
 		List<CleanDTO> cleanList = session.selectList(namespace + ".getReservList", MEMBER_CODE);
-		
-		
+
 		session.close();
-		
+
 		return cleanList;
 	}
 
@@ -71,12 +68,12 @@ public class CleanDAOImpl extends SqlMapConfig implements CleanDAO {
 	public CleanDTO getCleanInfo(int CLEAN_CODE) {
 		SqlSession session = getSqlSessionFactory().openSession(false);
 
-		CleanDTO dto= session.selectOne(namespace + ".getCleanInfo", CLEAN_CODE);
-		
+		CleanDTO dto = session.selectOne(namespace + ".getCleanInfo", CLEAN_CODE);
+
 		session.close();
-		
+
 		return dto;
-		
+
 	}
 
 	@Override
@@ -84,16 +81,14 @@ public class CleanDAOImpl extends SqlMapConfig implements CleanDAO {
 		SqlSession session = getSqlSessionFactory().openSession(false);
 
 		int res = session.update(namespace + ".updateClean", cleandto);
-		
+
 		if (res > 0) {
 			session.commit();
 		}
-		
+
 		session.close();
-		
+
 		return res;
 	}
 
-	
-	
 }

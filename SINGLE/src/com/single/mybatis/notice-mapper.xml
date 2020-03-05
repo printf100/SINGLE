@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.single.notice-mapper">
+
+	<select id="NoticeSelectList" resultType="BOARD">
+		SELECT *
+		FROM BOARD JOIN MEMBER USING(MEMBER_CODE)
+		WHERE BOARD_VERIFY = 1 AND MEMBER_VERIFY = 1
+		ORDER BY BOARD_CODE DESC
+	</select>
+	
+	<select id="NoticeSelectOne" resultType="BOARD">
+		SELECT *
+		FROM BOARD
+		WHERE BOARD_CODE = #{BOARD_CODE} AND BOARD_VERIFY = 1
+	</select>
+	
+	<insert id="NoticeWrite" parameterType="BOARD">
+		INSERT INTO BOARD
+		VALUES(BOARD_CODE_SEQ.NEXTVAL, #{MEMBER_CODE}, 1, #{BOARD_TITLE}, #{BOARD_CONTENT}, SYSDATE, 0, 0, #{FILE_ORIGINAL}, #{FILE_SERVER})
+	</insert>
+	
+	<update id="NoticeUpdate">
+		UPDATE BOARD SET BOARD_TITLE=#{BOARD_TITLE}, BOARD_CONTENT=#{BOARD_CONTENT}
+		WHERE BOARD_CODE=#{BOARD_CODE} AND BOARD_VERIFY = 1
+	</update>
+	
+	<update id="NoticeUpdateWithFile">
+		UPDATE BOARD SET BOARD_TITLE=#{BOARD_TITLE}, BOARD_CONTENT=#{BOARD_CONTENT}, FILE_SERVER=#{FILE_SERVER}, FILE_ORIGINAL=#{FILE_ORIGINAL}
+		WHERE BOARD_CODE=#{BOARD_CODE} AND BOARD_VERIFY = 1
+	</update>
+	
+	<delete id="NoticeDelete">
+		DELETE FROM BOARD 
+		WHERE BOARD_CODE = #{BOARD_CODE} AND BOARD_VERIFY = 1
+	</delete>
+	
+	<update id="updateNoticeCountView" parameterType="int">
+		UPDATE BOARD SET COUNT_VIEW = COUNT_VIEW + 1 
+		WHERE BOARD_CODE = #{BOARD_CODE} AND BOARD_VERIFY = 1
+	</update>
+	
+	<select id="getNoticeDataCount" resultType="int">
+		SELECT COUNT(*)
+		FROM BOARD
+		WHERE BOARD_VERIFY = 1
+	</select>
+	
+	<select id="getNoticeDataCountWithMap" resultType="int">
+		SELECT COUNT(*)
+		FROM BOARD JOIN MEMBER USING(MEMBER_CODE)
+		WHERE BOARD_VERIFY = 1
+		AND
+			<if test="how == 0">
+				BOARD_TITLE LIKE '%'||#{kwd}||'%' 
+			</if>
+			<if test="how == 1">
+				BOARD_CONTENT LIKE '%'||#{kwd}||'%' 
+			</if>
+			<if test="how == 2">
+				BOARD_TITLE LIKE '%'||#{kwd}||'%' OR BOARD_CONTENT LIKE '%'||#{kwd}||'%'
+			</if>
+			<if test="how == 3">
+				MEMBER_CODE LIKE '%'||#{kwd}||'%' 
+			</if>
+	</select>
+	
+	<select id="NoticeSearchList" parameterType="map" resultType="BOARD">
+		SELECT *
+		FROM BOARD JOIN MEMBER USING(MEMBER_CODE)
+		<where> 
+			<if test="how == 0">
+				BOARD_TITLE LIKE '%'||#{kwd}||'%' 
+			</if>
+			<if test="how == 1">
+				BOARD_CONTENT LIKE '%'||#{kwd}||'%' 
+			</if>
+			<if test="how == 2">
+				BOARD_TITLE LIKE '%'||#{kwd}||'%' OR BOARD_CONTENT LIKE '%'||#{kwd}||'%'
+			</if>
+			<if test="how == 3">
+				MEMBER_CODE LIKE '%'||#{kwd}||'%' 
+			</if>
+		</where>
+		ORDER BY BOARD_REGDATE DESC
+	</select>
+	
+	<insert id="fileUpload" parameterType="BOARD">
+		INSERT INTO BOARD
+		VALUES(BOARD_CODE_SEQ.NEXTVAL, #{MEMBER_CODE}, 1, #{BOARD_TITLE}, #{BOARD_CONTENT}, SYSDATE, #{COUNT_VIEW}, #{COUNT_REPLY}, #{FILE_ORIGINAL}, #{FILE_SERVER})
+	</insert>
+	
+	<select id="NoticeSelectOneFile" resultType="BOARD">
+		SELECT * 
+		FROM BOARD
+		WHERE BOARD_VERIFY = 1 AND BOARD_CODE = #{BOARD_CODE} AND FILE_SERVER = #{FILE_SERVER} AND BOARD_VERIFY = 1
+	</select>
+
+</mapper>

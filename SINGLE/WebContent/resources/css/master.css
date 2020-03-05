@@ -3,11 +3,21 @@
    margin: 0px;
 }
 
+body {
+	font-family: 'Noto Sans KR';
+}
+
 a {
-   text-decoration: none;
+   text-decoration: none !important;
+   cursor: pointer;
 }
 
 li {
    /* list-style: none; */
    
+}
+
+.container {
+	height: 100vh;
+	margin-top: 30px;
 }

@@ -19,19 +19,34 @@
 <!-- START :: CSS -->
 <style type="text/css">
 
-	#container {
-		height: 100%;
+	.col-sm-3 {
+		margin: 20px;
 	}
 	
-	#side-menu {
-		position: relative;
-		float: left;
-		border: 1px solid green;
+	.list-group a {
+		color: #263747;
 	}
 	
-	#mypage-detail {
-		position: relative;
-		margin-left: 150px;
+	.card-body {
+		padding: 40px;
+		padding-top: 20px;
+		padding-bottom: 20px;
+	}
+	
+	label.required::before {
+		content: '*';
+	    display: inline-block;
+	    vertical-align: top;
+	    font-weight: 700;
+	    -webkit-font-smoothing: antialiased;
+	    color: #F44336;
+	    margin: 0 0.125rem 0 0;
+	    font-size: 1.25rem;
+	    line-height: 1.25rem;
+	}
+	
+	.submit-btn {
+		margin-top: 30px;
 	}
 
 </style>
@@ -94,57 +109,61 @@
 </head>
 <body>
 
-	<h1>비밀번호</h1>
+	<div class="container">
+		<div class="row">
+		
+			<!-- 왼쪽 메뉴 바 -->
+			<div id="side-menu" class="col-sm-3">				
+				<ul class="list-group">
+					<li class="list-group-item list-group-item-action">
+						<a class="nav-link active" href="/SINGLE/member/profilepage.do">프로필 정보</a>
+			        </li>
+			        <li class="list-group-item list-group-item-action">
+			        	<a class="nav-link" href="/SINGLE/member/infopage.do">회원 정보</a>
+			        </li>
+			        <!-- 사이트로 가입한 회원일 때만 보여주기 -->
+					<c:if test="${not empty sessionLoginMember }">
+			        <li class="list-group-item list-group-item-action">
+			        	<a class="nav-link" href="/SINGLE/member/pwpage.do">비밀번호</a>
+			        </li>
+			        </c:if>
+			     </ul>
+			</div>
 	
-	<div id="container">
-		<div id="side-menu">
-			<div>
-				<a href="/SINGLE/member/profilepage.do">프로필 정보</a>
+			<!-- 콘텐츠 -->
+			<div id="mypage-detail" class="col-sm-8">
+				<p style="font-size: 25pt;"><strong>비밀번호</strong>
+				
+				<div class="card">
+					<div class="card-body">
+						<form action="/SINGLE/member/pwReset.do" method="post" id="resetForm">
+							<input type="hidden" name="MEMBER_CODE" value="${sessionLoginMember.MEMBER_CODE }">
+							
+							<div class="form-group">
+								<label class="required" for="ORIGINAL_PASSWORD">현재 비밀번호</label>
+								<input type="password" class="form-control" name="ORIGINAL_PASSWORD" id="ORIGINAL_PASSWORD" autocomplete="off" required="required">
+								<p style="color: #98A8B9; font-size: 9pt;">기존 비밀번호를 잊으셨나요? 
+								<a href="/SINGLE/member/pwResetpage.do" style="color: blue; font-size: 9pt;">비밀번호 재설정</a>
+							</div>
+							
+							<div class="form-group">
+								<label class="required" for="MEMBER_PASSWORD">새로운 비밀번호</label>
+								<input type="password" class="form-control" name="MEMBER_PASSWORD" id="MEMBER_PASSWORD" autocomplete="off" required="required">
+							</div>				
+							
+							<div class="form-group">
+								<label class="required" for="PW_CONFIRM">비밀번호 확인</label>
+								<input type="password" class="form-control" id="PW_CONFIRM" autocomplete="off" required="required">
+								<div class="check_font" id="pw_check"></div><!-- 경고문이 들어갈 공간 -->
+							</div>
+							
+							<div class="submit-btn form-group">
+								<input type="submit" class="btn btn-info btn-sm" id="SUBMIT" value="비밀번호 변경">
+							</div>
+						</form>
+					</div>
+				</div>
 			</div>
-			<div>
-				<a href="/SINGLE/member/infopage.do">회원 정보</a>
-			</div>
-			<!-- 사이트로 가입한 회원일 때만 보여주기 -->
-			<c:if test="${not empty sessionLoginMember }">
-				<div>
-					<a href="/SINGLE/member/pwpage.do">비밀번호</a>
-				</div>
-			</c:if>
-		</div>
-
-		<div id="mypage-detail">
-			<form action="/SINGLE/member/pwReset.do" method="post" id="resetForm">
-				<input type="hidden" name="MEMBER_CODE" value="${sessionLoginMember.MEMBER_CODE }">
-				<div>
-					<label for="ORIGINAL_PASSWORD">현재 비밀번호</label>
-				</div>
-				<div>
-					<input type="password" name="ORIGINAL_PASSWORD" id="ORIGINAL_PASSWORD" autocomplete="off" required="required">
-				</div>
-				<div>
-					<p style="color: gray; font-size: 9pt;">기존 비밀번호를 잊으셨나요?
-					<a href="/SINGLE/member/pwResetpage.do" style="color: blue; font-size: 8pt;">비밀번호 재설정</a>
-				</div>
-				
-				<div>
-					<label for="MEMBER_PASSWORD">새로운 비밀번호</label>
-				</div>
-				<div>
-					<input type="password" name="MEMBER_PASSWORD" id="MEMBER_PASSWORD" autocomplete="off" required="required">
-				</div>				
-				
-				<div>
-					<label for="PW_CONFIRM">비밀번호 확인</label>
-				</div>
-				<div>
-					<input type="password" id="PW_CONFIRM" autocomplete="off" required="required">
-				</div>
-				<div class="check_font" id="pw_check"></div><!-- 경고문이 들어갈 공간 -->
-				
-				<div>
-					<input type="submit" id="SUBMIT" value="비밀번호 변경">
-				</div>
-			</form>
 		</div>
 	</div>
 	

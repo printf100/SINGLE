@@ -13,6 +13,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Insert title here</title>
 
 <!-- START :: 잘못된 접근을 막기 위함 -->
@@ -22,106 +23,83 @@
 <!-- END :: 잘못된 접근을 막기 위함 -->
 
 <!-- START :: CSS -->
+<link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
 <link href="/SINGLE/resources/css/master.css" rel="stylesheet" type="text/css">
-	<style type="text/css">
-		
-		#header {
-			width: 100%;
-			position: fixed;
-			margin: 10px;
-			z-index: 10;
-		}
-		
-		footer {
-			background-color: plum;
-			width: 100%;
-			text-align: center;
-			line-height: 30px;
-		}
-		
-		a {
-			text-decoration: none;
-		}
-		
-		.logo {
-			display: block;
-		    margin-left: 50px;
-		    width: 28%;
-		    max-width: 142px;
-		}
-		
-		.menu-list {
-		    display: block;
-		    position: absolute;
-		    right: 100px;
-    		width: 50%;
-		}
-		
-		.menu-list li {
-			display: inline-block;
-			list-style: none;
-			width: 10%;
-		    margin-top: -60px;
-		    vertical-align: middle;
-		}
-		
-		.account-list {
-			display: block;
-		    position: absolute;
-		    text-align: right;
-		    right: 50px;
-    		width: 50%;
-		}
-		
-		.account-list li {
-			display: inline-block;
-			list-style: none;
-		    margin-top: -60px;
-		    vertical-align: middle;
-		    text-align: center;
-		    width: 5%;
-		}
-		
-		.dropdown-member-list {
-			position: absolute;
-			border: 1px solid gray;
-			border-radius: 5px;
-			margin-top: 3%;
-			right: 1%;
-			width: 300px;
-			z-index: 1;
-			background: white;
-		}
-		
-		.profile-img {
-			position: relative;
-			float: left;
-			width: 50px;
-			height: 50px;
-			border-radius: 30%;
-			overflow: hidden;
-		}
-		
-		#PROFILE_IMG {
-			width: 100%;
-			height: 100%;
-			object-fit: cover;
-		}
-		
-		.member-info {
-			position: relative;
-			margin-left: 50px;
-		}
-		
-		.member-account {
-			margin-top: 5px;
-		}
+<style type="text/css">
+
+	@import url('https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap');
 	
-	</style>
+	body {
+		font-family: 'Noto Sans KR';
+	}
+
+	.navbar a {
+		color: #000;
+		font-weight: 700;
+	}
+	
+	.navbar {
+		position: relative;
+		display: flex;
+		padding: 0.375rem 1rem;
+		height: 80px;
+		border-bottom: 1px solid lightgray;
+	}
+	
+	.navbar-collapse {
+		flex-grow: 1;
+		align-items: center;
+	}
+	
+	.nav-link {
+		padding: 0.25rem 1rem;
+	}
+	
+	.member-info {
+		display: flex;
+		margin-bottom: 0.25rem;
+		padding: 0.6875rem 1rem 1rem 1rem;
+		border-bottom: 0.0625rem solid #E9ECF3;
+		color: #263747;
+	}
+	
+	.rounded {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	
+	.profile-img {
+		width: 2.5rem;
+		height: 2.5rem;
+		border-radius: 0.25rem;
+	}
+		
+	.info-text {
+		margin-left: 1rem;
+		-webkit-font-smoothing: antialiased;
+	}
+	
+	.title-text {
+		font-weight: 700;
+	}
+	
+	.dropdown-item {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0.125rem 0.875rem;
+		color: #263747;
+		font-weight: 500;
+	}
+	
+</style>
 <!-- END :: CSS -->
 
 <!-- START :: JAVASCRIPT -->
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 <script type="text/javascript">
 
 	$(function() {
@@ -131,49 +109,134 @@
 		$(".dropdown-member").click(function() {
 			$(".dropdown-member-list").toggle(100);
 		});
+		
+		
+		/*
+		* 알림 (notification API)
+		*/
+		
+		// 브라우저 지원 여부 체크
+		if(!("Notification" in window)) {
+			alert("데스크탑 알림을 제공하지 않는 브라우저입니다.");
+		}
+		
+		// 데스크탑 알림 권한 요청
+		Notification.requestPermission(function (result) {
+			// 권한 거절
+			if(result == "denied") {
+				alert("알림을 차단하셨습니다.\n브라우저의 사이트 설정에서 변경하실 수 있습니다.");
+				return false;
+			}
+		});
+		
+		
+		/*
+		* 웹 소켓
+		*/
+		
+		var ws = new WebSocket("ws://localhost:8090/SINGLE/websocket_note");
+		
+		// 웹 소켓 연결이 해제됐을 때
+		ws.onclose = function(e) {
+			alert("웹소켓 연결 해제됨");
+		};
+		
+		// 웹 소켓 에러
+		ws.onerror = function(e) {
+			alert("웹소켓 에러");
+		};
+		
+		// 쪽지가 온 경우
+		ws.onmessage = function(e) {
+			notify(e.data);
+		};
+		
 	});
+	
+	// 알림 띄우기
+	function notify(msg) {
+		var options = {
+				body: "쪽지가 왔습니다.\n" + msg
+		}
+		
+		var notification = new Notification("SINGLE", options);
+		
+		notification.onclick = function() {
+			///////////////////////////////////////////////////링크맞아?
+			window.open("/SINGLE/note/noteInList.do");
+		}
+		
+		// 3초 뒤 알림 닫기
+		setTimeout(function() {
+			notification.close();
+		}, 3000);
+	}
 
 </script>
 <!-- END :: JAVASCRIPT -->
 
 </head>
-<body>
+<body style="font-family: 'Noto Sans KR';">
 
-	<div id="header">
-		<div class="logo">
-			<a href="/SINGLE/main/mainpage.do">SINGLE</a>
-		</div>
+	<nav id="header" class="navbar navbar-expand-md fixed-top">
+		<a class="navbar-brand" href="/SINGLE/main/mainpage.do">SINGLE</a>
 		
 		<c:choose>
 			<c:when test="${not empty sessionLoginMember || not empty sessionLoginKakao || not empty sessionLoginNaver }">
-				<div class="dropdown">
-					<ul class="menu-list">
-						<li>
-							<a href="#">MAP</a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="collapsibleNavbar">
+					<ul class="nav navbar-nav">
+						<li class="nav-item">
+							<a class="nav-link" href="/SINGLE/board/noticepage.do">NOTICE</a>
 						</li>
-						<li>
-							<a href="/SINGLE/chat/chatpage.do">CHATTING</a>
+						<li class="nav-item">
+							<a class="nav-link" href="/SINGLE/map/map.do">MAP</a>
 						</li>
-						<li>
-							<a href="/SINGLE/board/noticepage.do">BOARD</a>
+						<li class="nav-item">
+							<a class="nav-link" href="/SINGLE/life/lifepage.do">LIFE</a>
 						</li>
-						<li>
-							<a href="/SINGLE/life/lifeSelect.do">LIFE</a>
+						<li class="nav-item">
+							<a class="nav-link" href="/SINGLE/board/resaleMainList.do">MARKET</a>
 						</li>
-						<li>
-							<a href="/SINGLE/festival/festivalpage.do">FESTIVAL</a>
+						<li class="nav-item">
+							<a class="nav-link" href="/SINGLE/festival/festivalpage.do">FESTIVAL</a>
 						</li>
 					</ul>
 					
-					<ul class="account-list">
-						<li>
-							<a class="dropdown-notification">알림</a>
+					<ul class="nav navbar-nav ml-auto">
+						
+						<!-- 채팅 -->
+						<li class="nav-item">
+							<a class="nav-link" href="/SINGLE/chat/chatpage.do">채팅</a>
 						</li>
-						<li>
-							<a class="dropdown-member">계정</a>
+						
+						<!-- 쪽지 -->
+						<li class="nav-item">
+							<a class="nav-link" href="/SINGLE/note/noteInList.do">쪽지</a>
+						</li>
+						
+						<!-- 계정관련 드롭다운 메뉴 -->
+						<li class="nav-item display-lg-up dropdown">
+							<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">계정</a>
+							<div class="dropdown-menu dropdown-menu-right">
+								<div class="member-info">
+									<div class="profile-img">
+										<img class="rounded" alt="${profile.MEMBER_NICKNAME }" src="../resources/images/profileimg/${profile.MPROFILE_IMG_SERVERNAME }">
+									</div>
+									<div class="info-text">
+										<h6 class="title-text">${profile.MEMBER_NICKNAME }</h6>
+										<h6 class="title-text">${profile.MEMBER_EMAIL }</h6>
+									</div>
+								</div>
+								<a class="dropdown-item" href="/SINGLE/member/profilepage.do">MYPAGE</a>
+								<a class="dropdown-item" href="/SINGLE/member/logout.do">로그아웃</a>
+							</div>
 						</li>
 					</ul>
 				</div>
+			
 			</c:when>
 			<c:otherwise>
 				<span>
@@ -182,27 +245,7 @@
 				</span>
 			</c:otherwise>
 		</c:choose>
-	</div>
-	
-	<!-- 계정관련 드롭다운 메뉴 -->
-	<div class="dropdown-member-list">
-		<div class="profile-img">
-			<img id="PROFILE_IMG" alt="프로필 사진" src="../resources/images/profileimg/${profile.MPROFILE_IMG_SERVERNAME }">
-		</div>
-		<div class="member-info">
-			<h3>${profile.MEMBER_NICKNAME }</h3>
-			<h4>${profile.MEMBER_EMAIL }</h4>
-		</div>
-		<hr>
-		<div class="member-account">
-			<div>
-				<a href="/SINGLE/member/profilepage.do">MYPAGE</a>
-			</div>
-			<div>
-				<a href="/SINGLE/member/logout.do">로그아웃</a>
-			</div>
-		</div>
-	</div>
+	</nav>
 
 </body>
 </html>

@@ -5,10 +5,6 @@
 <% response.setContentType("text/html; charset=UTF-8"); %>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
-<!-- START :: include header -->
-<%@include file="/views/form/header.jsp" %>
-<!-- END :: include header -->
     
 <!DOCTYPE html>
 <html>
@@ -17,21 +13,35 @@
 <title>Insert title here</title>
 
 <!-- START :: CSS -->
+<link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+<link href="/SINGLE/resources/css/master.css" rel="stylesheet" type="text/css">
 <style type="text/css">
-
-	#container {
-		height: 100%;
+	
+	.container {
+		height: auto;
+		min-width: 300px;
+		max-width: 520px;
+		padding: 50px;
+		margin-top: 180px;
+		border: 10px solid #46b8da;
+		border-radius: 5px;
 	}
 	
-	#side-menu {
-		position: relative;
-		float: left;
-		border: 1px solid green;
+	.emailForm {
+		margin-top: 50px;
 	}
 	
-	#mypage-detail {
-		position: relative;
-		margin-left: 150px;
+	label.required::before {
+		content: '*';
+	    display: inline-block;
+	    vertical-align: top;
+	    font-weight: 700;
+	    -webkit-font-smoothing: antialiased;
+	    color: #F44336;
+	    margin: 0 0.125rem 0 0;
+	    font-size: 1.25rem;
+	    line-height: 1.25rem;
 	}
 
 </style>
@@ -73,36 +83,24 @@
 </head>
 <body>
 	
-	<div id="container">
-
-		<h1>비밀번호 찾기</h1>
+	<div class="container">
+		<h3><strong>비밀번호 찾기</strong></h3>
+		<h6 style="color: #98A8B9;">	비밀번호를 재설정 할 이메일을 입력하세요. 자세한 안내가 담긴 메일을 보내드리겠습니다.</h6>
 		
-		<h4 style="color: gray;">
-			비밀번호를 재설정 할 이메일을 입력하세요. 자세한 안내가 담긴 메일을 보내드리겠습니다.
-		</h4>
-		
-		<div>
-			<form action="/SINGLE/member/pwResetEmail.do" method="post">
-				<input type="hidden" name="MEMBER_NAME" value="${sessionLoginMember.MEMBER_NAME }">
-				
-				<div>
-					<label for="CONFIRM_EMAIL">비밀번호를 재설정 할 이메일</label>
-				</div>
-				<div>
-					<input type="text" id="CONFIRM_EMAIL" name="CONFIRM_EMAIL" placeholder="example@example.com" autofocus autocomplete="off" required="required" />
-				</div>
+		<form action="/SINGLE/member/pwResetEmail.do" method="post" class="emailForm">
+			<input type="hidden" name="MEMBER_NAME" value="${sessionLoginMember.MEMBER_NAME }">
+					
+			<div class="form-group">
+				<label class="required" for="CONFIRM_EMAIL">비밀번호를 재설정 할 이메일</label>
+				<input type="text" class="form-control" id="CONFIRM_EMAIL" name="CONFIRM_EMAIL" placeholder="example@example.com" autofocus autocomplete="off" required="required" />
 				<div class="check_font" id="email_check"></div><!-- 경고문이 들어갈 공간 -->
-				<div>
-			    	<input type="submit" value="비밀번호 재설정 메일 보내기" >
-				</div>
-			</form>
-		</div>
+			</div>
+					
+			<div class="submit-btn form-group">
+		    	<input type="submit" class="btn btn-info btn-block" value="비밀번호 재설정 메일 보내기" >
+			</div>
+		</form>
 	</div>
-
-
-<!-- START :: include footer -->
-<%@include file="/views/form/footer.jsp" %>
-<!-- END :: include footer -->
 
 </body>
 </html>

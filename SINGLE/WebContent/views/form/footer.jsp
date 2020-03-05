@@ -12,7 +12,9 @@
 </head>
 <body>
 
-	<footer>KH정보교육원 &copy; all rights reserved...</footer>
+	<div class="jumbotron text-center main" style="margin-bottom:0">
+		<p>KH정보교육원 &copy; all rights reserved...</p>
+	</div>
 
 </body>
 </html>

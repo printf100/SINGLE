@@ -14,17 +14,17 @@ public class LifeDAOImpl extends SqlMapConfig implements LifeDAO {
 
 	@Override
 	public int reservWash(WashDTO info) {
-		
+
 		SqlSession session = getSqlSessionFactory().openSession(false);
 
 		int res = session.insert(namespace + ".reservWash", info);
-		
+
 		if (res > 0) {
 			session.commit();
 		}
-		
+
 		session.close();
-		
+
 		return res;
 	}
 
@@ -33,13 +33,13 @@ public class LifeDAOImpl extends SqlMapConfig implements LifeDAO {
 		SqlSession session = getSqlSessionFactory().openSession(false);
 
 		int res = session.delete(namespace + ".reservCancel", WASH_CODE);
-		
+
 		if (res > 0) {
 			session.commit();
 		}
-		
+
 		session.close();
-		
+
 		return res;
 	}
 
@@ -47,12 +47,10 @@ public class LifeDAOImpl extends SqlMapConfig implements LifeDAO {
 	public WashDTO getWashCode(int MEMBER_CODE) {
 		SqlSession session = getSqlSessionFactory().openSession(false);
 
-		WashDTO dto= session.selectOne(namespace + ".getWashCode", MEMBER_CODE);
-		
-		
-		
+		WashDTO dto = session.selectOne(namespace + ".getWashCode", MEMBER_CODE);
+
 		session.close();
-		
+
 		return dto;
 	}
 
@@ -61,10 +59,9 @@ public class LifeDAOImpl extends SqlMapConfig implements LifeDAO {
 		SqlSession session = getSqlSessionFactory().openSession(false);
 
 		List<WashDTO> washList = session.selectList(namespace + ".getReservList", MEMBER_CODE);
-		
-		
+
 		session.close();
-		
+
 		return washList;
 	}
 
@@ -72,12 +69,12 @@ public class LifeDAOImpl extends SqlMapConfig implements LifeDAO {
 	public WashDTO getWashInfo(int WASH_CODE) {
 		SqlSession session = getSqlSessionFactory().openSession(false);
 
-		WashDTO dto= session.selectOne(namespace + ".getWashInfo", WASH_CODE);
-		
+		WashDTO dto = session.selectOne(namespace + ".getWashInfo", WASH_CODE);
+
 		session.close();
-		
+
 		return dto;
-		
+
 	}
 
 	@Override
@@ -85,35 +82,29 @@ public class LifeDAOImpl extends SqlMapConfig implements LifeDAO {
 		SqlSession session = getSqlSessionFactory().openSession(false);
 
 		int res = session.update(namespace + ".updateWash", washdto);
-		
+
 		if (res > 0) {
 			session.commit();
 		}
-		
+
 		session.close();
-		
+
 		return res;
 	}
 
-	
-	
-	
-	
-	
-	
 	@Override
 	public int reservClean(CleanDTO info) {
-		
+
 		SqlSession session = getSqlSessionFactory().openSession(false);
 
 		int res = session.insert(namespace + ".reservClean", info);
-		
+
 		if (res > 0) {
 			session.commit();
 		}
-		
+
 		session.close();
-		
+
 		return res;
 	}
 
@@ -122,13 +113,13 @@ public class LifeDAOImpl extends SqlMapConfig implements LifeDAO {
 		SqlSession session = getSqlSessionFactory().openSession(false);
 
 		int res = session.delete(namespace + ".reservCancelClean", CLEAN_CODE);
-		
+
 		if (res > 0) {
 			session.commit();
 		}
-		
+
 		session.close();
-		
+
 		return res;
 	}
 
@@ -136,12 +127,10 @@ public class LifeDAOImpl extends SqlMapConfig implements LifeDAO {
 	public CleanDTO getCleanCode(int MEMBER_CODE) {
 		SqlSession session = getSqlSessionFactory().openSession(false);
 
-		CleanDTO dto= session.selectOne(namespace + ".getCleanCode", MEMBER_CODE);
-		
-		
-		
+		CleanDTO dto = session.selectOne(namespace + ".getCleanCode", MEMBER_CODE);
+
 		session.close();
-		
+
 		return dto;
 	}
 
@@ -150,10 +139,9 @@ public class LifeDAOImpl extends SqlMapConfig implements LifeDAO {
 		SqlSession session = getSqlSessionFactory().openSession(false);
 
 		List<CleanDTO> cleanList = session.selectList(namespace + ".getReservListClean", MEMBER_CODE);
-		
-		
+
 		session.close();
-		
+
 		return cleanList;
 	}
 
@@ -161,12 +149,12 @@ public class LifeDAOImpl extends SqlMapConfig implements LifeDAO {
 	public CleanDTO getCleanInfo(int Clean_CODE) {
 		SqlSession session = getSqlSessionFactory().openSession(false);
 
-		CleanDTO dto= session.selectOne(namespace + ".getCleanInfo", Clean_CODE);
-		
+		CleanDTO dto = session.selectOne(namespace + ".getCleanInfo", Clean_CODE);
+
 		session.close();
-		
+
 		return dto;
-		
+
 	}
 
 	@Override
@@ -174,16 +162,14 @@ public class LifeDAOImpl extends SqlMapConfig implements LifeDAO {
 		SqlSession session = getSqlSessionFactory().openSession(false);
 
 		int res = session.update(namespace + ".updateClean", cleandto);
-		
+
 		if (res > 0) {
 			session.commit();
 		}
-		
+
 		session.close();
-		
+
 		return res;
 	}
 
-	
-	
 }

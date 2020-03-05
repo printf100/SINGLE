@@ -3,6 +3,7 @@ package com.single.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.google.gson.Gson;
@@ -19,7 +21,6 @@ import com.single.model.biz.chat.ChatBiz;
 import com.single.model.biz.chat.ChatBizImpl;
 import com.single.model.biz.member.MemberBiz;
 import com.single.model.biz.member.MemberBizImpl;
-import com.single.model.dto.chat.ChatDTO;
 import com.single.model.dto.chat.ChatMessageDTO;
 import com.single.model.dto.chat.ChatRoomDTO;
 import com.single.model.dto.chat.MyChatroomListDTO;
@@ -27,6 +28,7 @@ import com.single.model.dto.member.KakaoMemberDTO;
 import com.single.model.dto.member.MemberDTO;
 import com.single.model.dto.member.MemberProfileDTO;
 import com.single.model.dto.member.NaverMemberDTO;
+import com.single.util.string.Format;
 
 /*
  * Chat Controller
@@ -36,14 +38,22 @@ import com.single.model.dto.member.NaverMemberDTO;
 		name = "chat", //
 		urlPatterns = { //
 				"chatpage.do", // chat.jsp로 이동
+				"getNChatList.do", // 모든 다대다 채팅방 리스트 가져오기
 				"findMember.do", // 회원 찾기
+				"searchNChatRoom.do", // 다대다 채팅방 검색하기
 				"getMyOnetoOneChatList.do", // 내가 참여한 일대일 채팅방 리스트 가져오기
-				"getMyNtoNChatList.do", // 내가 참여한 대다대 채팅방 리스트 가져오기
-				"oneChatRoompage.do", // 일대일 채팅방 생성
-				"getchatMember.do", // 채팅방에 참에하는 회원의 프로필 가져오기
+				"getMyNtoNChatList.do", // 내가 참여한 다대다 채팅방 리스트 가져오기
+				"oneChatRoompage.do", // 일대일 채팅방 생성하기
+				"getOneChatMember.do", // 일대일 채팅방에 참여하는 회원의 프로필 가져오기
 				"getMessageList.do", // 채팅방에 기존 메세지 뿌려주기
 				"sendMessage.do", // 메세지 전송 처리
-				"goChatRoom.do", // 채팅방 들어가기
+				"createNChatRoom.do", // 다대다 채팅방 생성하기
+				"getNChatMember.do", // 다대다 채팅방에 참여하는 회원들 프로필 가져오기
+				"nChatChk.do", // 전체 리스트에서 내가 참여한 다대다 채팅방인지 아닌지 확인하기
+				"nChatRoompage.do", // 다대다 채팅방 참여하기
+				"updateOutDate.do", // 채팅방 나간 순간 mylist OUTDATE 수정
+				"goOutNRoom.do", // 다대다 채팅방 나가기
+				"updateRoomTitle.do", // 채팅방 제목 수정하기 (방장만)
 		})
 public class ChatController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -65,8 +75,16 @@ public class ChatController extends HttpServlet {
 			chatpage(request, response);
 		}
 
+		else if (command.endsWith("/getNChatList.do")) {
+			getNChatList(request, response);
+		}
+
 		else if (command.endsWith("/findMember.do")) {
 			doFindMember(request, response);
+		}
+
+		else if (command.endsWith("/searchNChatRoom.do")) {
+			doSearchNtoNChatRoom(request, response);
 		}
 
 		else if (command.endsWith("/getMyOnetoOneChatList.do")) {
@@ -81,8 +99,8 @@ public class ChatController extends HttpServlet {
 			createOneChatRoom(request, response);
 		}
 
-		else if (command.endsWith("/getchatMember.do")) {
-			getChatMember(request, response);
+		else if (command.endsWith("/getOneChatMember.do")) {
+			getOneChatMember(request, response);
 		}
 
 		else if (command.endsWith("/getMessageList.do")) {
@@ -92,9 +110,33 @@ public class ChatController extends HttpServlet {
 		else if (command.endsWith("/sendMessage.do")) {
 			doSendMessage(request, response);
 		}
-		
-		else if (command.endsWith("/goChatRoom.do")) {
-			chatRoompage(request, response);
+
+		else if (command.endsWith("/createNChatRoom.do")) {
+			createNChatRoom(request, response);
+		}
+
+		else if (command.endsWith("/getNChatMember.do")) {
+			getNChatMember(request, response);
+		}
+
+		else if (command.endsWith("/nChatChk.do")) {
+			doNChatChk(request, response);
+		}
+
+		else if (command.endsWith("/nChatRoompage.do")) {
+			nChatRoompage(request, response);
+		}
+
+		else if (command.endsWith("/updateOutDate.do")) {
+			doUpdateOutDate(request, response);
+		}
+
+		else if (command.endsWith("/goOutNRoom.do")) {
+			doGoOutNRoom(request, response);
+		}
+
+		else if (command.endsWith("/updateRoomTitle.do")) {
+			doUpdateRoomTitle(request, response);
 		}
 
 	}
@@ -124,6 +166,7 @@ public class ChatController extends HttpServlet {
 		}
 
 		MemberProfileDTO member_profile = mBiz.selectMemberProfile(MEMBER_CODE);
+		member_profile.setMEMBER_PASSWORD("");
 		System.out.println(member_profile);
 
 		request.setAttribute("profile", member_profile);
@@ -131,25 +174,88 @@ public class ChatController extends HttpServlet {
 		dispatch("/views/chat/chat.jsp", request, response);
 	}
 
+	// 존재하는 모든 다대다 채팅방 리스트 가져오기
+	private void getNChatList(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+		List<ChatRoomDTO> nRoomList = biz.selectNtoNChatList();
+		System.out.println(nRoomList);
+
+		for (int i = 0; i < nRoomList.size(); i++) {
+			System.out.println("nRoomList[" + i + "] = " + nRoomList.get(i).getCHATROOM_CODE());
+		}
+
+		Gson gson = new Gson();
+		String jsonList = gson.toJson(nRoomList);
+		PrintWriter out = response.getWriter();
+		out.println(jsonList);
+	}
+
 	// 이메일로 회원 찾기
 	private void doFindMember(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-		String MEMBER_EMAIL = request.getParameter("MEMBER_EMAIL");
-		System.out.println("찾을 회원의 이메일 : " + MEMBER_EMAIL);
-		MemberProfileDTO find_member = biz.findMember(MEMBER_EMAIL);
-		System.out.println(find_member);
+		int MY_MEMBER_CODE = Integer.parseInt(request.getParameter("MEMBER_CODE"));
+		String MEMBER_ACCOUNT = request.getParameter("MEMBER_ACCOUNT");
+
+		List<MemberProfileDTO> memberList = biz.findMember(MY_MEMBER_CODE, MEMBER_ACCOUNT);
+		System.out.println(memberList);
 
 		int res = 0;
-		JSONObject obj = new JSONObject();
-
-		if (find_member != null) {
+		if (memberList != null) {
 			res = 1;
-			obj.put("profileimg", find_member.getMPROFILE_IMG_SERVERNAME());
-			obj.put("nickname", find_member.getMEMBER_NICKNAME());
-			obj.put("introduce", find_member.getMPROFILE_INTRODUCE());
-			obj.put("TO_MEMBER_CODE", find_member.getMEMBER_CODE());
 		}
 
+		JSONArray jArray = new JSONArray();
+		for (int i = 0; i < memberList.size(); i++) {
+			JSONObject list = new JSONObject();
+
+			list.put("profileimg", memberList.get(i).getMPROFILE_IMG_SERVERNAME());
+			list.put("nickname", memberList.get(i).getMEMBER_NICKNAME());
+			list.put("email", memberList.get(i).getMEMBER_EMAIL());
+			list.put("introduce", memberList.get(i).getMPROFILE_INTRODUCE());
+			list.put("TO_MEMBER_CODE", memberList.get(i).getMEMBER_CODE());
+
+			jArray.add(list);
+		}
+
+		System.out.println(jArray.toString());
+
+		JSONObject obj = new JSONObject();
+		obj.put("jArray", jArray);
+		obj.put("result", res);
+
+		PrintWriter out = response.getWriter();
+		out.println(obj);
+	}
+
+	// 제목으로 다대다 채팅방 검색하기
+	private void doSearchNtoNChatRoom(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+		String SEARCH_CHATROOM_TITLE = request.getParameter("SEARCH_CHATROOM_TITLE");
+
+		List<ChatRoomDTO> chatList = biz.searchNtoNChatRoom(SEARCH_CHATROOM_TITLE);
+		System.out.println(chatList);
+
+		int res = 0;
+		if (chatList != null) {
+			res = 1;
+		}
+
+		JSONArray jArray = new JSONArray();
+		for (int i = 0; i < chatList.size(); i++) {
+			JSONObject list = new JSONObject();
+
+			list.put("CHATROOM_CODE", chatList.get(i).getCHATROOM_CODE());
+			list.put("CHATROOM_TITLE", chatList.get(i).getCHATROOM_TITLE());
+			list.put("CHATROOM_MEMBER_COUNT", chatList.get(i).getCHATROOM_MEMBER_COUNT());
+			list.put("CHATROOM_CHIEF_CODE", chatList.get(i).getCHATROOM_CHIEF_CODE());
+
+			jArray.add(list);
+		}
+
+		System.out.println(jArray.toString());
+
+		JSONObject obj = new JSONObject();
+		obj.put("jArray", jArray);
 		obj.put("result", res);
 
 		PrintWriter out = response.getWriter();
@@ -161,17 +267,31 @@ public class ChatController extends HttpServlet {
 
 		int MY_MEMBER_CODE = Integer.parseInt(request.getParameter("MY_MEMBER_CODE"));
 
-		List<ChatRoomDTO> myChatList = biz.selectOnetoOneChatList(MY_MEMBER_CODE);
-		System.out.println(myChatList);
+		Map<String, Object> myChatList = biz.selectOnetoOneChatList(MY_MEMBER_CODE);
+		System.out.println(myChatList.get("chatList") + " : " + myChatList.get("unreadList"));
 
-		for (int i = 0; i < myChatList.size(); i++) {
-			System.out.println("myChatList[" + i + "] = " + myChatList.get(i).getMEMBER_NICKNAME());
+		List<ChatRoomDTO> chatList = (List<ChatRoomDTO>) myChatList.get("chatList");
+		List<Integer> unreadList = (List<Integer>) myChatList.get("unreadList");
+
+		JSONArray jArray = new JSONArray();
+		for (int i = 0; i < chatList.size(); i++) {
+			JSONObject list = new JSONObject();
+
+			list.put("CHATROOM_CODE", chatList.get(i).getCHATROOM_CODE());
+			list.put("MEMBER_CODE", chatList.get(i).getMEMBER_CODE());
+			list.put("MEMBER_NICKNAME", chatList.get(i).getMEMBER_NICKNAME());
+			list.put("UNREAD", unreadList.get(i));
+
+			jArray.add(list);
 		}
 
-		Gson gson = new Gson();
-		String jsonList = gson.toJson(myChatList);
+		System.out.println(jArray.toString());
+
+		JSONObject obj = new JSONObject();
+		obj.put("list", jArray);
+
 		PrintWriter out = response.getWriter();
-		out.println(jsonList);
+		out.println(obj);
 	}
 
 	// 내가 참여한 대다대 채팅방 리스트 가져오기
@@ -179,17 +299,32 @@ public class ChatController extends HttpServlet {
 
 		int MY_MEMBER_CODE = Integer.parseInt(request.getParameter("MY_MEMBER_CODE"));
 
-		List<ChatRoomDTO> myChatList = biz.selectNtoNChatList(MY_MEMBER_CODE);
-		System.out.println(myChatList);
+		Map<String, Object> myChatList = biz.selectNtoNChatList(MY_MEMBER_CODE);
+		System.out.println(myChatList.get("chatList") + " : " + myChatList.get("unreadList"));
 
-		for (int i = 0; i < myChatList.size(); i++) {
-			System.out.println("myChatList[" + i + "]" + myChatList.get(i).getCHATROOM_CODE());
+		List<ChatRoomDTO> chatList = (List<ChatRoomDTO>) myChatList.get("chatList");
+		List<Integer> unreadList = (List<Integer>) myChatList.get("unreadList");
+
+		JSONArray jArray = new JSONArray();
+		for (int i = 0; i < chatList.size(); i++) {
+			JSONObject list = new JSONObject();
+
+			list.put("CHATROOM_CODE", chatList.get(i).getCHATROOM_CODE());
+			list.put("CHATROOM_TITLE", chatList.get(i).getCHATROOM_TITLE());
+			list.put("CHATROOM_MEMBER_COUNT", chatList.get(i).getCHATROOM_MEMBER_COUNT());
+			list.put("UNREAD", unreadList.get(i));
+			list.put("CHATROOM_CHIEF_CODE", chatList.get(i).getCHATROOM_CHIEF_CODE());
+
+			jArray.add(list);
 		}
 
-		Gson gson = new Gson();
-		String jsonList = gson.toJson(myChatList);
+		System.out.println(jArray.toString());
+
+		JSONObject obj = new JSONObject();
+		obj.put("list", jArray);
+
 		PrintWriter out = response.getWriter();
-		out.println(jsonList);
+		out.println(obj);
 	}
 
 	// 일대일 채팅방 생성
@@ -224,30 +359,21 @@ public class ChatController extends HttpServlet {
 		out.println(obj);
 	}
 
-	// 채팅방에 참에하는 회원의 프로필 가져오기
-	private void getChatMember(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	// 일대일 채팅방에 참여하는 상대방 프로필 가져오기
+	private void getOneChatMember(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-		int MY_MEMBER_CODE = Integer.parseInt(request.getParameter("MY_MEMBER_CODE"));
 		int TO_MEMBER_CODE = Integer.parseInt(request.getParameter("TO_MEMBER_CODE"));
-		System.out.println("FROM " + MY_MEMBER_CODE + " TO " + TO_MEMBER_CODE);
 
-		MemberProfileDTO my_member = mBiz.selectMemberProfile(MY_MEMBER_CODE);
-		my_member.setMEMBER_PASSWORD("");
 		MemberProfileDTO to_member = mBiz.selectMemberProfile(TO_MEMBER_CODE);
 		to_member.setMEMBER_PASSWORD("");
-
-		System.out.println(my_member);
 		System.out.println(to_member);
 
 		int res = 0;
 		JSONObject obj = new JSONObject();
 
-		if (my_member != null && to_member != null) {
+		if (to_member != null) {
 			res = 1;
-			// 보내는 사람 정보
-			obj.put("my_img", my_member.getMPROFILE_IMG_SERVERNAME());
-			obj.put("my_nickname", my_member.getMEMBER_NICKNAME());
-			// 받는 사람 정보
+			// 상대방 정보
 			obj.put("to_img", to_member.getMPROFILE_IMG_SERVERNAME());
 			obj.put("to_nickname", to_member.getMEMBER_NICKNAME());
 		}
@@ -262,19 +388,40 @@ public class ChatController extends HttpServlet {
 	private void getMessageList(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 		int CHATROOM_CODE = Integer.parseInt(request.getParameter("CHATROOM_CODE"));
+		int MEMBER_CODE = Integer.parseInt(request.getParameter("MEMBER_CODE"));
+		int startNo = Integer.parseInt(request.getParameter("startNo"));
 		System.out.println("채팅방 번호 : " + CHATROOM_CODE);
 
-		List<ChatMessageDTO> msgList = biz.selectChatMessageList(CHATROOM_CODE);
-		System.out.println(msgList);
+		List<ChatMessageDTO> msgList = biz.selectChatMessageList(CHATROOM_CODE, MEMBER_CODE, startNo);
 
+		String time = null;
+
+		JSONArray jArray = new JSONArray();
 		for (int i = 0; i < msgList.size(); i++) {
-			System.out.println("msgList[" + i + "]" + msgList.get(i).getCHATMESSAGE_CONTENT());
+			time = Format.isTwo(Integer.toString(msgList.get(i).getCHATMESSAGE_SENDDATE().getHours())) + ":"
+					+ Format.isTwo(Integer.toString(msgList.get(i).getCHATMESSAGE_SENDDATE().getMinutes()));
+
+			JSONObject in = new JSONObject();
+
+			in.put("CHATROOM_CODE", msgList.get(i).getCHATROOM_CODE());
+			in.put("CHATMESSAGE_CODE", msgList.get(i).getCHATMESSAGE_CODE());
+			in.put("CHATMESSAGE_CONTENT", msgList.get(i).getCHATMESSAGE_CONTENT());
+			in.put("CHATMESSAGE_FROM", msgList.get(i).getCHATMESSAGE_FROM());
+			in.put("MEMBER_NICKNAME", msgList.get(i).getMEMBER_NICKNAME());
+			in.put("MEMBER_IMG", msgList.get(i).getMPROFILE_IMG_SERVERNAME());
+
+			in.put("TIME", time);
+
+			jArray.add(in);
 		}
 
-		Gson gson = new Gson();
-		String jsonList = gson.toJson(msgList);
+		System.out.println(jArray.toString());
+
+		JSONObject obj = new JSONObject();
+		obj.put("item", jArray);
+
 		PrintWriter out = response.getWriter();
-		out.println(jsonList);
+		out.println(obj);
 	}
 
 	// 메세지 전송 처리
@@ -298,17 +445,169 @@ public class ChatController extends HttpServlet {
 		}
 
 		obj.put("result", res);
+		System.out.println("보냄 " + CHAT_CONTENT + " " + res);
 
 		PrintWriter out = response.getWriter();
 		out.println(obj);
 	}
 
-	// 채팅방리스트에서 채팅방으로 이동
-	private void chatRoompage(HttpServletRequest request, HttpServletResponse response) {
-		
-		int CHATROOM_CODE = Integer.parseInt(request.getParameter("CHATROOM_CODE"));
+	// 다대다 채팅방 생성하기
+	private void createNChatRoom(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+		int CHATROOM_CHIEF_CODE = Integer.parseInt(request.getParameter("CHATROOM_CHIEF_CODE"));
+		String CHATROOM_TITLE = request.getParameter("CHATROOM_TITLE");
+
+		ChatRoomDTO nRoom = new ChatRoomDTO();
+		nRoom.setCHATROOM_CHIEF_CODE(CHATROOM_CHIEF_CODE);
+		nRoom.setCHATROOM_TITLE(CHATROOM_TITLE);
+
+		int res = 0;
+		int CHATROOM_CODE = biz.createNtoNRoom(nRoom);
+		JSONObject obj = new JSONObject();
+
+		if (CHATROOM_CODE > 0) {
+			res = 1;
+			obj.put("CHATROOM_CODE", CHATROOM_CODE);
+		}
+
+		obj.put("result", res);
+
+		PrintWriter out = response.getWriter();
+		out.println(obj);
 	}
-	
+
+	// 다대다 채팅방에 참여하는 회원들 프로필 가져오기
+	private void getNChatMember(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+		int CHATROOM_CODE = Integer.parseInt(request.getParameter("CHATROOM_CODE"));
+		int MEMBER_CODE = Integer.parseInt(request.getParameter("MEMBER_CODE"));
+
+		ChatRoomDTO nRoom = new ChatRoomDTO();
+		nRoom.setCHATROOM_CODE(CHATROOM_CODE);
+		nRoom.setMEMBER_CODE(MEMBER_CODE);
+
+		List<MemberProfileDTO> mList = biz.selectNChatMember(nRoom);
+
+		JSONArray jArray = new JSONArray();
+		for (int i = 0; i < mList.size(); i++) {
+			JSONObject list = new JSONObject();
+
+			list.put("MEMBER_CODE", mList.get(i).getMEMBER_CODE());
+			list.put("MEMBER_IMG", mList.get(i).getMPROFILE_IMG_SERVERNAME());
+			list.put("MEMBER_NICKNAME", mList.get(i).getMEMBER_NICKNAME());
+
+			jArray.add(list);
+		}
+
+		System.out.println(jArray.toString());
+
+		JSONObject obj = new JSONObject();
+		obj.put("list", jArray);
+
+		PrintWriter out = response.getWriter();
+		out.println(obj);
+	}
+
+	// 내가 참여한 다대다 채팅방인지 아닌지 확인
+	private void doNChatChk(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+		int MEMBER_CODE = Integer.parseInt(request.getParameter("MEMBER_CODE"));
+		int CHATROOM_CODE = Integer.parseInt(request.getParameter("CHATROOM_CODE"));
+
+		ChatRoomDTO nChk = new ChatRoomDTO();
+		nChk.setMEMBER_CODE(MEMBER_CODE);
+		nChk.setCHATROOM_CODE(CHATROOM_CODE);
+
+		int res = biz.countNChatChk(nChk);
+
+		JSONObject obj = new JSONObject();
+		obj.put("result", res);
+
+		PrintWriter out = response.getWriter();
+		out.println(obj);
+	}
+
+	// 다대다 채팅방 참여하기
+	private void nChatRoompage(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+		int CHATROOM_CODE = Integer.parseInt(request.getParameter("CHATROOM_CODE"));
+		int MEMBER_CODE = Integer.parseInt(request.getParameter("MEMBER_CODE"));
+
+		MyChatroomListDTO mylist = new MyChatroomListDTO();
+		mylist.setCHATROOM_CODE(CHATROOM_CODE);
+		mylist.setMEMBER_CODE(MEMBER_CODE);
+
+		int res = biz.gointoRoom(mylist);
+
+		if (res > 0) {
+			biz.increaseMemberCount(CHATROOM_CODE);
+		}
+
+		JSONObject obj = new JSONObject();
+		obj.put("result", res);
+
+		PrintWriter out = response.getWriter();
+		out.println(obj);
+	}
+
+	// 채팅방 나간 순간 mylist OUTDATE 수정하기
+	private void doUpdateOutDate(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+		int CHATROOM_CODE = Integer.parseInt(request.getParameter("CHATROOM_CODE"));
+		int MEMBER_CODE = Integer.parseInt(request.getParameter("MEMBER_CODE"));
+
+		ChatRoomDTO update = new ChatRoomDTO();
+		update.setCHATROOM_CODE(CHATROOM_CODE);
+		update.setMEMBER_CODE(MEMBER_CODE);
+
+		int res = biz.updateRoomOutDate(update);
+		System.out.println("update 결과 : " + res);
+
+		JSONObject obj = new JSONObject();
+		obj.put("result", res);
+
+		PrintWriter out = response.getWriter();
+		out.println(obj);
+	}
+
+	// 다대다 채팅방 나가기
+	private void doGoOutNRoom(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+		int CHATROOM_CODE = Integer.parseInt(request.getParameter("CHATROOM_CODE"));
+		int MEMBER_CODE = Integer.parseInt(request.getParameter("MEMBER_CODE"));
+
+		MyChatroomListDTO mylist = new MyChatroomListDTO();
+		mylist.setCHATROOM_CODE(CHATROOM_CODE);
+		mylist.setMEMBER_CODE(MEMBER_CODE);
+
+		int res = biz.gooutRoom(mylist);
+
+		JSONObject obj = new JSONObject();
+		obj.put("result", res);
+
+		PrintWriter out = response.getWriter();
+		out.println(obj);
+	}
+
+	// 채팅방 제목 수정하기 (방장만)
+	private void doUpdateRoomTitle(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+		int CHATROOM_CODE = Integer.parseInt(request.getParameter("CHATROOM_CODE"));
+		String CHATROOM_TITLE = request.getParameter("CHATROOM_TITLE");
+
+		ChatRoomDTO update = new ChatRoomDTO();
+		update.setCHATROOM_CODE(CHATROOM_CODE);
+		update.setCHATROOM_TITLE(CHATROOM_TITLE);
+
+		int res = biz.updateRoomTitle(update);
+
+		JSONObject obj = new JSONObject();
+		obj.put("result", res);
+
+		PrintWriter out = response.getWriter();
+		out.println(obj);
+	}
+
 	/*
 	 * Servlet Basic Template : PLEASE DO NOT MODIFY !!!!!
 	 */

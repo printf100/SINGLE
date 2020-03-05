@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.single.reply-mapper">
+
+	<select id="ReplySelectList" resultType="REPLY">
+		SELECT * 
+		FROM REPLY JOIN MEMBER USING (MEMBER_CODE)
+		WHERE RESALE_CODE = #{RESALE_CODE}
+		ORDER BY REPLY_CODE ASC
+	</select>
+	
+	<select id="ReplySelectOne" resultType="REPLY">
+		SELECT * 
+		FROM REPLY JOIN MEMBER USING(MEMBER_CODE)
+		WHERE REPLY_CODE = #{REPLY_CODE} AND RESALE_CODE = #{RESALE_CODE}
+	</select>
+	
+	<select id="getReplyNickName" resultType="MEMBER">
+		SELECT *
+		FROM MEMBER
+		WHERE MEMBER_CODE = #{MEMBER_CODE}
+	</select>
+	
+	<insert id="ReplyWrite" parameterType="REPLY">
+		INSERT INTO REPLY
+		VALUES(REPLY_CODE_SEQ.NEXTVAL, #{RESALE_CODE}, #{MEMBER_CODE}, #{REPLY_CONTENT}, 0, 0, SYSDATE)
+	</insert>
+	
+	<select id="ReplyGetCode" resultType="REPLY">
+		SELECT *
+		FROM REPLY
+		WHERE MEMBER_CODE = #{MEMBER_CODE} AND REPLY_REGDATE = (SELECT MAX(REPLY_REGDATE) FROM REPLY)  
+	</select>
+	
+	<update id="ReplyUpdate" parameterType="REPLY">
+		UPDATE REPLY 
+		SET REPLY_CONTENT = #{REPLY_CONTENT}	
+		WHERE REPLY_CODE = #{REPLY_CODE} AND RESALE_CODE = #{RESALE_CODE}
+	</update>
+	
+	<delete id="ReplyDelete" parameterType="int">
+		DELETE REPLY
+		WHERE REPLY_CODE = #{REPLY_CODE}
+	</delete>
+	
+	<select id="ReplyCount" resultType="int"  parameterType="map">
+		SELECT COUNT(*)
+		FROM REPLY
+		WHERE REPLY_CODE = #{REPLY_CODE} AND #{RESALE_CODE}
+	</select>
+
+</mapper>

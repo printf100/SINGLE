@@ -1,19 +1,17 @@
 package com.single.model.dto.wash;
 
 public class WashDTO {
-	private  int   WASH_CODE;
-	private  int   MEMBER_CODE;
+	private int WASH_CODE;
+	private int MEMBER_CODE;
 	private String WASH_POSTCODE;
 	private String WASH_ADDRESS;
 	private String WASH_DETAIL_ADDRESS;
 	private String WASH_TIME;
 	private String WASH_REGDATE;
-	private  int   WASH_MANAGER;
+	private int WASH_MANAGER;
 
 	public WashDTO() {
 	}
-
-	
 
 	@Override
 	public String toString() {
@@ -21,8 +19,6 @@ public class WashDTO {
 				+ ", WASH_ADDRESS=" + WASH_ADDRESS + ", WASH_DETAIL_ADDRESS=" + WASH_DETAIL_ADDRESS + ", WASH_TIME="
 				+ WASH_TIME + ", WASH_REGDATE=" + WASH_REGDATE + ", WASH_MANAGER=" + WASH_MANAGER + "]";
 	}
-
-
 
 	public int getWASH_CODE() {
 		return WASH_CODE;
@@ -80,17 +76,12 @@ public class WashDTO {
 		WASH_REGDATE = wASH_REGDATE;
 	}
 
-
 	public int getWASH_MANAGER() {
 		return WASH_MANAGER;
 	}
 
-
 	public void setWASH_MANAGER(int wASH_MANAGER) {
 		WASH_MANAGER = wASH_MANAGER;
 	}
-	
-	
 
-	
 }

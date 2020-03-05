@@ -1,29 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.single.chat-mapper">
-
-<!-- 	 채팅방 리스트 가져오기 -->
-<!-- 	<select id="getChatListById" parameterType="CHAT" resultType="CHAT"> -->
-<!-- 		SELECT * -->
-<!-- 		FROM CHAT -->
-<!-- 		WHERE ((CHAT_FROM_MEMBER = #{CHAT_FROM_MEMBER} AND CHAT_TO_MEMBER = #{CHAT_TO_MEMBER}) -->
-<!-- 		OR (CHAT_FROM_MEMBER = #{CHAT_FROM_MEMBER} AND CHAT_TO_MEMBER = #{CHAT_TO_MEMBER})) -->
-<!-- 		AND CHAT_ROOM_CODE > #{CHAT_ROOM_CODE} -->
-<!-- 		ORDER BY CHAT_TIME -->
-<!-- 	</select> -->
-	
-<!-- 	메세지 전송하기 -->
-<!-- 	<insert id="sendMessage" parameterType="CHAT"> -->
-<!-- 		INSERT INTO CHAT -->
-<!-- 		VALUES(CHAT_CODE_SEQ.NEXTVAL, #{CHAT_FROM_MEMBER}, #{CHAT_TO_MEMBER}, #{CHAT_CONTENT}, SYSDATE) -->
-<!-- 	</insert> -->
-
 	
 	<!-- 이메일로 회원 찾기 --> 
-	<select id="findMember" parameterType="String" resultType="MEMBERPROFILE">
+	<select id="findMember" parameterType="map" resultType="MEMBERPROFILE">
 		SELECT *
 		FROM MEMBER JOIN MEMBERPROFILE USING(MEMBER_CODE)
-		WHERE MEMBER_EMAIL = #{MEMBER_EMAIL}
+		WHERE (MEMBER_EMAIL LIKE '%'||#{MEMBER_ACCOUNT}||'%'
+		OR MEMBER_NICKNAME LIKE '%'||#{MEMBER_ACCOUNT}||'%')
+		AND MEMBER_CODE != #{MY_MEMBER_CODE}
 	</select>
 	
 
@@ -51,8 +36,8 @@
 		AND CHATROOM_VERIFY = 1
 	</select>
 	
-	<!-- 채팅방 코드 가져오기 -->
-	<select id="getChatRoomCode" parameterType="int" resultType="CHATROOM">
+	<!-- 생성된 일대일 채팅방 코드 가져오기 -->
+	<select id="getOneChatRoomCode" parameterType="int" resultType="CHATROOM">
 		SELECT *
 		FROM CHATROOM
 		WHERE CHATROOM_CHIEF_CODE = #{CHATROOM_CHIEF_CODE}
@@ -62,10 +47,45 @@
 													WHERE CHATROOM_CHIEF_CODE = #{CHATROOM_CHIEF_CODE})
 	</select>
 	
+	<!-- 생성된 다대다 채팅방 코드 가져오기 -->
+	<select id="getNChatRoomCode" parameterType="int" resultType="CHATROOM">
+		SELECT *
+		FROM CHATROOM
+		WHERE CHATROOM_CHIEF_CODE = #{CHATROOM_CHIEF_CODE}
+		AND CHATROOM_VERIFY = 2
+		AND CHATROOM_CREATEDATE = (SELECT MAX(CHATROOM_CREATEDATE)
+													FROM CHATROOM
+													WHERE CHATROOM_CHIEF_CODE = #{CHATROOM_CHIEF_CODE})
+	</select>
+	
+	<!-- 전체 다대다 채팅방 리스트 불러오기 -->
+	<select id="getNChatRoomList" resultType="CHATROOM">
+		SELECT *
+		FROM CHATROOM
+		WHERE CHATROOM_VERIFY = 2
+		ORDER BY CHATROOM_CREATEDATE DESC
+	</select>
+	
+	<!-- 제목으로 채팅방 검색하기  -->
+	<select id="searchNChatRoom" parameterType="String" resultType="CHATROOM">
+		SELECT *
+		FROM CHATROOM
+		WHERE CHATROOM_TITLE LIKE '%'||#{SEARCH_CHATROOM_TITLE}||'%'
+	</select>
+	
+	<!-- 내가 참여중인 다대다 채팅방인지 아닌지 확인하기 -->
+	<select id="nChatChk" parameterType="CHATROOM" resultType="int">
+		SELECT COUNT(*)
+		FROM MYCHATROOMLIST JOIN CHATROOM USING (CHATROOM_CODE)
+		WHERE CHATROOM_CODE = #{CHATROOM_CODE}
+		AND MEMBER_CODE = #{MEMBER_CODE}
+		AND CHATROOM_VERIFY = 2
+	</select>
+	
 	<!-- 채팅방에 참여했을 때 -->
 	<insert id="gointoRoom" parameterType="MYCHATROOMLIST">
-		INSERT INTO MYCHATROOMLIST (CHATROOM_CODE, MEMBER_CODE)
-		VALUES (#{CHATROOM_CODE}, #{MEMBER_CODE})
+		INSERT INTO MYCHATROOMLIST
+		VALUES (#{CHATROOM_CODE}, #{MEMBER_CODE}, SYSDATE, SYSDATE)
 	</insert>
 	
 	<!-- 다대다 채팅방에 사람이 들어왔을 때 -->
@@ -75,26 +95,33 @@
 		WHERE CHATROOM_CODE = #{CHATROOM_CODE}
 	</update>
 	
-	<!-- 다대다 채팅방 제목 수정하기 -->
-	<update id="updateRoomTitle" parameterType="CHATROOM">
-		UPDATE CHATROOM
-		SET CHATROOM_TITLE = #{CHATROOM_TITLE}
-		WHERE CHATROOM_CODE = #{CHATROOM_CODE}
-	</update>
-	
 	<!-- 내가 참여중인 일대일 채팅방 리스트 + 상대방 닉네임 가져오기 -->
 	<select id="getMyOnetoOneChatList" parameterType="int" resultType="CHATROOM">
-		SELECT MEMBER_CODE, MEMBER_NICKNAME, CHATROOM_CODE
-		FROM MEMBER JOIN MYCHATROOMLIST USING (MEMBER_CODE)
-										JOIN CHATMESSAGE USING (CHATROOM_CODE)
-		WHERE MEMBER_CODE = (SELECT MEMBER_CODE
-											FROM MYCHATROOMLIST JOIN CHATROOM USING (CHATROOM_CODE)
-											WHERE CHATROOM_VERIFY = 1
-											AND MEMBER_CODE NOT IN (#{MY_MEMBER_CODE}))
-		AND CHATMESSAGE_CODE IN (SELECT MAX(CHATMESSAGE_CODE)
-													FROM CHATMESSAGE JOIN MYCHATROOMLIST USING (CHATROOM_CODE)
-													WHERE MEMBER_CODE = #{MY_MEMBER_CODE}
-													GROUP BY CHATROOM_CODE)
+		SELECT *
+		FROM MEMBER JOIN MYCHATROOMLIST USING(MEMBER_CODE) 
+								JOIN CHATROOM USING (CHATROOM_CODE) 
+								JOIN CHATMESSAGE USING (CHATROOM_CODE)
+		WHERE MEMBER_CODE IN ( <!-- 나와  1: 1 채팅 중인 사람들의 MEMBER_CODE -->
+												SELECT MEMBER_CODE
+												FROM MYCHATROOMLIST LEFT OUTER JOIN CHATMESSAGE USING (CHATROOM_CODE)
+												WHERE CHATROOM_CODE IN ( <!-- 내가 참여중인 채팅방 번호 -->
+																						SELECT CHATROOM_CODE
+																						FROM MYCHATROOMLIST
+																						WHERE MEMBER_CODE = #{MEMBER_CODE}
+																						)
+												AND MEMBER_CODE NOT IN (#{MEMBER_CODE})
+												)
+		AND CHATMESSAGE_CODE IN ( <!-- 각 채팅방의 최대 코드 ( = 최신 메시지) -->
+													SELECT MAX(CHATMESSAGE_CODE)
+													FROM CHATMESSAGE
+													GROUP BY CHATROOM_CODE
+													)
+		AND CHATROOM_CODE IN ( <!-- 내가 참여중인 채팅방 번호 -->
+										SELECT CHATROOM_CODE
+										FROM MYCHATROOMLIST
+										WHERE MEMBER_CODE = #{MEMBER_CODE}
+									)
+		AND CHATROOM_VERIFY = 1											
 		ORDER BY CHATMESSAGE_CODE DESC
 	</select>
 	
@@ -103,37 +130,86 @@
 		SELECT *
 		FROM CHATMESSAGE JOIN CHATROOM USING (CHATROOM_CODE)
 		WHERE CHATMESSAGE_CODE IN (SELECT MAX(CHATMESSAGE_CODE)
-														FROM CHATMESSAGE JOIN MYCHATROOMLIST USING (CHATROOM_CODE)
+														FROM CHATMESSAGE LEFT OUTER JOIN MYCHATROOMLIST USING (CHATROOM_CODE)
 														WHERE MEMBER_CODE = #{MEMBER_CODE}
 														GROUP BY CHATROOM_CODE)
 		AND CHATROOM_VERIFY = 2
 		ORDER BY CHATMESSAGE_CODE DESC
 	</select>
 	
+	<!-- 다대다 채팅방에 참여 중인 회원들 정보 가져오기 -->
+	<select id="getNChatMember" parameterType="CHATROOM" resultType="MEMBERPROFILE">
+		SELECT MEMBER_CODE, MEMBER_NICKNAME, MPROFILE_IMG_SERVERNAME
+		FROM MYCHATROOMLIST JOIN MEMBERPROFILE USING (MEMBER_CODE) JOIN MEMBER USING (MEMBER_CODE)
+		WHERE CHATROOM_CODE = #{CHATROOM_CODE}
+		AND MEMBER_CODE NOT IN (#{MEMBER_CODE})
+	</select>
+	
+	<!-- 다대다 채팅방 나가기 -->
+	<delete id="gooutRoom" parameterType="MYCHATROOMLIST">
+		DELETE FROM MYCHATROOMLIST
+		WHERE MEMBER_CODE = #{MEMBER_CODE}
+		AND CHATROOM_CODE = #{CHATROOM_CODE}
+	</delete>
+	
+	<!-- 다대다 채팅방 나가면 참여자수 - 1 -->
+	<update id="decreaseMemberCount" parameterType="int">
+		UPDATE CHATROOM
+		SET CHATROOM_MEMBER_COUNT = CHATROOM_MEMBER_COUNT - 1
+		WHERE CHATROOM_CODE = #{CHATROOM_CODE}
+	</update>
+		
+	<!-- 다대다 채팅방 제목 수정하기 (방장만) -->
+	<update id="updateRoomTitle" parameterType="CHATROOM">
+		UPDATE CHATROOM
+		SET CHATROOM_TITLE = #{CHATROOM_TITLE}
+		WHERE CHATROOM_CODE = #{CHATROOM_CODE}
+	</update>
+	
+	
 	<!-- 채팅메세지 관련 -->
 	<!-- 최근부터 20개씩 뿌려주기 -->
-	<select id="getChatMessage" parameterType="int" resultType="CHATMESSAGE">
-		SELECT ROWNUM, CHATROOM_CODE, CHATMESSAGE_CODE, CHATMESSAGE_CONTENT, CHATMESSAGE_SENDDATE, CHATMESSAGE_FROM, CHATMESSAGE_TO_COUNT
-		FROM (SELECT *
-					FROM CHATMESSAGE
-					WHERE CHATROOM_CODE = #{CHATROOM_CODE}
-					ORDER BY CHATMESSAGE_CODE DESC)
-		<![CDATA[WHERE ROWNUM <= 20]]>
-		ORDER BY CHATMESSAGE_CODE ASC
+	<select id="getChatMessage" parameterType="map" resultType="CHATMESSAGE">
+		SELECT *
+		FROM(
+					SELECT ROWNUM R, CF CHATMESSAGE_FROM, MN MEMBER_NICKNAME, MS MPROFILE_IMG_SERVERNAME, CC CHATROOM_CODE, MC CHATMESSAGE_CODE, MCT CHATMESSAGE_CONTENT, MD CHATMESSAGE_SENDDATE
+					FROM(	<!-- 내가 채팅방에 들어간 시간보다 뒤인 메세지들만 -->
+								SELECT C.CHATMESSAGE_FROM CF, M.MEMBER_NICKNAME MN, MP.MPROFILE_IMG_SERVERNAME MS, C.CHATROOM_CODE CC, C.CHATMESSAGE_CODE MC, C.CHATMESSAGE_CONTENT MCT, C.CHATMESSAGE_SENDDATE MD
+								FROM CHATMESSAGE C, MYCHATROOMLIST ML, MEMBERPROFILE MP, MEMBER M
+								WHERE C.CHATMESSAGE_FROM = MP.MEMBER_CODE
+								AND C.CHATROOM_CODE = ML.CHATROOM_CODE
+								AND MP.MEMBER_CODE = M.MEMBER_CODE
+								AND C.CHATMESSAGE_SENDDATE > ML.CHATROOM_JOINDATE
+								AND C.CHATROOM_CODE = #{CHATROOM_CODE}
+								AND ML.MEMBER_CODE = #{MEMBER_CODE}
+								ORDER BY CHATMESSAGE_SENDDATE DESC
+							)
+					ORDER BY MC ASC
+				)
+		WHERE R BETWEEN #{startNo} AND #{startNo} + 19
 	</select>
 	
 	<!-- 메세지 전송 -->
 	<insert id="sendMessage" parameterType="CHATMESSAGE">
 		INSERT INTO CHATMESSAGE
-		VALUES (#{CHATROOM_CODE}, CHATMESSAGE_CODE_SEQ.NEXTVAL, #{CHATMESSAGE_CONTENT}, SYSDATE, #{CHATMESSAGE_FROM},
-					(SELECT CHATROOM_MEMBER_COUNT-1 FROM CHATROOM WHERE CHATROOM_CODE = #{CHATROOM_CODE}))
+		VALUES (#{CHATROOM_CODE}, CHATMESSAGE_CODE_SEQ.NEXTVAL, #{CHATMESSAGE_CONTENT}, SYSDATE, #{CHATMESSAGE_FROM})
 	</insert>
 	
-	<!-- 어떤 채팅방의 메세지 갯수 (상대방 mylist에 insert하기 위함) -->
-	<select id="getMessageCount" parameterType="int" resultType="int">
-		SELECT COUNT(*)
-		FROM CHATMESSAGE
+	<!-- 채팅방 닫은 순간에 OUTDATE 수정 (안 읽은 메세지 갯수 출력하기 위함) -->
+	<update id="updateRoomOutDate" parameterType="CHATROOM">
+		UPDATE MYCHATROOMLIST
+		SET CHATROOM_OUTDATE = SYSDATE
 		WHERE CHATROOM_CODE = #{CHATROOM_CODE}
+		AND MEMBER_CODE = #{MEMBER_CODE}
+	</update>
+
+	<!-- 채팅방마다 안 읽은 메세지 갯수 -->
+	<select id="getUnreadMsgCount" parameterType="CHATROOM" resultType="int">
+		SELECT COUNT(*)
+		FROM CHATMESSAGE JOIN CHATROOM USING (CHATROOM_CODE) JOIN MYCHATROOMLIST USING (CHATROOM_CODE)
+		WHERE CHATROOM_CODE = #{CHATROOM_CODE}
+		AND MEMBER_CODE = #{MEMBER_CODE}
+		AND CHATMESSAGE_SENDDATE > CHATROOM_OUTDATE
 	</select>
 	
 </mapper>
