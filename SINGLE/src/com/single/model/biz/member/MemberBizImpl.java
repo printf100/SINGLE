@@ -32,7 +32,7 @@ public class MemberBizImpl implements MemberBiz {
 		if (res > 0) {
 			MemberDTO new_member = dao.getMemberCode(member.getMEMBER_EMAIL());
 
-			MemberProfileDTO member_profile = new MemberProfileDTO(new_member.getMEMBER_CODE(), "", "", "", "", "", "");
+			MemberProfileDTO member_profile = new MemberProfileDTO(new_member.getMEMBER_CODE(), "", "", "", "", "profileimg.png", "");
 			profile_res = dao.insertMemberProfile(member_profile);
 
 			return profile_res;
@@ -69,7 +69,7 @@ public class MemberBizImpl implements MemberBiz {
 
 			kakao_res = dao.kakaoJoin(kakao);
 
-			MemberProfileDTO member_profile = new MemberProfileDTO(new_member.getMEMBER_CODE(), "", "", "", "", "", "");
+			MemberProfileDTO member_profile = new MemberProfileDTO(new_member.getMEMBER_CODE(), "", "", "", "", "profileimg.png", "");
 			profile_res = dao.insertMemberProfile(member_profile);
 
 			return (kakao_res > 0 && profile_res > 0) ? 1 : 0;
@@ -105,7 +105,7 @@ public class MemberBizImpl implements MemberBiz {
 
 			naver_res = dao.naverJoin(naver);
 
-			MemberProfileDTO member_profile = new MemberProfileDTO(new_member.getMEMBER_CODE(), "", "", "", "", "", "");
+			MemberProfileDTO member_profile = new MemberProfileDTO(new_member.getMEMBER_CODE(), "", "", "", "", "profileimg.png", "");
 			profile_res = dao.insertMemberProfile(member_profile);
 
 			return (naver_res > 0 && profile_res > 0) ? 1 : 0;
@@ -183,16 +183,34 @@ public class MemberBizImpl implements MemberBiz {
 		return dao.selectMemberProfile(MEMBER_CODE);
 	}
 
-	// 프로필 정보 입력하기
+	// 프로필 정보 NULL 셋팅
 	@Override
 	public int insertMemberProfile(MemberProfileDTO memberProfile) {
 		return dao.insertMemberProfile(memberProfile);
 	}
 
-	// 프로필 정보 수정하기
+	// 프로필 사진 수정하기
 	@Override
-	public int updateMemberProfile(MemberProfileDTO memberProfile) {
-		return dao.updateMemberProfile(memberProfile);
+	public int updateProfileImg(MemberProfileDTO new_img) {
+		return dao.updateProfileImg(new_img);
+	}
+
+	// 프로필 상태메세지 수정하기
+	@Override
+	public int updateProfileIntro(MemberProfileDTO new_intro) {
+		return dao.updateProfileIntro(new_intro);
+	}
+
+	// 회원 닉네임 수정하기
+	@Override
+	public int updateNickname(MemberDTO new_nick) {
+		return dao.updateNickname(new_nick);
+	}
+
+	// 프로필 내위치 수정하기
+	@Override
+	public int updateProfileLoc(MemberProfileDTO new_loc) {
+		return dao.updateProfileLoc(new_loc);
 	}
 
 	// 회원 정보 수정하기

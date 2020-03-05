@@ -50,7 +50,9 @@ import com.single.util.email.SendEmail;
 				"snslogin.do", // SNS 로그인 처리
 				"logout.do", // 로그아웃 처리
 				"profilepage.do", // profile.jsp로 이동
-				"profileUpdate.do", // 프로필 수정 처리
+				"profileImgUpdate.do", // 프로필 이미지 수정 처리
+				"profileUpdate.do", // 프로필 수정 처리 (닉네임, 상태메세지)
+				"profileLocUpdate.do", // 프로필 내위치 수정 처리
 				"infopage.do", // info.jsp로 이동
 				"infoUpdate.do", // 회원정보 수정 처리
 				"pwpage.do", // password.jsp로 이동 (비밀번호 변경 화면)
@@ -62,9 +64,9 @@ import com.single.util.email.SendEmail;
 
 public class MemberController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	MemberBiz biz = new MemberBizImpl();
-
 	HttpSession session;
+
+	MemberBiz biz = new MemberBizImpl();
 
 	public MemberController() {
 	}
@@ -135,8 +137,16 @@ public class MemberController extends HttpServlet {
 			profilepage(request, response);
 		}
 
+		else if (command.endsWith("/profileImgUpdate.do")) {
+			doProfileImgUpdate(request, response);
+		}
+
 		else if (command.endsWith("/profileUpdate.do")) {
 			doProfileUpdate(request, response);
+		}
+
+		else if (command.endsWith("/profileLocUpdate.do")) {
+			doProfileLocUpdate(request, response);
 		}
 
 		else if (command.endsWith("/infopage.do")) {
@@ -395,13 +405,18 @@ public class MemberController extends HttpServlet {
 		}
 
 		MemberDTO loginMember = biz.memberLogin(member);
-		loginMember.setMEMBER_PASSWORD(""); // 세션에는 비밀번호를 담아다니지 않도록! 위험위험
 		JSONObject obj = new JSONObject();
 
 		if (loginMember != null) {
+			MemberProfileDTO profile = biz.selectMemberProfile(loginMember.getMEMBER_CODE());
+			System.out.println(profile);
 			obj.put("result", 1);
+			loginMember.setMEMBER_PASSWORD(""); // 세션에는 비밀번호를 담아다니지 않도록! 위험위험
+			profile.setMEMBER_PASSWORD("");
+			
 			session = request.getSession();
 			session.setAttribute("loginMember", loginMember);
+			session.setAttribute("profile", profile);
 			session.removeAttribute("RSAprivateKey");
 		} else {
 			obj.put("result", 0);
@@ -513,18 +528,18 @@ public class MemberController extends HttpServlet {
 		dispatch("/views/member/profile.jsp", request, response);
 	}
 
-	// 회원 프로필 수정 처리
-	private void doProfileUpdate(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	// 프로필 이미지 수정 처리
+	private void doProfileImgUpdate(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 		// 업로드될 경로
-		String filePath = "/resources/images/profileupload/";
+		String filePath = "/resources/images/profileimg/";
 
 		// 업로드될 실제 경로 (이클립스 상의 절대경로)
-		String MPROFILE_IMG_PATH = request.getSession().getServletContext().getRealPath(filePath);
+		String MPROFILE_IMG_PATH = getServletContext().getRealPath(filePath);
 		System.out.println("절대경로 : " + MPROFILE_IMG_PATH);
 
 		String encoding = "UTF-8";
-		int maxSize = 1024 * 1024 * 5;
+		int maxSize = 1024 * 1024 * 3;
 
 		MultipartRequest mr = null;
 
@@ -536,20 +551,12 @@ public class MemberController extends HttpServlet {
 			);
 
 		} catch (IOException e) {
-			System.out.println("[ERROR] MemberController - doProfileUpdate() : MultipartRequest 객체 생성 오류");
+			System.out.println("[ERROR] MemberController - doProfileImgUpdate() : MultipartRequest 객체 생성 오류");
 			e.printStackTrace();
 		}
 
 		int MEMBER_CODE = Integer.parseInt(mr.getParameter("MEMBER_CODE"));
 		System.out.println(MEMBER_CODE);
-
-		MemberProfileDTO update_profile = new MemberProfileDTO();
-
-		// 프로필 정보 관련
-		String MEMBER_NICKNAME = mr.getParameter("MEMBER_NICKNAME");
-		String MPROFILE_INTRODUCE = mr.getParameter("MPROFILE_INTRODUCE");
-		String MPROFILE_LATITUDE = mr.getParameter("MPROFILE_LATITUDE");
-		String MPROFILE_LONGITUDE = mr.getParameter("MPROFILE_LONGITUDE");
 
 		// 이미지 관련
 		String MPROFILE_IMG_NAME = null;
@@ -573,24 +580,93 @@ public class MemberController extends HttpServlet {
 			}
 		}
 
-		update_profile.setMPROFILE_IMG_NAME((MPROFILE_IMG_NAME == null) ? "" : MPROFILE_IMG_NAME);
-		update_profile.setMPROFILE_IMG_SERVERNAME((MPROFILE_IMG_SERVERNAME == null) ? "" : MPROFILE_IMG_SERVERNAME);
-		update_profile.setMPROFILE_IMG_PATH((MPROFILE_IMG_PATH == null) ? "" : MPROFILE_IMG_PATH);
+		MemberProfileDTO update_profileimg = new MemberProfileDTO();
 
-		update_profile.setMEMBER_CODE(MEMBER_CODE);
+		update_profileimg.setMEMBER_CODE(MEMBER_CODE);
+		update_profileimg.setMPROFILE_IMG_NAME((MPROFILE_IMG_NAME == null) ? "" : MPROFILE_IMG_NAME);
+		update_profileimg.setMPROFILE_IMG_SERVERNAME((MPROFILE_IMG_SERVERNAME == null) ? "" : MPROFILE_IMG_SERVERNAME);
+		update_profileimg.setMPROFILE_IMG_PATH((MPROFILE_IMG_PATH == null) ? "" : MPROFILE_IMG_PATH);
 
-		update_profile.setMEMBER_NICKNAME((MEMBER_NICKNAME == null) ? "" : MEMBER_NICKNAME);
-		update_profile.setMPROFILE_INTRODUCE((MPROFILE_INTRODUCE == null) ? "" : MPROFILE_INTRODUCE);
-		update_profile.setMPROFILE_LATITUDE((MPROFILE_LATITUDE == null) ? "" : MPROFILE_LATITUDE);
-		update_profile.setMPROFILE_LONGITUDE((MPROFILE_LONGITUDE == null) ? "" : MPROFILE_LONGITUDE);
+		// JSON
+		JSONObject obj = new JSONObject();
+		
+		int update_res = biz.updateProfileImg(update_profileimg);
+		obj.put("result", update_res);
+		obj.put("img", biz.selectMemberProfile(MEMBER_CODE).getMPROFILE_IMG_SERVERNAME());
+			
+		String res = obj.toJSONString();
+		System.out.println("doProfileImgUpdate 결과 : " + res);
+		
+		session.removeAttribute("profile");
+		session.setAttribute("profile", biz.selectMemberProfile(MEMBER_CODE));
 
-		int update_res = biz.updateMemberProfile(update_profile);
-		if (update_res > 0) {
+		PrintWriter out = response.getWriter();
+		out.println(obj);
+	}
+
+	// 프로필 수정 처리
+	private void doProfileUpdate(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+		int MEMBER_CODE = Integer.parseInt(request.getParameter("MEMBER_CODE"));
+		System.out.println(MEMBER_CODE);
+
+		MemberProfileDTO update_intro = new MemberProfileDTO();
+		MemberDTO update_nickname = new MemberDTO();
+
+		String MEMBER_NICKNAME = request.getParameter("MEMBER_NICKNAME");
+		String MPROFILE_INTRODUCE = request.getParameter("MPROFILE_INTRODUCE");
+
+		update_intro.setMEMBER_CODE(MEMBER_CODE);
+		update_intro.setMPROFILE_INTRODUCE((MPROFILE_INTRODUCE == null) ? "" : MPROFILE_INTRODUCE);
+
+		update_nickname.setMEMBER_CODE(MEMBER_CODE);
+		update_nickname.setMEMBER_NICKNAME((MEMBER_NICKNAME == null) ? "" : MEMBER_NICKNAME);
+
+		int intro_res = biz.updateProfileIntro(update_intro);
+		int nickname_res = biz.updateNickname(update_nickname);
+		
+		if (intro_res > 0 && nickname_res > 0) {
+			session.removeAttribute("profile");
+			session.setAttribute("profile", biz.selectMemberProfile(MEMBER_CODE));
 			jsResponse("프로필 수정이 완료되었습니다.", "/SINGLE/member/profilepage.do", response);
 		} else {
 			jsResponse("프로필 수정을 실패하였습니다.", "/SINGLE/member/profilepage.do", response);
 		}
 
+	}
+
+	// 프로필 내위치 수정 처리
+	private void doProfileLocUpdate(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+		int MEMBER_CODE = Integer.parseInt(request.getParameter("MEMBER_CODE"));
+		System.out.println(MEMBER_CODE);
+
+		MemberProfileDTO update_profileloc = new MemberProfileDTO();
+
+		String MPROFILE_LATITUDE = request.getParameter("MPROFILE_LATITUDE");
+		String MPROFILE_LONGITUDE = request.getParameter("MPROFILE_LONGITUDE");
+		
+		System.out.println(MPROFILE_LATITUDE);
+		System.out.println(MPROFILE_LONGITUDE);
+
+		update_profileloc.setMEMBER_CODE(MEMBER_CODE);
+		update_profileloc.setMPROFILE_LATITUDE((MPROFILE_LATITUDE == null) ? "" : MPROFILE_LATITUDE);
+		update_profileloc.setMPROFILE_LONGITUDE((MPROFILE_LONGITUDE == null) ? "" : MPROFILE_LONGITUDE);
+
+		// JSON
+		JSONObject obj = new JSONObject();
+		
+		int update_res = biz.updateProfileLoc(update_profileloc);
+		obj.put("result", update_res);
+			
+		String res = obj.toJSONString();
+		System.out.println("doProfileLocUpdate 결과 : " + res);
+		
+		session.removeAttribute("profile");
+		session.setAttribute("profile", biz.selectMemberProfile(MEMBER_CODE));
+
+		PrintWriter out = response.getWriter();
+		out.println(obj);
 	}
 
 	// 회원 정보 화면으로 이동
@@ -696,7 +772,6 @@ public class MemberController extends HttpServlet {
 			privateKey = (PrivateKey) session.getAttribute("RSAprivateKey");
 		}
 
-
 		String ORIGINAL_PASSWORD = request.getParameter("ORIGINAL_PASSWORD"); // 사용자가 입력한 원래 비밀번호
 		String DB_PASSWORD = null; // DB에 저장된 비밀번호
 		String NEW_PASSWORD = request.getParameter("MEMBER_PASSWORD"); // 사용자가 입력한 새로운 비밀번호
@@ -717,9 +792,10 @@ public class MemberController extends HttpServlet {
 				System.out.println("기존 비밀번호 알고 있을 때");
 
 				try {
-					ORIGINAL_PASSWORD = new SHA256_Util().encryptSHA256(rsaUtil.getDecryptText(privateKey, request.getParameter("ORIGINAL_PASSWORD")));
+					ORIGINAL_PASSWORD = new SHA256_Util().encryptSHA256(
+							rsaUtil.getDecryptText(privateKey, request.getParameter("ORIGINAL_PASSWORD")));
 					DB_PASSWORD = member.getMEMBER_PASSWORD();
-					
+
 					System.out.println("MemberController - doPwReset() 원래 비밀번호 : " + ORIGINAL_PASSWORD);
 					System.out.println("MemberController - doPwReset() DB 저장된 비밀번호 : " + DB_PASSWORD);
 
@@ -731,7 +807,7 @@ public class MemberController extends HttpServlet {
 						NEW_PASSWORD = rsaUtil.getDecryptText(privateKey, request.getParameter("MEMBER_PASSWORD"));
 						System.out.println("MemberController - doPwReset() 새로운 비밀번호 : " + NEW_PASSWORD);
 					}
-					
+
 					new_pw.setMEMBER_CODE(MEMBER_CODE);
 					new_pw.setMEMBER_PASSWORD(NEW_PASSWORD);
 
@@ -757,7 +833,7 @@ public class MemberController extends HttpServlet {
 				} catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
 					e.printStackTrace();
 				}
-				
+
 				new_pw.setMEMBER_CODE(MEMBER_CODE);
 				new_pw.setMEMBER_PASSWORD(NEW_PASSWORD);
 

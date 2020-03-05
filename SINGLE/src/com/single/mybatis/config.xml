@@ -7,10 +7,24 @@
 	<properties resource="com/single/mybatis/db.properties"></properties>
 	
 	<typeAliases>
+		<!-- 회원 테이블 -->
 		<typeAlias type="com.single.model.dto.member.MemberDTO" alias="MEMBER"/>
 		<typeAlias type="com.single.model.dto.member.KakaoMemberDTO" alias="KAKAOMEMBER"/>
 		<typeAlias type="com.single.model.dto.member.NaverMemberDTO" alias="NAVERMEMBER"/>
 		<typeAlias type="com.single.model.dto.member.MemberProfileDTO" alias="MEMBERPROFILE"/>
+		
+		<!-- 채팅 테이블 -->
+		<typeAlias type="com.single.model.dto.chat.ChatDTO" alias="CHAT"/>
+		<typeAlias type="com.single.model.dto.chat.ChatRoomDTO" alias="CHATROOM"/>
+		<typeAlias type="com.single.model.dto.chat.ChatMessageDTO" alias="CHATMESSAGE"/>
+		<typeAlias type="com.single.model.dto.chat.MyChatroomListDTO" alias="MYCHATROOMLIST"/>
+
+
+		<!-- 세탁 테이블 -->
+		<typeAlias type="com.single.model.dto.wash.WashDTO" alias="WASH"/>
+		<typeAlias type="com.single.model.dto.clean.CleanDTO" alias="CLEAN"/>
+		
+		
 	</typeAliases>
 
 	<environments default="development">
@@ -27,5 +41,7 @@
 	
 	<mappers>
 		<mapper resource="com/single/mybatis/member-mapper.xml" />
+		<mapper resource="com/single/mybatis/chat-mapper.xml"/>
+		<mapper resource="com/single/mybatis/life-mapper.xml"/>
 	</mappers>
 </configuration>

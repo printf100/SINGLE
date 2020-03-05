@@ -52,10 +52,10 @@
 	<div id="container">
 		<div id="side-menu">
 			<div>
-				<a href="/SINGLE/member/profilepage.do">프로필</a>
+				<a href="/SINGLE/member/profilepage.do">프로필 정보</a>
 			</div>
 			<div>
-				<a href="/SINGLE/member/infopage.do">회원정보</a>
+				<a href="/SINGLE/member/infopage.do">회원 정보</a>
 			</div>
 			<!-- 사이트로 가입한 회원일 때만 보여주기 -->
 			<c:if test="${not empty sessionLoginMember }">

@@ -11,6 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.single.util.RSA.RSA;
+import com.single.util.RSA.RSAUtil;
+
 /*
  * Main Controller
  * 로그인 후 메인화면을 호출하기 위함
@@ -40,11 +43,22 @@ public class MainController extends HttpServlet {
 
 	}
 
+	private RSAUtil rsaUtil = new RSAUtil();
+	
 	// 메인페이지로 이동
 	private void mainpage(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
 		session = request.getSession();
+		
+		if (session.getAttribute("RSAprivateKey") != null)
+			session.removeAttribute("RSAprivateKey");
+
+		// 새로운 RSA 객체 생성
+		RSA rsa = rsaUtil.createRSA();
+		request.setAttribute("modulus", rsa.getModulus());
+		request.setAttribute("exponent", rsa.getExponent());
+		session.setAttribute("RSAprivateKey", rsa.getPrivateKey());
 
 		if (session.getAttribute("loginMember") != null || session.getAttribute("loginKakao") != null
 				|| session.getAttribute("loginNaver") != null) {

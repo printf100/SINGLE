@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.single.chat-mapper">
+
+<!-- 	 채팅방 리스트 가져오기 -->
+<!-- 	<select id="getChatListById" parameterType="CHAT" resultType="CHAT"> -->
+<!-- 		SELECT * -->
+<!-- 		FROM CHAT -->
+<!-- 		WHERE ((CHAT_FROM_MEMBER = #{CHAT_FROM_MEMBER} AND CHAT_TO_MEMBER = #{CHAT_TO_MEMBER}) -->
+<!-- 		OR (CHAT_FROM_MEMBER = #{CHAT_FROM_MEMBER} AND CHAT_TO_MEMBER = #{CHAT_TO_MEMBER})) -->
+<!-- 		AND CHAT_ROOM_CODE > #{CHAT_ROOM_CODE} -->
+<!-- 		ORDER BY CHAT_TIME -->
+<!-- 	</select> -->
+	
+<!-- 	메세지 전송하기 -->
+<!-- 	<insert id="sendMessage" parameterType="CHAT"> -->
+<!-- 		INSERT INTO CHAT -->
+<!-- 		VALUES(CHAT_CODE_SEQ.NEXTVAL, #{CHAT_FROM_MEMBER}, #{CHAT_TO_MEMBER}, #{CHAT_CONTENT}, SYSDATE) -->
+<!-- 	</insert> -->
+
+	
+	<!-- 이메일로 회원 찾기 --> 
+	<select id="findMember" parameterType="String" resultType="MEMBERPROFILE">
+		SELECT *
+		FROM MEMBER JOIN MEMBERPROFILE USING(MEMBER_CODE)
+		WHERE MEMBER_EMAIL = #{MEMBER_EMAIL}
+	</select>
+	
+
+	<!-- 채팅방 관련 -->
+	<!-- 채팅방 처음 생성시(일대일) -->
+	<insert id="createOnetoOneRoom" parameterType="int">
+		INSERT INTO CHATROOM
+		VALUES (#{CHATROOM_CHIEF_CODE}, CHATROOM_CODE_SEQ.NEXTVAL, 1, '', SYSDATE, 2)
+	</insert>
+	
+	<!-- 채팅방 처음 생성시(다대다) -->
+	<insert id="createNtoNRoom" parameterType="CHATROOM">
+		INSERT INTO CHATROOM
+		VALUES (#{CHATROOM_CHIEF_CODE}, CHATROOM_CODE_SEQ.NEXTVAL, 2, #{CHATROOM_TITLE}, SYSDATE, 1)
+	</insert>
+	
+	<!-- 일대일 대화를 한적이 있는지 검사 -->
+	<select id="oneChatChk" parameterType="map" resultType="int">
+		SELECT CHATROOM_CODE
+		FROM MYCHATROOMLIST JOIN CHATROOM USING (CHATROOM_CODE)
+		WHERE CHATROOM_CODE IN (SELECT CHATROOM_CODE
+												FROM MYCHATROOMLIST
+												WHERE MEMBER_CODE = #{MY_MEMBER_CODE})
+		AND MEMBER_CODE = #{TO_MEMBER_CODE}
+		AND CHATROOM_VERIFY = 1
+	</select>
+	
+	<!-- 채팅방 코드 가져오기 -->
+	<select id="getChatRoomCode" parameterType="int" resultType="CHATROOM">
+		SELECT *
+		FROM CHATROOM
+		WHERE CHATROOM_CHIEF_CODE = #{CHATROOM_CHIEF_CODE}
+		AND CHATROOM_VERIFY = 1
+		AND CHATROOM_CREATEDATE = (SELECT MAX(CHATROOM_CREATEDATE)
+													FROM CHATROOM
+													WHERE CHATROOM_CHIEF_CODE = #{CHATROOM_CHIEF_CODE})
+	</select>
+	
+	<!-- 채팅방에 참여했을 때 -->
+	<insert id="gointoRoom" parameterType="MYCHATROOMLIST">
+		INSERT INTO MYCHATROOMLIST (CHATROOM_CODE, MEMBER_CODE)
+		VALUES (#{CHATROOM_CODE}, #{MEMBER_CODE})
+	</insert>
+	
+	<!-- 다대다 채팅방에 사람이 들어왔을 때 -->
+	<update id="increaseMemberCount" parameterType="int">
+		UPDATE CHATROOM
+		SET CHATROOM_MEMBER_COUNT = CHATROOM_MEMBER_COUNT + 1
+		WHERE CHATROOM_CODE = #{CHATROOM_CODE}
+	</update>
+	
+	<!-- 다대다 채팅방 제목 수정하기 -->
+	<update id="updateRoomTitle" parameterType="CHATROOM">
+		UPDATE CHATROOM
+		SET CHATROOM_TITLE = #{CHATROOM_TITLE}
+		WHERE CHATROOM_CODE = #{CHATROOM_CODE}
+	</update>
+	
+	<!-- 내가 참여중인 일대일 채팅방 리스트 + 상대방 닉네임 가져오기 -->
+	<select id="getMyOnetoOneChatList" parameterType="int" resultType="CHATROOM">
+		SELECT MEMBER_CODE, MEMBER_NICKNAME, CHATROOM_CODE
+		FROM MEMBER JOIN MYCHATROOMLIST USING (MEMBER_CODE)
+										JOIN CHATMESSAGE USING (CHATROOM_CODE)
+		WHERE MEMBER_CODE = (SELECT MEMBER_CODE
+											FROM MYCHATROOMLIST JOIN CHATROOM USING (CHATROOM_CODE)
+											WHERE CHATROOM_VERIFY = 1
+											AND MEMBER_CODE NOT IN (#{MY_MEMBER_CODE}))
+		AND CHATMESSAGE_CODE IN (SELECT MAX(CHATMESSAGE_CODE)
+													FROM CHATMESSAGE JOIN MYCHATROOMLIST USING (CHATROOM_CODE)
+													WHERE MEMBER_CODE = #{MY_MEMBER_CODE}
+													GROUP BY CHATROOM_CODE)
+		ORDER BY CHATMESSAGE_CODE DESC
+	</select>
+	
+	<!-- 내가 참여중인 다대다 채팅방 리스트 가져오기 -->
+	<select id="getMyNtoNChatList" parameterType="int" resultType="CHATROOM">
+		SELECT *
+		FROM CHATMESSAGE JOIN CHATROOM USING (CHATROOM_CODE)
+		WHERE CHATMESSAGE_CODE IN (SELECT MAX(CHATMESSAGE_CODE)
+														FROM CHATMESSAGE JOIN MYCHATROOMLIST USING (CHATROOM_CODE)
+														WHERE MEMBER_CODE = #{MEMBER_CODE}
+														GROUP BY CHATROOM_CODE)
+		AND CHATROOM_VERIFY = 2
+		ORDER BY CHATMESSAGE_CODE DESC
+	</select>
+	
+	<!-- 채팅메세지 관련 -->
+	<!-- 최근부터 20개씩 뿌려주기 -->
+	<select id="getChatMessage" parameterType="int" resultType="CHATMESSAGE">
+		SELECT ROWNUM, CHATROOM_CODE, CHATMESSAGE_CODE, CHATMESSAGE_CONTENT, CHATMESSAGE_SENDDATE, CHATMESSAGE_FROM, CHATMESSAGE_TO_COUNT
+		FROM (SELECT *
+					FROM CHATMESSAGE
+					WHERE CHATROOM_CODE = #{CHATROOM_CODE}
+					ORDER BY CHATMESSAGE_CODE DESC)
+		<![CDATA[WHERE ROWNUM <= 20]]>
+		ORDER BY CHATMESSAGE_CODE ASC
+	</select>
+	
+	<!-- 메세지 전송 -->
+	<insert id="sendMessage" parameterType="CHATMESSAGE">
+		INSERT INTO CHATMESSAGE
+		VALUES (#{CHATROOM_CODE}, CHATMESSAGE_CODE_SEQ.NEXTVAL, #{CHATMESSAGE_CONTENT}, SYSDATE, #{CHATMESSAGE_FROM},
+					(SELECT CHATROOM_MEMBER_COUNT-1 FROM CHATROOM WHERE CHATROOM_CODE = #{CHATROOM_CODE}))
+	</insert>
+	
+	<!-- 어떤 채팅방의 메세지 갯수 (상대방 mylist에 insert하기 위함) -->
+	<select id="getMessageCount" parameterType="int" resultType="int">
+		SELECT COUNT(*)
+		FROM CHATMESSAGE
+		WHERE CHATROOM_CODE = #{CHATROOM_CODE}
+	</select>
+	
+</mapper>

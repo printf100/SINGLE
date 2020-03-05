@@ -234,13 +234,61 @@ public class MemberDAOImpl extends SqlMapConfig implements MemberDAO {
 		return res;
 	}
 
-	// 프로필 정보 수정하기
+	// 프로필 사진 수정하기
 	@Override
-	public int updateMemberProfile(MemberProfileDTO memberProfile) {
+	public int updateProfileImg(MemberProfileDTO new_img) {
 
 		SqlSession session = getSqlSessionFactory().openSession(false);
 
-		int res = session.update(namespace + ".updateMemberProfile", memberProfile);
+		int res = session.update(namespace + ".updateProfileImg", new_img);
+		if (res > 0) {
+			session.commit();
+		}
+
+		session.close();
+
+		return res;
+	}
+
+	// 프로필 상태메세지 수정하기
+	@Override
+	public int updateProfileIntro(MemberProfileDTO new_intro) {
+
+		SqlSession session = getSqlSessionFactory().openSession(false);
+
+		int res = session.update(namespace + ".updateProfileIntro", new_intro);
+		if (res > 0) {
+			session.commit();
+		}
+
+		session.close();
+
+		return res;
+	}
+
+	// 회원 닉네임 수정하기
+	@Override
+	public int updateNickname(MemberDTO new_nick) {
+
+		SqlSession session = getSqlSessionFactory().openSession(false);
+
+		int res = session.update(namespace + ".updateNickname", new_nick);
+		if (res > 0) {
+			session.commit();
+		}
+
+		session.close();
+
+		return res;
+	}
+
+	// 프로필 내위치 수정하기
+	@Override
+	public int updateProfileLoc(MemberProfileDTO new_loc) {
+
+		SqlSession session = getSqlSessionFactory().openSession(false);
+
+		int res = session.update(namespace + ".updateProfileLoc", new_loc);
 		if (res > 0) {
 			session.commit();
 		}
@@ -269,7 +317,7 @@ public class MemberDAOImpl extends SqlMapConfig implements MemberDAO {
 	// 비밀번호 수정하기
 	@Override
 	public int updateMemberPW(MemberDTO new_pw) {
-		
+
 		SqlSession session = getSqlSessionFactory().openSession(false);
 
 		int res = session.update(namespace + ".updateMemberPW", new_pw);
@@ -278,7 +326,7 @@ public class MemberDAOImpl extends SqlMapConfig implements MemberDAO {
 		}
 
 		session.close();
-		
+
 		return res;
 	}
 

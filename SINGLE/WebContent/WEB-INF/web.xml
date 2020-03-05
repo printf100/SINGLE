@@ -73,5 +73,16 @@
 		<servlet-name>life</servlet-name>
 		<url-pattern>/life/*</url-pattern>
 	</servlet-mapping>
+	
+	<!-- Chat Controller -->
+	<servlet>
+		<servlet-name>chat</servlet-name>
+		<servlet-class>com.single.controller.ChatController</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>chat</servlet-name>
+		<url-pattern>/chat/*</url-pattern>
+	</servlet-mapping>
 
 </web-app>

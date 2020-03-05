@@ -55,14 +55,23 @@ public interface MemberBiz {
 	// 회원 정보, 프로필 가져오기
 	public MemberProfileDTO selectMemberProfile(int MEMBER_CODE);
 
-	// 프로필 정보 입력하기
+	// 프로필 정보 NULL 셋팅
 	public int insertMemberProfile(MemberProfileDTO memberProfile);
 
-	// 프로필 정보 수정하기
-	public int updateMemberProfile(MemberProfileDTO memberProfile);
+	// 프로필 사진 수정하기
+	public int updateProfileImg(MemberProfileDTO new_img);
+
+	// 프로필 상태메세지 수정하기
+	public int updateProfileIntro(MemberProfileDTO new_intro);
+
+	// 회원 닉네임 수정하기
+	public int updateNickname(MemberDTO new_nick);
+
+	// 프로필 내위치 수정하기
+	public int updateProfileLoc(MemberProfileDTO new_loc);
 
 	// 회원 정보 수정하기
-	public int updateMemberInfo(MemberDTO member);
+	public int updateMemberInfo(MemberDTO new_info);
 
 	// 비밀번호 수정하기
 	public int updateMemberPW(MemberDTO new_pw);

@@ -92,6 +92,7 @@
 
 			<div>
 				<label for="MEMBER_PASSWORD">비밀번호</label>
+				<!-- <a href="/SINGLE/member/pwResetpage.do" style="color:blue; font-size:8pt;">비밀번호 재설정</a> -->
 			</div>
 			<div>
 				<input type="password" id="MEMBER_PASSWORD" name="MEMBER_PASSWORD" placeholder="">
@@ -101,6 +102,11 @@
 
 			<input type="submit" value="로그인">
 		</form>
+		
+		<div>
+			<p style="color: gray; font-size: 9pt;">아직 계정이 없으신가요?
+			<a href="/SINGLE/member/joinpage.do">계정 만들기 ></a>
+		</div>
 		
 		<!-- START :: 웹 로그인 시 실제 서버로 전송되는 form -->
 			<form action="/SINGLE/member/login.do" method="post" id="loginhiddenForm">
@@ -158,18 +164,18 @@
 
 </body>
 
-	<script type='text/javascript'>
-		/*
-			카카오 로그인
-		*/
-        Kakao.init('e279f4719a19c18fde6278302eaeb6d8');
-        // 카카오 로그인 버튼 생성
-        Kakao.Auth.createLoginButton({
-          container: '#kakao-login-btn',
-          success: function(authObj) {
-            Kakao.API.request({
-            	url:'/v1/user/me',
-            	success:function(res) {
+<script type='text/javascript'>
+	/*
+		카카오 로그인
+	*/
+	Kakao.init('e279f4719a19c18fde6278302eaeb6d8');
+    // 카카오 로그인 버튼 생성
+    Kakao.Auth.createLoginButton({
+    	container: '#kakao-login-btn',
+        success: function(authObj) {
+        	Kakao.API.request({
+           		url:'/v1/user/me',
+           		success:function(res) {
             		console.log(res.id);
             		console.log(res.properties.nickname);
             		console.log(res.kaccount_email);
@@ -219,18 +225,8 @@
           fail: function(err) {
              alert(JSON.stringify(err));
           }
-        });
-      //]]>
-      
-	      // 카카오 로그아웃
-	      function kakaologout() {
-	    	  Kakao.Auth.logout(function() {
-	    		  setTimeout(function() {
-	    			  location.href="/SINGLE/main/mainpage.do";
-	    		  }, 1000);
-	    	  });
-	      }
-	      
+		});
+    
 	    /*
 	      	네이버 로그인
 		*/
@@ -243,8 +239,8 @@
 		naver_id_login.setDomain("http://localhost:8090/SINGLE");
 		naver_id_login.setState(state);
 		naver_id_login.setPopup();
-		naver_id_login.init_naver_id_login();
-		
-	</script>
+		naver_id_login.init_naver_id_login();		
+
+</script>
 	    
 </html>
