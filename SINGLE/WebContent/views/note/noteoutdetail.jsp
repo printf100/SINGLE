@@ -105,7 +105,7 @@
 		
 		$("#delete").click(function() {
 			
-			if(confirm("쪽지를 삭제하시겠습니까?")) {
+			if(confirm("쪽지를 삭제할까요?")) {
 				
 				$.ajax({
 					type: "POST",
@@ -117,7 +117,7 @@
 					success: function(msg) {
 						
 						if(msg.result > 0) {
-							alert("쪽지를 삭제하였습니다.");
+							alert("쪽지를 삭제했어요!");
 							
 							location.href="/SINGLE/note/noteInList.do";
 						} else {

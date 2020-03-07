@@ -11,6 +11,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.single.model.biz.member.MemberBiz;
+import com.single.model.biz.member.MemberBizImpl;
+import com.single.model.dto.member.KakaoMemberDTO;
+import com.single.model.dto.member.MemberDTO;
+import com.single.model.dto.member.MemberProfileDTO;
+import com.single.model.dto.member.NaverMemberDTO;
 import com.single.util.RSA.RSA;
 import com.single.util.RSA.RSAUtil;
 
@@ -27,6 +33,7 @@ import com.single.util.RSA.RSAUtil;
 public class MainController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	HttpSession session;
+	MemberBiz biz = new MemberBizImpl();
 
 	public MainController() {
 	}
@@ -44,25 +51,39 @@ public class MainController extends HttpServlet {
 	}
 
 	private RSAUtil rsaUtil = new RSAUtil();
-	
+
 	// 메인페이지로 이동
 	private void mainpage(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
 		session = request.getSession();
-		
-		if (session.getAttribute("RSAprivateKey") != null)
-			session.removeAttribute("RSAprivateKey");
-
-		// 새로운 RSA 객체 생성
-		RSA rsa = rsaUtil.createRSA();
-		request.setAttribute("modulus", rsa.getModulus());
-		request.setAttribute("exponent", rsa.getExponent());
-		session.setAttribute("RSAprivateKey", rsa.getPrivateKey());
 
 		if (session.getAttribute("loginMember") != null || session.getAttribute("loginKakao") != null
 				|| session.getAttribute("loginNaver") != null) {
 			// 로그인 상태일 때
+
+			MemberDTO loginMember = (MemberDTO) session.getAttribute("loginMember");
+			KakaoMemberDTO loginKakao = (KakaoMemberDTO) session.getAttribute("loginKakao");
+			NaverMemberDTO loginNaver = (NaverMemberDTO) session.getAttribute("loginNaver");
+
+			int MEMBER_CODE = 0;
+
+			if (session.getAttribute("loginMember") != null) {
+				MEMBER_CODE = loginMember.getMEMBER_CODE();
+			}
+
+			if (session.getAttribute("loginKakao") != null) {
+				MEMBER_CODE = loginKakao.getMEMBER_CODE();
+			}
+
+			if (session.getAttribute("loginNaver") != null) {
+				MEMBER_CODE = loginNaver.getMEMBER_CODE();
+			}
+
+			MemberProfileDTO member_profile = biz.selectMemberProfile(MEMBER_CODE);
+
+			request.setAttribute("profile", member_profile);
+
 			dispatch("/views/main/main.jsp", request, response);
 		} else {
 			// 로그아웃 상태일 때

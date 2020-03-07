@@ -619,44 +619,44 @@
 	
 	<!-- START :: 채팅방 부트스트랩 -->
 	<div class="container content">
-			   	<div class="card">
-			   	
-			   		<!-- 헤더 -->
-			      	<div class="card-header">
-			      		<span class="card-title"></span><span id="bar-open-btn" onclick="barOpen();">참여자</span>
-			      	</div>	      	
-			      	
-			      	<!-- 오른쪽 메뉴 -->
-			      	<div class="menu-wrap">
-			      		<a id="bar-close-btn" onclick="hideMenu();">닫기</a>
-			      		
-			      		<div id="member-list">
-				      		<div>대화상대</div>
-				      		<ul class="member-info list-group"></ul>
-				      	</div>
-			      	</div>
-			      	
-			      	<a id="cover-close-btn" onclick="hideMenu();"></a>
-			      	
-			      	<!-- 메세지 내용 창 -->
-			      	<div class="nano has-scrollbar" style="height:580px">
-			      		<div class="nano-content pad-all">
-				        	<ul class="chat-list">        				
-				        	</ul>
-			        	</div>
-			        </div>
-			        
-			        <!-- 메세지 입력/전송 창 -->
-			        <div class="portlet-footer">
-			        	<div class="row">
-    						<div class="col-xs-9">
-    							<input type="text" id="CHAT_CONTENT" placeholder="메세지를 입력해주세요." class="form-control form-control-sm">
-    						</div>
-	    					<div class="col-xs-3">
-	    						<button class="btn btn-primary btn-sm" id="sendMessage" type="submit">전송</button>
-	    					</div>
-    					</div>
-			        </div>
+	   	<div class="card">
+	   	
+	   		<!-- 헤더 -->
+	      	<div class="card-header">
+	      		<span class="card-title"></span><span id="bar-open-btn" onclick="barOpen();">참여자</span>
+	      	</div>	      	
+	      	
+	      	<!-- 오른쪽 메뉴 -->
+	      	<div class="menu-wrap">
+	      		<a id="bar-close-btn" onclick="hideMenu();">닫기</a>
+	      		
+	      		<div id="member-list">
+		      		<div>대화상대</div>
+		      		<ul class="member-info list-group"></ul>
+		      	</div>
+	      	</div>
+	      	
+	      	<a id="cover-close-btn" onclick="hideMenu();"></a>
+	      	
+	      	<!-- 메세지 내용 창 -->
+	      	<div class="nano has-scrollbar" style="height:580px">
+	      		<div class="nano-content pad-all">
+		        	<ul class="chat-list">        				
+		        	</ul>
+	        	</div>
+	        </div>
+	        
+	        <!-- 메세지 입력/전송 창 -->
+	        <div class="portlet-footer">
+	        	<div class="row">
+  						<div class="col-xs-9">
+  							<input type="text" id="CHAT_CONTENT" placeholder="메세지를 입력해주세요." class="form-control form-control-sm">
+  						</div>
+   					<div class="col-xs-3">
+   						<button class="btn btn-primary btn-sm" id="sendMessage" type="submit">전송</button>
+   					</div>
+  					</div>
+	        </div>
 			        
 		</div>
 	</div>

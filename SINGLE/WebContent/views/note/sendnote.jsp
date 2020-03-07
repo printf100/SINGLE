@@ -49,26 +49,6 @@
 		/*
 		* 웹 소켓
 		*/
-		var ws = new WebSocket("ws://localhost:8090/SINGLE/websocket_note");
-		
-		// 웹 소켓이 연결됐을 때
-		ws.onopen = function(e) {
-		};
-		
-		// 웹 소켓 연결이 해제됐을 때
-		ws.onclose = function(e) {
-			alert("연결 해제됨");
-		};
-		
-		// 웹 소켓 에러
-		ws.onerror = function(e) {
-			alert("error");
-		};
-		
-		// 메세지가 온 경우
-		ws.onmessage = function(e) {
-			alert(e.data);
-		};
 		
 		// 쪽지 전송하기
 		$("#sendNote").click(function() {
@@ -97,11 +77,11 @@
 				success: function(msg) {
 					
 					if(msg.result > 0) {
-						alert("쪽지가 전송되었습니다.");
+						alert("쪽지를 전송했어요!");
 						close();
 						
 					} else {
-						alert("쪽지 전송에 실패하였습니다.");
+						alert("쪽지 전송을 실패하였습니다.");
 					}
 				},
 				error: function() {

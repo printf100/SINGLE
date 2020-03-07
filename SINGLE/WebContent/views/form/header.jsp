@@ -195,7 +195,7 @@
 							<a class="nav-link" href="/SINGLE/map/map.do">MAP</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="/SINGLE/life/lifepage.do">LIFE</a>
+							<a class="nav-link" href="/SINGLE/life/lifeSelect.do">LIFE</a>
 						</li>
 						<li class="nav-item">
 							<a class="nav-link" href="/SINGLE/board/resaleMainList.do">MARKET</a>

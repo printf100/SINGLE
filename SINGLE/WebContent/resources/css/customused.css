@@ -1,0 +1,99 @@
+
+			.work-item {
+				box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+				transition: 0.3s;
+			}
+	
+			.card__contents {
+				padding: 2px 16px 20px;
+			}
+
+			.img-responsive{		
+				min-width:100px;
+				min-height: 150px;
+			}
+			.thumbnail{
+   				min-height: 310px;
+			}
+
+			ul .nav {
+				background-color: #e2e2e2	;
+			}
+
+			.img-responsive{		
+				height: 140px !important;
+			}
+			.thumbnail{
+   				min-height: 310px;
+			}
+
+			ul .nav {
+				background-color: #e2e2e2	;
+			}
+			#fh5co-page {
+				overflow: visible;
+			}
+
+			.fh5co-narrow-content .areaLists {
+				padding : 5px 15px 5px 15px; 
+				margin-bottom : 10px;
+				background-color: #ffffff;
+				z-index: 100002;
+				top: 0px;
+				position: sticky;
+				position: -webkit-sticky;
+			}
+
+			.areaLists .area__select-style {
+				display: inline-block;
+				width: 120px;
+				font-size: 30px;
+				font-weight: 600;
+			}
+
+			.hiddenMenu {
+				width:100%;
+				height: 100%;
+				text-align: center;
+				position: relative;
+			}
+
+			.areaLists .areaList {
+				display:flex; 
+				justify-content:space-between; 
+				list-style:none; 
+				padding-left: 0;
+				z-index: 100002; 
+				visibility: hidden; 
+				background-color: white;
+				position: absolute;
+				top: auto;
+				width: 100%;
+				box-shadow: 1px 1px 1px 1px; 
+				padding-top: 20px;
+				padding-bottom: 20px;
+			}
+			.areaLists .sigunguLists {
+				display:flex; 
+				justify-content:space-around; 
+				list-style:none; 
+				padding-left: 0;
+				z-index: 100002; 
+				visibility: hidden; 
+				background-color: white;
+				position: absolute;
+				top: auto;
+				width: 100%;
+				box-shadow: 1px 1px 1px 1px; 
+				padding-top: 20px;
+				padding-bottom: 20px;
+			}
+			#moreViewWrap {
+				display: none;
+			}
+			.rangeWrap .active {
+				color:red;
+			}
+			.kilometer {
+				cursor: pointer;
+			}

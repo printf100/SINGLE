@@ -501,9 +501,9 @@
 			success: function(msg) {
 				
 				if(msg.result > 0) {
-					opener.alert("OUTDATE 수정 성공");
+					console.log("OUTDATE 수정 성공");
 				} else {
-					opener.alert("수정 실패");
+					console.log("OUTDATE 수정 실패");
 				}
 			},
 			error: function() {
@@ -604,7 +604,7 @@
 	// 방 나가기 버튼
 	function gooutRoom() {
 		
-		if(confirm("채팅방을 나가시겠습니까?")) {
+		if(confirm("채팅방에서 나갈까요?")) {
 			
 			$.ajax({
 				type: "POST",
@@ -617,7 +617,7 @@
 				success: function(msg) {
 					
 					if(msg.result > 0) {
-						alert("방 나가기 성공");
+						alert("나가기가 완료되었어요!");
 						close();
 						
 					} else {
@@ -681,63 +681,64 @@
 	
 	<!-- START :: 채팅방 부트스트랩 -->
 	<div class="container content">
-			   	<div class="card">
-			   	
-			      	<!-- 헤더 -->
-			      	<div class="card-header">
-			      		<span class="card-title"></span><span class="online-count"></span><span id="bar-open-btn" onclick="barOpen();">참여자</span>
-			      	</div>	      	
-			      	
-			      	<!-- 오른쪽 메뉴 -->
-			      	<div class="menu-wrap">
-			      		<a id="bar-close-btn" onclick="hideMenu();">닫기</a>
-			      		
-			      		<!-- 채팅방 제목 수정 -->
-			      		<div id="chatroom-title" class="form-group">
-				      		<div>
-								<label for="CHATROOM_TITLE">채팅방 제목</label>
-							</div>
-							<div class="input-group input-group-sm">
-								<input type="text" class="form-control" id="CHATROOM_TITLE" name="CHATROOM_TITLE" autocomplete="off" required="required" />
-								<div class="input-group-append">
-									<button type="button" id="findbtn" class="btn btn-info" onclick="updateTitle();">수정하기</button>
-								</div>
-								<div id="title_result"></div><!-- 경고문이 들어갈 공간 -->
-							</div>
-			      		</div>
-			      		
-			      		<hr>
-			      		
-			      		<!-- 참여자 리스트 -->
-			      		<div id="member-list">
-				      		<div>대화상대</div>
-				      		<ul class="member-info list-group"></ul>
-			      		</div>
-			      		
-			      		<button type="button" class="btn btn-danger btn-sm" onclick="gooutRoom();" style="margin: 15px;">방 나가기</button>
-			      	</div>
-			      	
-			      	<a id="cover-close-btn" onclick="hideMenu();"></a>
-			      	
-			      	<!-- 메세지 내용 창 -->
-			      	<div class="nano has-scrollbar" style="height:570px">
-					    <div class="nano-content pad-all">
-			        		<ul class="chat-list">
-			        		</ul>
-			        	</div>
-			        </div>
-			        
-			        <!-- 메세지 입력/전송 창 -->
-			        <div class="portlet-footer">
-			        	<div class="row">
-		    				<div class="col-xs-9">
-		    					<input type="text" id="CHAT_CONTENT" placeholder="메세지를 입력해주세요." class="form-control form-control-sm">
-		    				</div>
-			    			<div class="col-xs-3">
-			    				<button class="btn btn-primary btn-sm" id="sendMessage" type="submit">전송</button>
-			    			</div>
-		    			</div>
-			        </div>
+	   	<div class="card">
+	   	
+	      	<!-- 헤더 -->
+	      	<div class="card-header">
+	      		<span class="card-title"></span><span class="online-count"></span><span id="bar-open-btn" onclick="barOpen();">참여자</span>
+	      	</div>	      	
+	      	
+	      	<!-- 오른쪽 메뉴 -->
+	      	<div class="menu-wrap">
+	      		<a id="bar-close-btn" onclick="hideMenu();">닫기</a>
+	      		
+	      		<!-- 채팅방 제목 수정 -->
+	      		<div id="chatroom-title" class="form-group">
+		      		<div>
+						<label for="CHATROOM_TITLE">채팅방 제목</label>
+					</div>
+					<div class="input-group input-group-sm">
+						<input type="text" class="form-control" id="CHATROOM_TITLE" name="CHATROOM_TITLE" autocomplete="off" required="required" />
+						<div class="input-group-append">
+							<button type="button" id="findbtn" class="btn btn-info" onclick="updateTitle();">수정하기</button>
+						</div>
+						<div id="title_result"></div><!-- 경고문이 들어갈 공간 -->
+					</div>
+	      		</div>
+	      		
+	      		<hr>
+	      		
+	      		<!-- 참여자 리스트 -->
+	      		<div id="member-list">
+		      		<div>대화상대</div>
+		      		<ul class="member-info list-group"></ul>
+	      		</div>
+	      		
+	      		<button type="button" class="btn btn-danger btn-sm" onclick="gooutRoom();" style="margin: 15px;">방 나가기</button>
+	      	</div>
+	      	
+	      	<a id="cover-close-btn" onclick="hideMenu();"></a>
+	      	
+	      	<!-- 메세지 내용 창 -->
+	      	<div class="nano has-scrollbar" style="height:570px">
+			    <div class="nano-content pad-all">
+	        		<ul class="chat-list">
+	        		</ul>
+	        	</div>
+	        </div>
+	        
+	        <!-- 메세지 입력/전송 창 -->
+	        <div class="portlet-footer">
+	        	<div class="row">
+    				<div class="col-xs-9">
+    					<input type="text" id="CHAT_CONTENT" placeholder="메세지를 입력해주세요." class="form-control form-control-sm">
+    				</div>
+	    			<div class="col-xs-3">
+	    				<button class="btn btn-primary btn-sm" id="sendMessage" type="submit">전송</button>
+	    			</div>
+    			</div>
+	        </div>
+	        
 	    </div>
 	</div>
 	<!-- END :: 채팅방 부트스트랩 -->

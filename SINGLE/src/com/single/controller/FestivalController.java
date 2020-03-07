@@ -17,6 +17,10 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(//
 		name = "festival", //
 		urlPatterns = { //
+				"festivalpage.do", // festival.jsp
+				"festivalapipage.do", // festivalapi.jsp
+				"detailapipage.do", // detailapi.jsp
+				"aroundpage.do", // around.jsp
 		})
 
 public class FestivalController extends HttpServlet {
@@ -30,6 +34,48 @@ public class FestivalController extends HttpServlet {
 
 		String command = request.getRequestURI();
 		System.out.println("[ " + command + " ]");
+
+		if (command.endsWith("/festivalpage.do")) {
+			festivalpage(request, response);
+		}
+
+		else if (command.endsWith("/festivalapipage.do")) {
+			festivalapipage(request, response);
+		}
+
+		else if (command.endsWith("/detailapipage.do")) {
+			detailapipage(request, response);
+		}
+
+		else if (command.endsWith("/aroundpage.do")) {
+			aroundpage(request, response);
+		}
+
+	}
+
+	private void aroundpage(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		dispatch("/views/festival/around.jsp", request, response);
+
+	}
+
+	private void detailapipage(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		dispatch("/views/festival/detailapi.jsp", request, response);
+
+	}
+
+	private void festivalapipage(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		dispatch("/views/festival/festivalapi.jsp", request, response);
+
+	}
+
+	private void festivalpage(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		dispatch("/views/festival/festival.jsp", request, response);
 	}
 
 	/*

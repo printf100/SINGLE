@@ -27,7 +27,6 @@
 		min-width: 300px;
 		max-width: 780px;
 		padding: 30px 100px 30px 100px;
-		margin-top: 50px;
 		box-shadow: 5px 5px 5px #999;
 		border: 10px solid #46b8da;
 		border-radius: 5px;
@@ -288,6 +287,11 @@
 	<div class="container">
 		<div class="text-center">
 			<p style="color:#46b8da; font-size: 30pt;"><strong>회원가입</strong>
+		</div>
+		
+		<div class="join-link">
+			<p style="color: gray; font-size: 10pt;">이미 계정이 있으신가요?
+			<a href="/SINGLE/member/loginpage.do" style="color: #46b8da; font-size: 9pt;">로그인하기 ></a>
 		</div>
 		
 		<!-- START :: SNS 로그인 버튼 -->

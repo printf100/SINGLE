@@ -146,7 +146,7 @@
 				success: function(msg) {
 					
 					if(msg.result > 0) {
-						alert("프로필 이미지 수정이 완료되었습니다." + msg.img);
+						alert("프로필 이미지 수정이 완료되었어요!" + msg.img);
 						$("#img").attr("src", "../resources/images/profileimg/" + msg.img);
 					} else {
 						alert("프로필 이미지 수정을 실패하였습니다.");
@@ -207,7 +207,7 @@
 				success: function(msg) {
 					
 					if(msg.result > 0) {
-						alert("프로필 수정이 완료되었습니다.");
+						alert("프로필 수정이 완료되었어요!");
 					} else {
 						alert("프로필 수정을 실패하였습니다.");
 					}
@@ -288,8 +288,8 @@
 						<hr>
 						
 						<div class="form-group">
-							<label for="">내 위치 설정하기</label>
-							<em style="color:gray; font-size:8pt;">검색 후 지도를 클릭하거나 마커를 이동해주세요!</em>
+							<label class="required">내 위치 설정하기</label>
+							<em style="color:gray; font-size:9pt;">검색 후 지도를 클릭하거나 마커를 이동해주세요!</em>
 						</div>
 						
 						<!-- 주소 검색 -->

@@ -303,7 +303,7 @@
  				success: function(msg) {
  					
  					if(msg.result > 0) {
- 						alert("기존 채팅방을 불러옵니다. " + msg.CHATROOM_CODE);
+ 						alert("기존 채팅방을 불러옵니다.");
  						$("#CHATROOM_CODE").val(msg.CHATROOM_CODE);
  					} else {
  						alert("채팅방을 새로 생성합니다.");
@@ -478,7 +478,7 @@
 				success: function(msg) {
 					
 					if(msg.result > 0) {
-						alert("이미 참여중인 채팅방입니다.");
+						alert("이미 참여중인 채팅방이에요!");
 
 						// 채팅방 팝업창 띄우기
 						var url = "/SINGLE/views/chat/nchatroom.jsp";
@@ -488,8 +488,8 @@
 						
 					} else {
 						// 예 누를 시 mylist에 insert
-						if(confirm("채팅방에 참여하시겠습니까?")) {
-							alert("채팅방에 참여합니다.");
+						if(confirm("채팅방에 참여할까요?")) {
+							alert("채팅방에 참여합니다!");
 							
 							$.ajax({
 								type: "POST",
@@ -502,9 +502,9 @@
 								success: function(msg) {
 									
 									if(msg.result > 0) {
-										alert("mylist insert 성공");
+										console.log("mylist insert 성공");
 									} else {
-										alert("mylist insert 실패");
+										console.log("mylist insert 실패");
 									}
 									
 								},
@@ -683,7 +683,7 @@
 				 				});
 				 				
 							} else {
-								alert("채팅방 목록이 없습니다.");
+								alert("검색된 채팅방이 없습니다.");
 							}
 						},
 						error: function() {

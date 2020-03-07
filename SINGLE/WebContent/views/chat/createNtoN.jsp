@@ -58,7 +58,7 @@
 				success: function(msg) {
 					
 					if(msg.result > 0) {
-						alert("방 만들기 성공");
+						alert("방 만들기를 성공했어요!");
 						var CHATROOM_CODE = $("#CHATROOM_CODE").val(msg.CHATROOM_CODE);
 						
 						// 채팅방 팝업창 띄우기
