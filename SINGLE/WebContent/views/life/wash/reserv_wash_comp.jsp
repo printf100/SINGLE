@@ -17,6 +17,75 @@
 <title>세탁 도우미</title>
 
 <!-- START :: CSS -->
+<style type="text/css">
+
+	@import url('https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap');
+	
+	body {
+		font-family: 'Noto Sans KR';
+	}
+
+	.navbar a {
+		color: #000;
+		font-weight: 700;
+	}
+	
+	.navbar {
+		position: relative;
+		display: flex;
+		padding: 0.375rem 1rem;
+		height: 80px;
+		border-bottom: 1px solid lightgray;
+	}
+	
+	.navbar-collapse {
+		flex-grow: 1;
+		align-items: center;
+	}
+	
+	.nav-link {
+		padding: 0.25rem 1rem;
+	}
+	
+	.member-info {
+		display: flex;
+		margin-bottom: 0.25rem;
+		padding: 0.6875rem 1rem 1rem 1rem;
+		border-bottom: 0.0625rem solid #E9ECF3;
+		color: #263747;
+	}
+	
+	.rounded {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	
+	.profile-img {
+		width: 2.5rem;
+		height: 2.5rem;
+		border-radius: 0.25rem;
+	}
+		
+	.info-text {
+		margin-left: 1rem;
+		-webkit-font-smoothing: antialiased;
+	}
+	
+	.title-text {
+		font-weight: 700;
+	}
+	
+	.dropdown-item {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0.125rem 0.875rem;
+		color: #263747;
+		font-weight: 500;
+	}
+	
+</style>
 <!-- END :: CSS -->
 
 <!-- START :: JAVASCRIPT -->

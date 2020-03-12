@@ -61,90 +61,111 @@
 		
 		$("#SUBMIT").attr("disabled", "disabled");
 		$("#email_auth").attr("disabled", "disabled");
+		
+		// 이메일 정규식
+		var regExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;	
+		
 
 		// 이메일을 받았다면 받은 이메일로 입력되도록!
 		if(SNS_EMAIL != null && SNS_EMAIL != "") {
-			
 			$("#MEMBER_EMAIL").val(SNS_EMAIL);
-			$("#email_auth").attr("style", "display: none");
-		
-		} else { // 제공 동의 안했으면 이메일 체크 들어가기
 			
-			// 이메일 정규식
-			var regExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;	
-			
-			// 이메일 체크
-			$("#MEMBER_EMAIL").keyup(function() {
-				
-				if($("#MEMBER_EMAIL").val() != null && $("#MEMBER_EMAIL").val() != ""){
+			// 이메일 중복 체크
+			$.ajax({
+				type: "POST",
+				url: "/SINGLE/member/emailCheck.do",
+				data: { MEMBER_EMAIL : $("#MEMBER_EMAIL").val() },
+				dataType: "JSON",
+				success: function(msg) {
 					
-					// 이메일 형식인지 체크
-					if(regExp.test($("#MEMBER_EMAIL").val())) {
-						
-						// 이메일 중복 체크
-						$.ajax({
-							type: "POST",
-							url: "/SINGLE/member/emailCheck.do",
-							data: { MEMBER_EMAIL : $("#MEMBER_EMAIL").val() },
-							dataType: "JSON",
-							success: function(msg) {
-								
-								if(msg.result > 0) {
-									$("#email_check").text("이미 사용중인 이메일입니다.");
-									$("#email_check").attr("style", "color:red");
-									
-								} else {
-									$("#email_auth").removeAttr("disabled");
-									
-									$("#email_check").text("사용 가능한 이메일입니다. 이메일 인증을 진행해주세요.");
-									$("#email_check").attr("style", "color:blue");
-								}
-							},
-							error: function() {
-								alert("이메일 중복체크 통신 실패");
-							}
-						});
+					if(msg.result > 0) {
+						$("#email_check").text("이미 사용중인 이메일입니다.");
+						$("#email_check").attr("style", "color:red");
 						
 					} else {
-						$("#email_check").text("이메일 형식이 아닙니다.");
-						$("#email_check").attr("style", "color:red");
+						$("#email_auth").removeAttr("disabled");
+						
+						$("#email_check").text("사용 가능한 이메일입니다. 이메일 인증을 진행해주세요.");
+						$("#email_check").attr("style", "color:blue");
 					}
-					
-				} else {
-					$("#email_check").text("필수 정보입니다.");
-					$("#email_check").attr("style", "color:red");
+				},
+				error: function() {
+					alert("이메일 중복체크 통신 실패");
 				}
 			});
+		}
+
+		// 이메일 체크
+		$("#MEMBER_EMAIL").keyup(function() {
+			
+			if($("#MEMBER_EMAIL").val() != null && $("#MEMBER_EMAIL").val() != ""){
+				
+				// 이메일 형식인지 체크
+				if(regExp.test($("#MEMBER_EMAIL").val())) {
+					
+					// 이메일 중복 체크
+					$.ajax({
+						type: "POST",
+						url: "/SINGLE/member/emailCheck.do",
+						data: { MEMBER_EMAIL : $("#MEMBER_EMAIL").val() },
+						dataType: "JSON",
+						success: function(msg) {
+							
+							if(msg.result > 0) {
+								$("#email_check").text("이미 사용중인 이메일입니다.");
+								$("#email_check").attr("style", "color:red");
+								
+							} else {
+								$("#email_auth").removeAttr("disabled");
+								
+								$("#email_check").text("사용 가능한 이메일입니다. 이메일 인증을 진행해주세요.");
+								$("#email_check").attr("style", "color:blue");
+							}
+						},
+						error: function() {
+							alert("이메일 중복체크 통신 실패");
+						}
+					});
+					
+				} else {
+					$("#email_check").text("이메일 형식이 아닙니다.");
+					$("#email_check").attr("style", "color:red");
+				}
+				
+			} else {
+				$("#email_check").text("필수 정보입니다.");
+				$("#email_check").attr("style", "color:red");
+			}
+		});
+		
+		// 이메일 인증
+		$("#email_auth").click(function() {
+			
+			$("#email_check").text("이메일 인증 진행중...");
+			$("#email_check").attr("style", "color:green");
 			
 			// 이메일 인증
-			$("#email_auth").click(function() {
-				
-				$("#email_check").text("이메일 인증 진행중...");
-				$("#email_check").attr("style", "color:green");
-				
-				// 이메일 인증
-				$.ajax({
-					type: "POST",
-					url: "/SINGLE/member/emailAuth.do",
-					data: { MEMBER_EMAIL : $("#MEMBER_EMAIL").val() },
-					dataType: "JSON",
-					success: function(msg) {
-						alert("입력하신 이메일로 인증번호가 전송되었습니다.")
+			$.ajax({
+				type: "POST",
+				url: "/SINGLE/member/emailAuth.do",
+				data: { MEMBER_EMAIL : $("#MEMBER_EMAIL").val() },
+				dataType: "JSON",
+				success: function(msg) {
+					alert("입력하신 이메일로 인증번호가 전송되었습니다.")
 
-						$("#emailAuthHiddenForm input[name='authNum']").val(msg.authNum);
-						
-						// 인증번호 입력 팝업창
-						var url = "/SINGLE/views/member/joinemailauth.jsp";
-	            		var title = "";
-	            		var prop = "top=200px,left=600px,width=585px,height=400px";
-	            		window.open(url, title, prop);
-					},
-					error: function() {
-						alert("이메일 인증 통신 실패");
-					}
-				});
+					$("#emailAuthHiddenForm input[name='authNum']").val(msg.authNum);
+					
+					// 인증번호 입력 팝업창
+					var url = "/SINGLE/views/member/joinemailauth.jsp";
+            		var title = "";
+            		var prop = "top=200px,left=600px,width=585px,height=400px";
+            		window.open(url, title, prop);
+				},
+				error: function() {
+					alert("이메일 인증 통신 실패");
+				}
 			});
-		}
+		});
 		
 		// 닉네임 체크
 		$("#MEMBER_NICKNAME").keyup(function() {

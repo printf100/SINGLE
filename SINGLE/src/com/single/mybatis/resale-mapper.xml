@@ -84,8 +84,8 @@
 	
 	<!-- 중고 게시판 검색어 출력 -->
 	<select id="ResaleSearchList" parameterType="map" resultType="RESALE">
-		SELECT COUNT(*)
-		FROM RESALE 
+		SELECT *
+		FROM RESALE JOIN MEMBER USING (MEMBER_CODE)
 		WHERE 
 			<if test="how == 0">
 				RESALE_TITLE LIKE '%'||#{kwd}||'%' 
@@ -97,7 +97,7 @@
 				RESALE_TITLE LIKE '%'||#{kwd}||'%' OR RESALE_CONTENT LIKE '%'||#{kwd}||'%'
 			</if>
 			<if test="how == 3">
-				MEMBER_CODE LIKE '%'||#{kwd}||'%' 
+				MEMBER_NICKNAME LIKE '%'||#{kwd}||'%'
 			</if>
 	</select>
 	

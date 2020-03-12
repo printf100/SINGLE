@@ -402,14 +402,13 @@ public class MemberController extends HttpServlet {
 
 		if (loginMember != null) {
 			MemberProfileDTO profile = biz.selectMemberProfile(loginMember.getMEMBER_CODE());
-			System.out.println(profile);
 
 			obj.put("result", 1);
 			loginMember.setMEMBER_PASSWORD(""); // 세션에는 비밀번호를 담아다니지 않도록! 위험위험
 			profile.setMEMBER_PASSWORD("");
 
 			session = request.getSession();
-			session.setAttribute("loginMember", loginMember);
+			session.setAttribute("loginMember", profile);
 			session.setAttribute("profile", profile);
 			session.removeAttribute("RSAprivateKey");
 
@@ -463,9 +462,9 @@ public class MemberController extends HttpServlet {
 
 			if (kakao_member != null) {
 				MemberProfileDTO profile = biz.selectMemberProfile(kakao_member.getMEMBER_CODE());
-
+				
 				session = request.getSession();
-				session.setAttribute("loginKakao", kakao_member);
+				session.setAttribute("loginKakao", profile);
 				session.setAttribute("profile", profile);
 				session.setAttribute("access_token", access_token);
 				session.setMaxInactiveInterval(60 * 60);
@@ -483,7 +482,7 @@ public class MemberController extends HttpServlet {
 				MemberProfileDTO profile = biz.selectMemberProfile(naver_member.getMEMBER_CODE());
 
 				session = request.getSession();
-				session.setAttribute("loginNaver", naver_member);
+				session.setAttribute("loginNaver", profile);
 				session.setAttribute("profile", profile);
 				session.setMaxInactiveInterval(60 * 60);
 
@@ -510,9 +509,9 @@ public class MemberController extends HttpServlet {
 
 		session = request.getSession();
 
-		MemberDTO loginMember = (MemberDTO) session.getAttribute("loginMember");
-		KakaoMemberDTO loginKakao = (KakaoMemberDTO) session.getAttribute("loginKakao");
-		NaverMemberDTO loginNaver = (NaverMemberDTO) session.getAttribute("loginNaver");
+		MemberProfileDTO loginMember = (MemberProfileDTO) session.getAttribute("loginMember");
+		MemberProfileDTO loginKakao = (MemberProfileDTO) session.getAttribute("loginKakao");
+		MemberProfileDTO loginNaver = (MemberProfileDTO) session.getAttribute("loginNaver");
 
 		int MEMBER_CODE = 0;
 
@@ -680,9 +679,9 @@ public class MemberController extends HttpServlet {
 
 		session = request.getSession();
 
-		MemberDTO loginMember = (MemberDTO) session.getAttribute("loginMember");
-		KakaoMemberDTO loginKakao = (KakaoMemberDTO) session.getAttribute("loginKakao");
-		NaverMemberDTO loginNaver = (NaverMemberDTO) session.getAttribute("loginNaver");
+		MemberProfileDTO loginMember = (MemberProfileDTO) session.getAttribute("loginMember");
+		MemberProfileDTO loginKakao = (MemberProfileDTO) session.getAttribute("loginKakao");
+		MemberProfileDTO loginNaver = (MemberProfileDTO) session.getAttribute("loginNaver");
 
 		int MEMBER_CODE = 0;
 
@@ -803,7 +802,7 @@ public class MemberController extends HttpServlet {
 		// 사이트 로그인 회원일 때만!
 		if (session.getAttribute("loginMember") != null) {
 
-			int MEMBER_CODE = (((MemberDTO) session.getAttribute("loginMember")).getMEMBER_CODE());
+			int MEMBER_CODE = (((MemberProfileDTO) session.getAttribute("loginMember")).getMEMBER_CODE());
 			System.out.println(MEMBER_CODE);
 
 			MemberDTO member = biz.loginMember(MEMBER_CODE);

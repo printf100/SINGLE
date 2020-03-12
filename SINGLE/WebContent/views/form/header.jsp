@@ -117,15 +117,17 @@
 		
 		// 브라우저 지원 여부 체크
 		if(!("Notification" in window)) {
-			alert("데스크탑 알림을 제공하지 않는 브라우저입니다.");
+			console.log("데스크탑 알림을 제공하지 않는 브라우저입니다.");
 		}
 		
 		// 데스크탑 알림 권한 요청
 		Notification.requestPermission(function (result) {
 			// 권한 거절
 			if(result == "denied") {
-				alert("알림을 차단하셨습니다.\n브라우저의 사이트 설정에서 변경하실 수 있습니다.");
+				console.log("알림을 차단하셨습니다.\n브라우저의 사이트 설정에서 변경하실 수 있습니다.");
 				return false;
+			} else {
+				console.log("알림이 허용되었습니다.");
 			}
 		});
 		
@@ -134,16 +136,16 @@
 		* 웹 소켓
 		*/
 		
-		var ws = new WebSocket("ws://localhost:8090/SINGLE/websocket_note");
+		var ws = new WebSocket("ws://qclass.iptime.org:8787/SINGLE/websocket_note");
 		
 		// 웹 소켓 연결이 해제됐을 때
 		ws.onclose = function(e) {
-			alert("웹소켓 연결 해제됨");
+			console.log("웹소켓 연결 해제됨");
 		};
 		
 		// 웹 소켓 에러
 		ws.onerror = function(e) {
-			alert("웹소켓 에러");
+			console.log("웹소켓 에러");
 		};
 		
 		// 쪽지가 온 경우
@@ -223,7 +225,7 @@
 							<div class="dropdown-menu dropdown-menu-right">
 								<div class="member-info">
 									<div class="profile-img">
-										<img class="rounded" alt="${profile.MEMBER_NICKNAME }" src="../resources/images/profileimg/${profile.MPROFILE_IMG_SERVERNAME }">
+										<img class="rounded" alt="${profile.MEMBER_NICKNAME }" src="${pageContext.request.contextPath}/resources/images/profileimg/${profile.MPROFILE_IMG_SERVERNAME }">
 									</div>
 									<div class="info-text">
 										<h6 class="title-text">${profile.MEMBER_NICKNAME }</h6>

@@ -14,7 +14,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>SINGLE</title>
 
 <!-- START :: CSS -->
 <style type="text/css">
@@ -119,7 +119,7 @@ thead{
 			return false;
 		});
 	
-	// 댓글 작성
+		// 댓글 작성
 		$('#replyWrite').click(function(){			
 			
 			var content = $("#replyContent").val();
@@ -170,7 +170,7 @@ thead{
 		});
 	
 	
-	// 댓글 삭제
+		// 댓글 삭제
 		$('.replyDelete').submit(function(){
 			
 			var confirmDelete = window.confirm("삭제 하시겠습니까?");
@@ -207,13 +207,15 @@ thead{
 <!-- END :: JAVASCRIPT -->
 </head>
 <body>
-
+	<input type="hidden" id="RESALE_CODE" value="${dto.RESALE_CODE }">
+	<input type="hidden" id="MEMBER_CODE" value="${sessionLoginMember.MEMBER_CODE }${sessionLoginKakao.MEMBER_CODE }${sessionLoginNaver.MEMBER_CODE }">
+	
 	<div class="container">
 		<a id="interest_list" href="/SINGLE/board/resaleInterestList.do?&MEMBER_CODE=${sessionLoginMember.MEMBER_CODE }${sessionLoginKakao.MEMBER_CODE }${sessionLoginNaver.MEMBER_CODE }" >관심 페이지로 가기</a>
 
 		<!-- START :: 중고 게시판 글 목록 -->
 		<div id="img_box">
-			<img class="img-thumbnail" id="resaleImage" src="../resources/resaleImages/${dto.RESALE_IMG_ORIGINAL }" style="float:none; margin:0 auto; text-align: center;" />
+			<img class="img-thumbnail" id="resaleImage" src="${pageContext.request.contextPath}/resources/resaleImages/${dto.RESALE_IMG_ORIGINAL }" style="float:none; margin:0 auto; text-align: center;" />
 		</div>
 	
 		<table class="table table-bordered">
@@ -229,19 +231,17 @@ thead{
 					<td>${memdto.MEMBER_NICKNAME }</td>
 					<td class="title_bold" colspan="2">관심등록</td>
 					<c:choose>
-						<c:when test="${dto.MEMBER_CODE ne sessionLoginMember.MEMBER_CODE }">
+						<c:when test="${dto.MEMBER_CODE ne sessionLoginMember.MEMBER_CODE || dto.MEMBER_CODE ne sessionLoginKakao.MEMBER_CODE || dto.MEMBER_CODE ne sessionLoginNaver.MEMBER_CODE }">
 							<td>
 								<a href="#" id="interest">
-								<img src="../resources/Images/star.png" style="width:20px; height:20px;" />
-									<input type="hidden" id="RESALE_CODE" value="${dto.RESALE_CODE }">
-									<input type="hidden" id="MEMBER_CODE" value="${sessionLoginMember.MEMBER_CODE }${sessionLoginKakao.MEMBER_CODE }${sessionLoginNaver.MEMBER_CODE }">
+									<img src="${pageContext.request.contextPath}/resources/images/icon/star.png" style="width:20px; height:20px;" />
 								</a>
 							</td>
 						</c:when>
 						<c:otherwise>
 							<td>
 								<a href="#" id="alreadyInterest">
-									<img src="../resources/Images/black_star.png" style="width:20px; height:20px;"/>
+									<img src="${pageContext.request.contextPath}/resources/images/icon/black_star.png" style="width:20px; height:20px;"/>
 								</a>
 							</td>
 						</c:otherwise>
@@ -268,7 +268,7 @@ thead{
 		<div style="text-align: center;">
 			<input type="button" class="btn btn-outline-info" value="목록" onclick="location.href='/SINGLE/board/resalepage.do'"/>
 			
-			<c:if test="${dto.MEMBER_CODE eq sessionLoginMember.MEMBER_CODE }">
+			<c:if test="${dto.MEMBER_CODE eq sessionLoginMember.MEMBER_CODE || dto.MEMBER_CODE eq sessionLoginKakao.MEMBER_CODE || dto.MEMBER_CODE eq sessionLoginNaver.MEMBER_CODE }">
 				<input type="button" class="btn btn-warning" value="수정" onclick="location.href='/SINGLE/board/resaleUpdate.do?&RESALE_CODE=${dto.RESALE_CODE }&RESALE_IMG_SERVER=${dto.RESALE_IMG_SERVER }'"/>
 				<input type="button" class="btn btn-danger" value="삭제" onclick="location.href='/SINGLE/board/resaleDelete.do?&RESALE_CODE=${dto.RESALE_CODE }&RESALE_IMG_SERVER=${dto.RESALE_IMG_SERVER }'"/>
 			</c:if>
@@ -293,7 +293,7 @@ thead{
 									<td class="replyContent">${replyDto.REPLY_CONTENT }</td>
 									<td class="replyRegdate">${replyDto.REPLY_REGDATE }</td>
 									
-										<c:if test="${replyDto.MEMBER_CODE eq sessionLoginMember.MEMBER_CODE }">
+										<c:if test="${replyDto.MEMBER_CODE eq sessionLoginMember.MEMBER_CODE || replyDto.MEMBER_CODE eq sessionLoginKakao.MEMBER_CODE || replyDto.MEMBER_CODE eq sessionLoginNaver.MEMBER_CODE}">
 											<td class="replyDelete">
 												<form class="replyDelete" method="post">
 													<input type="hidden" name="REPLY_CODE" value="${replyDto.REPLY_CODE }"/>

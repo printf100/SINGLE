@@ -19,6 +19,7 @@ import com.single.model.biz.note.NoteBiz;
 import com.single.model.biz.note.NoteBizImpl;
 import com.single.model.dto.member.KakaoMemberDTO;
 import com.single.model.dto.member.MemberDTO;
+import com.single.model.dto.member.MemberProfileDTO;
 import com.single.model.dto.member.NaverMemberDTO;
 import com.single.model.dto.note.MyNoteListDTO;
 import com.single.model.dto.note.NoteDTO;
@@ -89,9 +90,9 @@ public class NoteController extends HttpServlet {
 
 		session = request.getSession();
 
-		MemberDTO loginMember = (MemberDTO) session.getAttribute("loginMember");
-		KakaoMemberDTO loginKakao = (KakaoMemberDTO) session.getAttribute("loginKakao");
-		NaverMemberDTO loginNaver = (NaverMemberDTO) session.getAttribute("loginNaver");
+		MemberProfileDTO loginMember = (MemberProfileDTO) session.getAttribute("loginMember");
+		MemberProfileDTO loginKakao = (MemberProfileDTO) session.getAttribute("loginKakao");
+		MemberProfileDTO loginNaver = (MemberProfileDTO) session.getAttribute("loginNaver");
 
 		int MEMBER_CODE = 0;
 
@@ -154,9 +155,9 @@ public class NoteController extends HttpServlet {
 
 		session = request.getSession();
 
-		MemberDTO loginMember = (MemberDTO) session.getAttribute("loginMember");
-		KakaoMemberDTO loginKakao = (KakaoMemberDTO) session.getAttribute("loginKakao");
-		NaverMemberDTO loginNaver = (NaverMemberDTO) session.getAttribute("loginNaver");
+		MemberProfileDTO loginMember = (MemberProfileDTO) session.getAttribute("loginMember");
+		MemberProfileDTO loginKakao = (MemberProfileDTO) session.getAttribute("loginKakao");
+		MemberProfileDTO loginNaver = (MemberProfileDTO) session.getAttribute("loginNaver");
 
 		int MEMBER_CODE = 0;
 

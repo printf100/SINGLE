@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.single.search-mapper">
+
+	<select id="memberList" resultType="MEMBERPROFILE">
+		SELECT * FROM MEMBER M , MEMBERPROFILE F
+		WHERE M.MEMBER_CODE = F.MEMBER_CODE AND NOT F.MEMBER_CODE = #{MEMBER_CODE}
+	</select>
+	
+</mapper>

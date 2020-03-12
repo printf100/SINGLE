@@ -19,9 +19,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import com.single.model.dto.member.KakaoMemberDTO;
-import com.single.model.dto.member.MemberDTO;
-import com.single.model.dto.member.NaverMemberDTO;
+import com.single.model.dto.member.MemberProfileDTO;
 
 @ServerEndpoint(value = "/websocket_note", configurator = ChatConfigurator.class)
 public class NoteSocket {
@@ -49,9 +47,9 @@ public class NoteSocket {
 
 		httpSession = (HttpSession) config.getUserProperties().get(ChatConfigurator.Session);
 
-		MemberDTO loginMember = (MemberDTO) httpSession.getAttribute("loginMember");
-		KakaoMemberDTO loginKakao = (KakaoMemberDTO) httpSession.getAttribute("loginKakao");
-		NaverMemberDTO loginNaver = (NaverMemberDTO) httpSession.getAttribute("loginNaver");
+		MemberProfileDTO loginMember = (MemberProfileDTO) httpSession.getAttribute("loginMember");
+		MemberProfileDTO loginKakao = (MemberProfileDTO) httpSession.getAttribute("loginKakao");
+		MemberProfileDTO loginNaver = (MemberProfileDTO) httpSession.getAttribute("loginNaver");
 
 		if (httpSession.getAttribute("loginMember") != null) {
 			MEMBER_CODE = loginMember.getMEMBER_CODE();

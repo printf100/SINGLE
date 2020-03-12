@@ -257,7 +257,7 @@ public class BoardController extends HttpServlet {
 		} else {
 			int res = rebiz.multiDelete(RESALE_CODE, MEMBER_CODE);
 			if (res > 0) {
-				jsResponse("삭제 성공했습니다.", "/SINGLE/board/resaleInterestList.do?MEMBER_CODE=" + MEMBER_CODE, response);
+				jsResponse("관심리스트에서 삭제를 성공했어요!", "/SINGLE/board/resaleInterestList.do?MEMBER_CODE=" + MEMBER_CODE, response);
 			} else {
 				jsResponse("삭제 실패했습니다", "/SINGLE/board/resaleInterestList.do?MEMBER_CODE=" + MEMBER_CODE, response);
 			}
@@ -325,9 +325,9 @@ public class BoardController extends HttpServlet {
 		int res = rebiz.ResaleDelete(RESALE_CODE);
 
 		if (res > 0) {
-			jsResponse("삭제 성공했습니다.", "/SINGLE/board/resalepage.do", response);
+			jsResponse("삭제를 성공했어요!", "/SINGLE/board/resalepage.do", response);
 		} else {
-			jsResponse("삭제 실패했습니다.", "/SINGLE/board/resaleDelete.do?RESALE_CODE=" + RESALE_CODE + "&RESALE_IMG_SERVER="
+			jsResponse("삭제를 실패했습니다.", "/SINGLE/board/resaleDelete.do?RESALE_CODE=" + RESALE_CODE + "&RESALE_IMG_SERVER="
 					+ RESALE_IMG_SERVER, response);
 		}
 
@@ -407,9 +407,9 @@ public class BoardController extends HttpServlet {
 		int res = rebiz.ResaleUpdate(redto);
 
 		if (res > 0) {
-			jsResponse("글 수정 성공", "/SINGLE/board/resaleDetail.do?&RESALE_CODE=" + RESALE_CODE, response);
+			jsResponse("수정을 성공했어요!", "/SINGLE/board/resaleDetail.do?&RESALE_CODE=" + RESALE_CODE, response);
 		} else {
-			jsResponse("글 수정 실패", "/SINGLE/board/resaleUpdate.do?&RESALE_CODE=" + RESALE_CODE, response);
+			jsResponse("수정 실패했습니다.", "/SINGLE/board/resaleUpdate.do?&RESALE_CODE=" + RESALE_CODE, response);
 		}
 
 	}
@@ -473,7 +473,6 @@ public class BoardController extends HttpServlet {
 		if (!isDir.isDirectory()) {
 			System.out.println("디렉토리가 없습니다. 디렉토리를 새로 생성합니다.");
 			isDir.mkdir();
-
 		}
 
 		System.out.println(BOARD_IMG_PATH);
@@ -516,9 +515,9 @@ public class BoardController extends HttpServlet {
 		int res = rebiz.ResaleWrite(resaleDto);
 
 		if (res > 0) {
-			jsResponse("글쓰기 성공", "/SINGLE/board/resaleMainList.do", response);
+			jsResponse("글쓰기를 성공했어요!", "/SINGLE/board/resaleMainList.do", response);
 		} else {
-			jsResponse("글쓰기 실패", "/SINGLE/board/resaleWrite.do", response);
+			jsResponse("글쓰기를 실패했어요", "/SINGLE/board/resaleWrite.do", response);
 
 		}
 
@@ -550,7 +549,7 @@ public class BoardController extends HttpServlet {
 			System.out.println(condition);
 
 			Paging paging = new Paging();
-			paging.makeLastPageNum(Integer.parseInt(option), condition);
+			paging.resaleMakeLastPageNum(Integer.parseInt(option), condition);
 
 			int curPage = 1; // 현재 페이지
 
@@ -586,7 +585,7 @@ public class BoardController extends HttpServlet {
 			System.out.println("검색어가 없습니다");
 
 			Paging paging = new Paging();
-			paging.makeLastPageNum();
+			paging.resaleMakeLastPageNum();
 
 			int curPage = 1; // 현재 페이지
 
@@ -623,20 +622,13 @@ public class BoardController extends HttpServlet {
 		System.out.println("공지 삭제 들어왔다!!");
 
 		int BOARD_CODE = Integer.parseInt(request.getParameter("BOARD_CODE"));
-		String FILE_SERVER = request.getParameter("FILE_SERVER");
-
-		File file = new File(FILE_SERVER);
-
-		if (file.exists()) {
-			file.delete();
-		}
 
 		int res = biz.NoticeDelete(BOARD_CODE);
 
 		if (res > 0) {
-			jsResponse("글 삭제 성공", "/SINGLE/board/noticepage.do", response);
+			jsResponse("삭제를 성공했어요!", "/SINGLE/board/noticepage.do", response);
 		} else {
-			jsResponse("글 삭제 실패", "/SINGLE/board/noticeDetail.do", response);
+			jsResponse("삭제를 실패했어요", "/SINGLE/board/noticeDetail.do", response);
 		}
 
 	}
@@ -696,9 +688,9 @@ public class BoardController extends HttpServlet {
 		int res = biz.NoticeUpdateWithFile(dto);
 
 		if (res > 0) {
-			jsResponse("글 수정 성공", "/SINGLE/board/noticeDetail.do?&BOARD_CODE=" + BOARD_CODE, response);
+			jsResponse("수정을 성공했어요!", "/SINGLE/board/noticeDetail.do?&BOARD_CODE=" + BOARD_CODE, response);
 		} else {
-			jsResponse("글 수정 실패", "/SINGLE/board/noticeUpdate.do?&BOARD_CODE=" + BOARD_CODE, response);
+			jsResponse("수정을 실패했어요", "/SINGLE/board/noticeUpdate.do?&BOARD_CODE=" + BOARD_CODE, response);
 
 		}
 
@@ -782,9 +774,9 @@ public class BoardController extends HttpServlet {
 
 		if (res > 0) {
 
-			jsResponse("글이 작성되었습니다.", "/SINGLE/board/noticepage.do", response);
+			jsResponse("글이 작성되었어요!", "/SINGLE/board/noticepage.do", response);
 		}
-		jsResponse("글 작성 실패했습니다.", "/SINGLE/board/noticepage.do", response);
+		jsResponse("글 작성을 실패했어요", "/SINGLE/board/noticepage.do", response);
 
 	}
 

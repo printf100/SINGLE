@@ -47,48 +47,13 @@ public class ReplyBizImpl implements ReplyBiz {
 			return res;
 		}
 	}
-	/*
-	 * @Override public int ReplyCountUpdate(int REPLY_CODE) { return
-	 * dao.ReplyCountUpdate(REPLY_CODE); }
-	 */
 
-	@Override
-	public int ReplyUpdate(ReplyDTO dto) {
-		return dao.ReplyUpdate(dto);
-	}
 
 	@Override
 	public int ReplyDelete(int REPLY_CODE) {
 		return dao.ReplyDelete(REPLY_CODE);
 	}
 
-	@Override
-	public int ReplyCount(int REPLY_CODE, int RESALE_CODE) {
-		return dao.ReplyCount(REPLY_CODE, RESALE_CODE);
-	}
 
-	@Override
-	public int ReplyLikeUpdate(int REPLY_CODE, int RESALE_CODE) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int ReplyLikeDelete(int REPLY_CODE, int RESALE_CODE) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int ReplyLike(int REPLY_CODE, int RESALE_CODE) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int ReplyLikeCount(ReplyLikesDTO replyDto) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
 }

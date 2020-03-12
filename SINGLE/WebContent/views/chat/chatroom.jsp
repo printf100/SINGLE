@@ -11,13 +11,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Insert title here</title>
+<title>SINGLE</title>
 
 <!-- START :: CSS -->
 <link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
-<link href="/SINGLE/resources/css/master.css" rel="stylesheet" type="text/css">
 <style type="text/css">
 
 	html {
@@ -235,7 +234,7 @@
 		// hidden에 값 셋팅
 		$("#MY_MEMBER_CODE").val($(opener.document).find("#MY_MEMBER_CODE").val());
 		$("#MY_NICKNAME").val($(opener.document).find("#MY_NICKNAME").val());
-		$("#MY_IMG").val("../" + $(opener.document).find("#MY_IMG").val());
+		$("#MY_IMG").val($(opener.document).find("#MY_IMG").val());
 		
 		$("#TO_MEMBER_CODE").val($(opener.document).find("#TO_MEMBER_CODE").val());
 		
@@ -254,7 +253,7 @@
 				if(msg.result > 0) {
 					
 					// hidden에 값 셋팅 (불러쓰기 편하려고)
-					$("#TO_IMG").val("../../resources/images/profileimg/" + msg.to_img);
+					$("#TO_IMG").val("${pageContext.request.contextPath}/resources/images/profileimg/" + msg.to_img);
 					$("#TO_NICKNAME").val(msg.to_nickname);
 					$(".card-title").text(msg.to_nickname);
 					
@@ -312,7 +311,7 @@
 		/*
 		* 웹 소켓
 		*/
-		var ws = new WebSocket("ws://localhost:8090/SINGLE/websocket");
+		var ws = new WebSocket("ws://qclass.iptime.org:8787/SINGLE/websocket");
 		
 		// 웹 소켓이 연결됐을 때
 		ws.onopen = function(e) {
@@ -335,27 +334,32 @@
 											'<p style="color:black;">ERROR');
 		};
 		
-		
-		// 현재 시간
-		var date = new Date();
-		var dateInfo = isTwo(date.getHours()) + ":" + isTwo(date.getMinutes());
-		
 		// 메세지가 온 경우
 		ws.onmessage = function(e) {
 			var data = JSON.parse(e.data);
 			
-			$(".chat-list").append('<li class="in">' +
-											'<div class="chat-img">' +
-												'<img class="to" src="../resources/images/profileimg/' + data.profileimg + '">' +
-											'</div>' +
-											'<div class="chat-body">' +
-												'<div class="chat-message">' +
-													'<h5>' + data.nickname + '</h5>' +
-													'<p>' + data.message + '</p>' +
-													'<small class="timestamp">' + dateInfo + '</small>' +
-												'</div>' +
-											'</div>');
+			// 현재 시간
+			var date = new Date();
+			var dateInfo = isTwo(date.getHours()) + ":" + isTwo(date.getMinutes());
 			
+			console.log(data.chatroom_code);
+			
+			if(data.chatroom_code == $("#CHATROOM_CODE").val()) {
+				
+				$(".chat-list").append('<li class="in">' +
+												'<div class="chat-img">' +
+													'<img class="to" src="${pageContext.request.contextPath}/resources/images/profileimg/' + data.profileimg + '">' +
+												'</div>' +
+												'<div class="chat-body">' +
+													'<div class="chat-message">' +
+														'<h5>' + data.nickname + '</h5>' +
+														'<p>' + data.message + '</p>' +
+														'<small class="timestamp">' + dateInfo + '</small>' +
+													'</div>' +
+												'</div>');				
+			}
+			
+			// 스크롤 하단 고정
 			$('.nano-content').scrollTop($('.nano-content').prop('scrollHeight'));
 		};
 		
@@ -380,10 +384,15 @@
 						
 					} else {	// 메세지전송
 						
+						// 현재 시간
+						var date = new Date();
+						var dateInfo = isTwo(date.getHours()) + ":" + isTwo(date.getMinutes());
+						
 						// 웹 소켓
 						var obj = {};
 						var jsonStr;
 						
+						obj.CHATROOM_CODE = $("#CHATROOM_CODE").val();
 						obj.CHAT_CONTENT = CHAT_CONTENT;
 						obj.MEMBER_CODE = $("#MY_MEMBER_CODE").val();
 						jsonStr = JSON.stringify(obj);
@@ -639,7 +648,7 @@
 	      	<a id="cover-close-btn" onclick="hideMenu();"></a>
 	      	
 	      	<!-- 메세지 내용 창 -->
-	      	<div class="nano has-scrollbar" style="height:580px">
+	      	<div class="nano has-scrollbar" style="height:570px">
 	      		<div class="nano-content pad-all">
 		        	<ul class="chat-list">        				
 		        	</ul>

@@ -10,7 +10,10 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>SINGLE</title>
+<meta property="og:title" content="SINGLE">
+<meta property="og:description" content="혼자 사는 사람들을 위한 공간">
+<meta property="og:image" content="https://images.unsplash.com/photo-1541194577687-8c63bf9e7ee3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80">
 
 <!-- START :: CSS -->
 <link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap" rel="stylesheet">

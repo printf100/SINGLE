@@ -14,7 +14,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>회원정보</title>
+<title>SINGLE</title>
 
 <!-- START :: CSS -->
 <style type="text/css">

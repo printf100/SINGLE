@@ -12,7 +12,7 @@
 <head>
 <meta charset="UTF-8">
 
-<title>Insert title here</title>
+<title>SINGLE</title>
 
 <!-- START :: CSS -->
 <style type="text/css">

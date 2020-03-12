@@ -78,9 +78,9 @@ public class ChatSocket {
 
 		httpSession = (HttpSession) config.getUserProperties().get(ChatConfigurator.Session);
 
-		MemberDTO loginMember = (MemberDTO) httpSession.getAttribute("loginMember");
-		KakaoMemberDTO loginKakao = (KakaoMemberDTO) httpSession.getAttribute("loginKakao");
-		NaverMemberDTO loginNaver = (NaverMemberDTO) httpSession.getAttribute("loginNaver");
+		MemberProfileDTO loginMember = (MemberProfileDTO) httpSession.getAttribute("loginMember");
+		MemberProfileDTO loginKakao = (MemberProfileDTO) httpSession.getAttribute("loginKakao");
+		MemberProfileDTO loginNaver = (MemberProfileDTO) httpSession.getAttribute("loginNaver");
 
 		if (httpSession.getAttribute("loginMember") != null) {
 			MEMBER_CODE = loginMember.getMEMBER_CODE();
@@ -127,6 +127,7 @@ public class ChatSocket {
 				client.put("profileimg", member_profile.getMPROFILE_IMG_SERVERNAME());
 				client.put("nickname", member_profile.getMEMBER_NICKNAME());
 				client.put("message", json.get("CHAT_CONTENT").toString());
+				client.put("chatroom_code", Integer.parseInt(json.get("CHATROOM_CODE").toString()));
 				client.put("online", sessionMap.size());
 
 				if (!json.get("MEMBER_CODE").equals(Integer.toString(key))) {

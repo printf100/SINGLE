@@ -14,7 +14,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>SINGLE</title>
 
 <!-- START :: CSS -->
 <style type="text/css">
@@ -59,7 +59,7 @@ a {
 		
 		<div style="text-align: center;">
 			<a id="notice" href="/SINGLE/board/noticepage.do">
-				<img style="width:35px; height:35px;"src="../resources/images/icon/info.png">
+				<img style="width:35px; height:35px;"src="${pageContext.request.contextPath}/resources/images/icon/info.png">
 			</a>
 		</div>
 		

@@ -62,9 +62,9 @@ public class MainController extends HttpServlet {
 				|| session.getAttribute("loginNaver") != null) {
 			// 로그인 상태일 때
 
-			MemberDTO loginMember = (MemberDTO) session.getAttribute("loginMember");
-			KakaoMemberDTO loginKakao = (KakaoMemberDTO) session.getAttribute("loginKakao");
-			NaverMemberDTO loginNaver = (NaverMemberDTO) session.getAttribute("loginNaver");
+			MemberProfileDTO loginMember = (MemberProfileDTO) session.getAttribute("loginMember");
+			MemberProfileDTO loginKakao = (MemberProfileDTO) session.getAttribute("loginKakao");
+			MemberProfileDTO loginNaver = (MemberProfileDTO) session.getAttribute("loginNaver");
 
 			int MEMBER_CODE = 0;
 

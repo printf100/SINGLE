@@ -30,7 +30,6 @@ public class FoodDaoImpl extends SqlMapConfig implements FoodDao {
 			System.out.println("[error] : foodInsert");
 			e.printStackTrace();
 		}
-
 		session.close();
 
 		return res;
@@ -87,8 +86,26 @@ public class FoodDaoImpl extends SqlMapConfig implements FoodDao {
 
 	@Override
 	public int delete(int marker_code) {
-		// TODO Auto-generated method stub
-		return 0;
+
+		int res = 0;
+		SqlSession session = null;
+
+		try {
+			session = getSqlSessionFactory().openSession(false);
+			res = session.insert(namespace + ".myFoodDelete", marker_code);
+
+			if (res > 0) {
+				session.commit();
+			}
+		} catch (Exception e) {
+			System.out.println("[error] : foodDelete");
+			e.printStackTrace();
+		}
+
+		session.close();
+
+		return res;
+
 	}
 
 	@Override

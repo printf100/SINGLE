@@ -15,7 +15,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SINGLE</title>
+<title>SINGLE 로그인</title>
 
 <!-- START :: 로그인 상태일 때 이 화면으로 오면 안되기 때문 -->
 <c:if test="${not empty sessionLoginMember || not empty sessionLoginKakao || not empty sessionLoginNaver }">
@@ -262,13 +262,12 @@
 	    /*
 	      	네이버 로그인
 		*/
-		var naver_id_login = new naver_id_login("tl7_MvP2GoSrA_PE_reP",
-				"http://localhost:8090/SINGLE/views/member/navercallback.jsp");
+		var naver_id_login = new naver_id_login("tl7_MvP2GoSrA_PE_reP", "http://qclass.iptime.org:8787/SINGLE/views/member/navercallback.jsp");
 
 		var state = naver_id_login.getUniqState();
 
 		naver_id_login.setButton("green", 3, 40);
-		naver_id_login.setDomain("http://localhost:8090/SINGLE");
+		naver_id_login.setDomain("http://qclass.iptime.org:8787/SINGLE");
 		naver_id_login.setState(state);
 		naver_id_login.setPopup();
 		naver_id_login.init_naver_id_login();		

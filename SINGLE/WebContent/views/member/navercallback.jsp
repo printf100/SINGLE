@@ -23,7 +23,7 @@
 
 <script type="text/javascript">
 
-	var naver_id_login = new naver_id_login("tl7_MvP2GoSrA_PE_reP", "http://localhost:8090/SINGLE/views/member/navercallback.jsp");
+	var naver_id_login = new naver_id_login("tl7_MvP2GoSrA_PE_reP", "http://qclass.iptime.org:8787/SINGLE/views/member/navercallback.jsp");
 	
 	// 네이버 사용자 프로필 조회
 	naver_id_login.get_naver_userprofile("naverSignInCallback()");

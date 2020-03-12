@@ -14,10 +14,14 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>회원프로필</title>
+<title>SINGLE</title>
 
 <!-- START :: CSS -->
 <style type="text/css">
+
+	.container {
+		height: auto;
+	}
 	
 	.col-sm-3 {
 		margin: 20px;
@@ -29,7 +33,6 @@
 	
 	.card-body {
 		padding: 40px;
-		padding-top: 20px;
 	}
 	
 	#PROFILE_BOX {
@@ -119,7 +122,7 @@
 <!-- END :: CSS -->
 
 <!-- START :: JAVASCRIPT -->
-<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=e279f4719a19c18fde6278302eaeb6d8&libraries=services"></script>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6dccca1d4db9ac6c8d3410891ba30716&libraries=services"></script>
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script type="text/javascript">
 
@@ -146,8 +149,8 @@
 				success: function(msg) {
 					
 					if(msg.result > 0) {
-						alert("프로필 이미지 수정이 완료되었어요!" + msg.img);
-						$("#img").attr("src", "../resources/images/profileimg/" + msg.img);
+						alert("프로필 이미지 수정이 완료되었어요!" );
+						$("#img").attr("src", "${pageContext.request.contextPath}/resources/images/profileimg/" + msg.img);
 					} else {
 						alert("프로필 이미지 수정을 실패하였습니다.");
 					}
@@ -260,7 +263,7 @@
 							<div class="form-group">
 								<label for="MPROFILE_IMG_NAME">프로필 이미지</label> <span style="color: #98A8B9; font-size:9pt;">(Optional)</span>
 								<div id="PROFILE_BOX">
-									<img id="img" alt="프로필 사진" src="../resources/images/profileimg/${profile.MPROFILE_IMG_SERVERNAME }">
+									<img id="img" alt="프로필 사진" src="${pageContext.request.contextPath}/resources/images/profileimg/${profile.MPROFILE_IMG_SERVERNAME }">
 									<input type="file" class="form-control" id="MPROFILE_IMG_NAME" name="MPROFILE_IMG_NAME" style="display: none;">
 								</div>
 							</div>
@@ -376,7 +379,7 @@
 	}
 	
 	// 마커 설정
-	var imageSrc = '../resources/images/marker/marker_myLocation.png',
+	var imageSrc = '${pageContext.request.contextPath}/resources/images/marker/marker_myLocation.png',
 		imageSize = new kakao.maps.Size(55, 55),
     	imageOption = {offset: new kakao.maps.Point(27, 69)};
     

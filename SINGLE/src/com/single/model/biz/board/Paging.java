@@ -2,6 +2,8 @@ package com.single.model.biz.board;
 
 import com.single.model.dao.board.NoticeDAO;
 import com.single.model.dao.board.NoticeDAOImpl;
+import com.single.model.dao.board.ResaleDAO;
+import com.single.model.dao.board.ResaleDAOImpl;
 
 public class Paging {
 
@@ -75,9 +77,9 @@ public class Paging {
 	}
 
 	// 중고장터 총 페이지의 마지막 번호
-	public void reslaeMakeLastPageNum() {
-		NoticeDAO dao = new NoticeDAOImpl();
-		int total = dao.getNoticeDataCount();
+	public void resaleMakeLastPageNum() {
+		ResaleDAO dao = new ResaleDAOImpl();
+		int total = dao.getResaleDataCount();
 		System.out.println("total : " + total);
 		if (total % pageCount == 0) {
 			lastPageNum = (int) Math.floor(total / pageCount);
@@ -89,8 +91,8 @@ public class Paging {
 
 	// 중고장터 검색을 했을 때 총 페이지의 마지막 번호
 	public void resaleMakeLastPageNum(int how, String kwd) {
-		NoticeDAO dao = new NoticeDAOImpl();
-		int total = dao.getNoticeDataCount(how, kwd);
+		ResaleDAO dao = new ResaleDAOImpl();
+		int total = dao.getResaleDataCount(how, kwd);
 		System.out.println("search total : " + total);
 		if (total % pageCount == 0) {
 			lastPageNum = (int) Math.floor(total / pageCount);

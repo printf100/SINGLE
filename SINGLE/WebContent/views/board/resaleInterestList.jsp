@@ -10,7 +10,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>SINGLE</title>
 
 <!-- START :: CSS -->
 <style type="text/css">
@@ -59,7 +59,7 @@
 	<div class="container">
 
 		<div style="text-align: center;">
-			<img style="width:35px; height:35px;" src="../resources/Images/heart.png">
+			<img style="width:35px; height:35px;" src="${pageContext.request.contextPath}/resources/images/icon/heart.png">
 		</div>
 		
 		<form action="/SINGLE/board/interestDelete.do" method="post" id="form">

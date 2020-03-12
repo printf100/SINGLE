@@ -11,12 +11,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Insert title here</title>
+<title>SINGLE</title>
 
 <!-- START :: CSS -->
 <link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-<link href="/SINGLE/resources/css/master.css" rel="stylesheet" type="text/css">
 <style type="text/css">
 
 	html {
@@ -238,7 +237,7 @@
 		// hidden에 값 셋팅
 		$("#MY_MEMBER_CODE").val($(opener.document).find("#MY_MEMBER_CODE").val());
 		$("#MY_NICKNAME").val($(opener.document).find("#MY_NICKNAME").val());
-		$("#MY_IMG").val("../" + $(opener.document).find("#MY_IMG").val());
+		$("#MY_IMG").val($(opener.document).find("#MY_IMG").val());
 		
 		$("#CHATROOM_CODE").val($(opener.document).find("#CHATROOM_CODE").val());
 		$("#CHATROOM_TITLE").val($(opener.document).find("#CHATROOM_TITLE").val());
@@ -257,7 +256,7 @@
 		/*
 		* 웹 소켓
 		*/
-		var ws = new WebSocket("ws://localhost:8090/SINGLE/websocket");
+		var ws = new WebSocket("ws://qclass.iptime.org:8787/SINGLE/websocket");
 		
 		// 웹 소켓이 연결됐을 때
 		ws.onopen = function(e) {
@@ -279,16 +278,21 @@
 											'<p>ERROR');
 		};
 		
-		var date = new Date();
-		var dateInfo = isTwo(date.getHours()) + ":" + isTwo(date.getMinutes());
-		
 		// 메세지가 온 경우
 		ws.onmessage = function(e) {
 			var data = JSON.parse(e.data);
 			
+			// 현재 시간
+			var date = new Date();
+			var dateInfo = isTwo(date.getHours()) + ":" + isTwo(date.getMinutes());
+			
+			console.log(data.chatroom_code);
+			
+			if(data.chatroom_code == $("#CHATROOM_CODE").val()) {
+				
 			$(".chat-list").append('<li class="in">' +
 											'<div class="chat-img">' +
-												'<img class="to" src="../resources/images/profileimg/' + data.profileimg + '">' +
+												'<img class="to" src="${pageContext.request.contextPath}/resources/images/profileimg/' + data.profileimg + '">' +
 											'</div>' +
 											'<div class="chat-body">' +
 												'<div class="chat-message">' +
@@ -296,8 +300,10 @@
 													'<p>' + data.message + '</p>' +
 													'<small class="timestamp">' + dateInfo + '</small>' +
 												'</div>' +
-											'</div>');
+											'</div>');			
+			}
 			
+			// 스크롤 하단 고정
 			$('.nano-content').scrollTop($('.nano-content').prop('scrollHeight'));
 			
 			// 현재 채팅방에 들어와있는 사람 수 셋팅
@@ -324,10 +330,15 @@
 						
 					} else {	// 메세지전송
 						
+						// 현재 시간
+						var date = new Date();
+						var dateInfo = isTwo(date.getHours()) + ":" + isTwo(date.getMinutes());
+						
 						// 웹 소켓
 						var obj = {};
 						var jsonStr;
 						
+						obj.CHATROOM_CODE = $("#CHATROOM_CODE").val();
 						obj.CHAT_CONTENT = CHAT_CONTENT;
 						obj.MEMBER_CODE = $("#MY_MEMBER_CODE").val();
 						jsonStr = JSON.stringify(obj);
@@ -415,7 +426,7 @@
 								
 								$(".chat-list").prepend('<li class="in">' +
 																'<div class="chat-img">' +
-																	'<img class="to" src="../../resources/images/profileimg/' + list.MEMBER_IMG + '">' +
+																	'<img class="to" src="${pageContext.request.contextPath}/resources/images/profileimg/' + list.MEMBER_IMG + '">' +
 																'</div>' +
 																'<div class="chat-body">' +
 																	'<div class="chat-message">' +
@@ -451,7 +462,7 @@
 								
 								$(".chat-list").append('<li class="in">' +
 																'<div class="chat-img">' +
-																	'<img class="to" src="../../resources/images/profileimg/' + list.MEMBER_IMG + '">' +
+																	'<img class="to" src="${pageContext.request.contextPath}/resources/images/profileimg/' + list.MEMBER_IMG + '">' +
 																'</div>' +
 																'<div class="chat-body">' +
 																	'<div class="chat-message">' +
@@ -563,7 +574,7 @@
 							"class" : "profile-img-div"
 						}).append($("<img>").attr({
 							"class" : "profile-img",
-							"src" : "../../resources/images/profileimg/" + item.MEMBER_IMG
+							"src" : "${pageContext.request.contextPath}/resources/images/profileimg/" + item.MEMBER_IMG
 						}));
 						
 						var nickname = $("<div>").attr({
@@ -631,10 +642,10 @@
 		}
 	}
 	
-	$("#chatroom-title").css("display", "none");
+	$("#chatroom-title").hide();
 	
 	if($("#CHATROOM_CHIEF_CODE").val() == $("#MY_MEMBER_CODE").val()){
-		$("#chatroom-title").css("display", "");
+		$("#chatroom-title").show();
 	}
 	
 	// 채팅방 제목 수정 (방장만)

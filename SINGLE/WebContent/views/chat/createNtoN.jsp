@@ -11,7 +11,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>단체 채팅방 만들기</title>
+<title>SINGLE 단체 채팅방 만들기</title>
 
 <!-- START :: CSS -->
 <link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap" rel="stylesheet">

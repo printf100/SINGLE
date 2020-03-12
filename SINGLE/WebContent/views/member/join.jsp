@@ -24,6 +24,7 @@
 	.container {
 		height: auto;
 		background: white;
+		margin-top: 20px;
 		min-width: 300px;
 		max-width: 780px;
 		padding: 30px 100px 30px 100px;
@@ -420,7 +421,7 @@
           container: '#kakao-login-btn',
           success: function(authObj) {
             Kakao.API.request({
-            	url:'/v1/user/me',
+            	url:'/v2/user/me',
             	success:function(res) {
             		console.log(res.id);
             		console.log(res.properties.nickname);
@@ -485,13 +486,12 @@
 	    /*
     		네이버 로그인
 		*/
-		var naver_id_login = new naver_id_login("tl7_MvP2GoSrA_PE_reP",
-				"http://localhost:8090/SINGLE/views/member/navercallback.jsp");
+		var naver_id_login = new naver_id_login("tl7_MvP2GoSrA_PE_reP", "http://qclass.iptime.org:8787/SINGLE/views/member/navercallback.jsp");
 
 		var state = naver_id_login.getUniqState();
 
 		naver_id_login.setButton("green", 3, 48);
-		naver_id_login.setDomain("http://localhost:8090/SINGLE");
+		naver_id_login.setDomain("http://qclass.iptime.org:8787/SINGLE");
 		naver_id_login.setState(state);
 		naver_id_login.setPopup();
 		naver_id_login.init_naver_id_login();

@@ -19,5 +19,9 @@ li {
 
 .container {
 	height: 100vh;
-	margin-top: 30px;
+	padding-top: 70px;
+}
+
+th, td {
+	text-align: center;
 }

@@ -14,7 +14,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>SINGLE</title>
 
 <!-- START :: CSS -->
 <style type="text/css">
@@ -94,7 +94,7 @@
 			// 쪽지 팝업창 띄우기
 			var url = "/SINGLE/views/note/sendnote.jsp";
 			var title = "";
-			var prop = "top=200px,left=600px,width=500px,height=700px";
+			var prop = "top=200px,left=600px,width=580px,height=620px";
 			window.open(url, title, prop);
 		});
 		

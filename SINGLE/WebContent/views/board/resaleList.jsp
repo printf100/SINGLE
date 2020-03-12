@@ -10,7 +10,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>SINGLE</title>
 <!-- START :: JAVASCRIPT -->
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.js"></script>
 <script type="text/javascript">
@@ -122,7 +122,7 @@ b{
 	
 		<div style="text-align: center;">
 			<a id="resale" href="/SINGLE/board/resaleMainList.do">
-				<img style="width:42px; height:42px;"src="../resources/Images/buy.png">
+				<img style="width:42px; height:42px;"src="${pageContext.request.contextPath}/resources/images/icon/buy.png">
 			</a>
 		</div>
 		
@@ -164,7 +164,7 @@ b{
 					<c:otherwise>
 						<c:forEach items="${ResaleBoardList}" var="dto">
 							<div class="container_list">
-								<div class="img"><img class="image" src="../resources/resaleImages/${dto.RESALE_IMG_ORIGINAL }" onclick="location.href='/SINGLE/board/resaleDetail.do?RESALE_CODE=${dto.RESALE_CODE}'"/></div>
+								<div class="img"><img class="image" src="${pageContext.request.contextPath}/resources/resaleImages/${dto.RESALE_IMG_ORIGINAL }" onclick="location.href='/SINGLE/board/resaleDetail.do?RESALE_CODE=${dto.RESALE_CODE}'"/></div>
 								<div class="contents" onclick="location.href='/SINGLE/board/resaleDetail.do?RESALE_CODE=${dto.RESALE_CODE}'">
 									<div class="info">
 										<span>조회수 ${dto.RESALE_COUNTVIEW }</span>

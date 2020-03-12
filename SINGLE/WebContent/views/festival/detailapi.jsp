@@ -14,7 +14,7 @@
 <html class="no-js">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>SINGLE</title>
 
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="keywords" content="koreatravelinfo" />
@@ -42,7 +42,7 @@
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/bootstrap.css">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/owl.carousel.min.css">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/owl.theme.default.min.css">
-	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css">
+<%-- 	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css"> --%>
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/customused.css">
 
 	<!-- Modernizr JS -->

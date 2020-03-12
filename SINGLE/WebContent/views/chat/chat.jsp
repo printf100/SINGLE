@@ -14,7 +14,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>SINGLE</title>
 
 <!-- START :: CSS -->
 <style type="text/css">
@@ -762,7 +762,7 @@
 				</div>
 				
 				<div class="refresh">
-					<a id="getNewList">목록 새로고침<img class="refresh-icon" src="../resources/images/icon/refresh.png"></a>
+					<a id="getNewList">목록 새로고침<img class="refresh-icon" src="${pageContext.request.contextPath}/resources/images/icon/refresh.png"></a>
 				</div>
 				
 				<ul class="nton-chatroom-list list-group">
@@ -774,7 +774,7 @@
 	
 	<!-- 채팅창에 전달할 값들 -->
 	<input type="hidden" id="MY_MEMBER_CODE" value="${sessionLoginMember.MEMBER_CODE }${sessionLoginKakao.MEMBER_CODE }${sessionLoginNaver.MEMBER_CODE }">
-	<input type="hidden" id="MY_IMG" value="../resources/images/profileimg/${profile.MPROFILE_IMG_SERVERNAME }">
+	<input type="hidden" id="MY_IMG" value="${pageContext.request.contextPath}/resources/images/profileimg/${profile.MPROFILE_IMG_SERVERNAME }">
 	<input type="hidden" id="MY_NICKNAME" value="${profile.MEMBER_NICKNAME }">
 	
 	<input type="hidden" id="TO_MEMBER_CODE">

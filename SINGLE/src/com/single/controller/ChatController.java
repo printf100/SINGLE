@@ -147,9 +147,9 @@ public class ChatController extends HttpServlet {
 
 		session = request.getSession();
 
-		MemberDTO loginMember = (MemberDTO) session.getAttribute("loginMember");
-		KakaoMemberDTO loginKakao = (KakaoMemberDTO) session.getAttribute("loginKakao");
-		NaverMemberDTO loginNaver = (NaverMemberDTO) session.getAttribute("loginNaver");
+		MemberProfileDTO loginMember = (MemberProfileDTO) session.getAttribute("loginMember");
+		MemberProfileDTO loginKakao = (MemberProfileDTO) session.getAttribute("loginKakao");
+		MemberProfileDTO loginNaver = (MemberProfileDTO) session.getAttribute("loginNaver");
 
 		int MEMBER_CODE = 0;
 
@@ -394,12 +394,12 @@ public class ChatController extends HttpServlet {
 
 		List<ChatMessageDTO> msgList = biz.selectChatMessageList(CHATROOM_CODE, MEMBER_CODE, startNo);
 
-		String time = null;
-
 		JSONArray jArray = new JSONArray();
 		for (int i = 0; i < msgList.size(); i++) {
-			time = Format.isTwo(Integer.toString(msgList.get(i).getCHATMESSAGE_SENDDATE().getHours())) + ":"
+			String time = Format.isTwo(Integer.toString(msgList.get(i).getCHATMESSAGE_SENDDATE().getHours())) + ":"
 					+ Format.isTwo(Integer.toString(msgList.get(i).getCHATMESSAGE_SENDDATE().getMinutes()));
+			
+			System.out.println(time);
 
 			JSONObject in = new JSONObject();
 

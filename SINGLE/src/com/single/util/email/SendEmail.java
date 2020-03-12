@@ -74,7 +74,7 @@ public class SendEmail {
 					            + "<p style='font-size:10pt'>본 메일은 비밀번호 재설정을 위해 SINGLE에서 발송하는 메일입니다.</p>"
 					            + "<p style='font-size:10pt'>본인이 요청한 메일이 아니라면 개인정보 보호를 위해 비밀번호를 재설정해주세요.</p>"
 					            + "<p style='font-size:10pt'>비밀번호를 다시 설정하려면 '비밀번호 재설정' 링크를 클릭해주세요.</p><br><br>"
-					            + "<a href='http://localhost:8090/SINGLE/member/pwResetEmailpage.do' style='color: white; text-decoration: none; border-radius: 3px; background-color: #46b8da; padding: 10px 14px; border: none;'>비밀번호 재설정</a>"
+					            + "<a href='http://qclass.iptime.org:8787/SINGLE/member/pwResetEmailpage.do' style='color: white; text-decoration: none; border-radius: 3px; background-color: #46b8da; padding: 10px 14px; border: none;'>비밀번호 재설정</a>"
 					            + "</div>";
 
 

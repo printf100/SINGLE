@@ -84,22 +84,6 @@ public class ReplyDAOImpl extends SqlMapConfig implements ReplyDAO {
 		return dto;
 	}
 
-	@Override
-	public int ReplyUpdate(ReplyDTO dto) {
-
-		int res = 0;
-		SqlSession session = getSqlSessionFactory().openSession(false);
-
-		res = session.update(namespace + ".ReplyUpdate", dto);
-
-		if (res > 0) {
-			session.commit();
-		}
-
-		session.close();
-
-		return res;
-	}
 
 	@Override
 	public int ReplyDelete(int REPLY_CODE) {
@@ -118,34 +102,6 @@ public class ReplyDAOImpl extends SqlMapConfig implements ReplyDAO {
 		return res;
 	}
 
-	@Override
-	public int ReplyLikeUpdate(int REPLY_CODE, int RESALE_CODE) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int ReplyLikeDelete(int REPLY_CODE, int RESALE_CODE) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int ReplyLike(int REPLY_CODE, int RESALE_CODE) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int ReplyLikeCount(ReplyLikesDTO replyDto) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int ReplyCount(int REPLY_CODE, int RESALE_CODE) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+	
 
 }

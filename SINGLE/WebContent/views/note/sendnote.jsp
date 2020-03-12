@@ -11,12 +11,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Insert title here</title>
+<title>SINGLE 쪽지 보내기</title>
 
 <!-- START :: CSS -->
 <link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-<link href="/SINGLE/resources/css/master.css" rel="stylesheet" type="text/css">
 <style type="text/css">
 
 	body {
@@ -49,6 +48,8 @@
 		/*
 		* 웹 소켓
 		*/
+		
+		var ws = new WebSocket("ws://qclass.iptime.org:8787/SINGLE/websocket_note");
 		
 		// 쪽지 전송하기
 		$("#sendNote").click(function() {

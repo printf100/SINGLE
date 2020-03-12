@@ -62,5 +62,6 @@
 		<mapper resource="com/single/mybatis/note-mapper.xml"/>
 		<mapper resource="com/single/mybatis/food-mapper.xml" />
 		<mapper resource="com/single/mybatis/life-mapper.xml"/> 
+		<mapper resource="com/single/mybatis/search-mapper.xml" />
 	</mappers>
 </configuration>

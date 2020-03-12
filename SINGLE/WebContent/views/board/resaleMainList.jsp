@@ -10,7 +10,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>SINGLE</title>
 
 <!-- START :: CSS -->
 <style type="text/css">
@@ -122,7 +122,7 @@ b {
 				<c:otherwise>
 					<c:forEach items="${list}" var="dto">
 						<div class="container_list">
-							<div class="img"><img class="image" src="../resources/resaleImages/${dto.RESALE_IMG_ORIGINAL }" onclick="location.href='/SINGLE/board/resaleDetail.do?RESALE_CODE=${dto.RESALE_CODE}'" /></div>
+							<div class="img"><img class="image" src="${pageContext.request.contextPath}/resources/resaleImages/${dto.RESALE_IMG_ORIGINAL }" onclick="location.href='/SINGLE/board/resaleDetail.do?RESALE_CODE=${dto.RESALE_CODE}'" /></div>
 							<div class="contents" onclick="location.href='/SINGLE/board/resaleDetail.do?RESALE_CODE=${dto.RESALE_CODE}'">
 								<div class="info">
 									<span>조회수 ${dto.RESALE_COUNTVIEW }</span>

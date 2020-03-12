@@ -15,7 +15,7 @@
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>위치기반 관광정보</title>
+	<title>SINGLE</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="tourAPI 3.0 and bootstrap template make to used this page" />
 	<meta name="keywords" content="koreatravelinfo" />
@@ -123,9 +123,9 @@
 							$.each(list, function (i, item) {
 								var InfoElements =
 									"<div class='col-xs-6 col-sm-6 col-md-4 col-lg-3'>"
-									+ "<a href='../cmm/detail.html?id=" + item.contentid + "&item=" + item.contenttypeid + "'" + "target='_blank'>"
+									+ "<a href='/SINGLE/festival/detailapipage.do?id=" + item.contentid + "&item=" + item.contenttypeid + "'" + "target='_blank'>"
 									+ "<div class='thumbnail'>"
-									+ "<img class=" + "'img-responsive'" + "src=" + "'" + item.firstimage + "'" + "onError=" + "this.onerror=null;this.src='../../resources/css/images/default.png';" + ">"
+									+ "<img class=" + "'img-responsive'" + "src=" + "'" + item.firstimage + "'" + "onError=" + "this.onerror=null;this.src='${pageContext.request.contextPath}/resources/css/images/default.png';" + ">"
 									+ "<div class='caption text-center'>"
 									+ "<h5>" + item.title + "</h5>"
 									+ "<h6>" + item.addr1 + "</h6>"
@@ -147,9 +147,9 @@
 					} else {
 						var infoElements =
 							"<div class='col-xs-6 col-sm-6 col-md-4 col-lg-3'>"
-							+ "<a href='detailapi.jsp?id=" + list.contentid + "&item=" + list.contenttypeid + "'" + " target='_blank'>"
+							+ "<a href='/SINGLE/festival/detailapipage.do?id=" + list.contentid + "&item=" + list.contenttypeid + "'" + " target='_blank'>"
 							+ "<div class='thumbnail'>"
-							+ "<img class=" + "'img-responsive'" + "src=" + "'" + list.firstimage + "'" + "onError=" + "this.onerror=null;this.src='../../resources/css/images/default.png';" + ">"
+							+ "<img class=" + "'img-responsive'" + "src=" + "'" + list.firstimage + "'" + "onError=" + "this.onerror=null;this.src='${pageContext.request.contextPath}/resources/css/images/default.png';" + ">"
 							+ "<div class='caption text-center'>"
 							+ "<h5>" + list.title + "</h5>"
 							+ "<h6>" + list.addr1 + "</h6>"

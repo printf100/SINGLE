@@ -18,6 +18,75 @@
 <title>청소 도우미</title>
 
 <!-- START :: CSS -->
+<style type="text/css">
+
+	@import url('https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap');
+	
+	body {
+		font-family: 'Noto Sans KR';
+	}
+
+	.navbar a {
+		color: #000;
+		font-weight: 700;
+	}
+	
+	.navbar {
+		position: relative;
+		display: flex;
+		padding: 0.375rem 1rem;
+		height: 80px;
+		border-bottom: 1px solid lightgray;
+	}
+	
+	.navbar-collapse {
+		flex-grow: 1;
+		align-items: center;
+	}
+	
+	.nav-link {
+		padding: 0.25rem 1rem;
+	}
+	
+	.member-info {
+		display: flex;
+		margin-bottom: 0.25rem;
+		padding: 0.6875rem 1rem 1rem 1rem;
+		border-bottom: 0.0625rem solid #E9ECF3;
+		color: #263747;
+	}
+	
+	.rounded {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	
+	.profile-img {
+		width: 2.5rem;
+		height: 2.5rem;
+		border-radius: 0.25rem;
+	}
+		
+	.info-text {
+		margin-left: 1rem;
+		-webkit-font-smoothing: antialiased;
+	}
+	
+	.title-text {
+		font-weight: 700;
+	}
+	
+	.dropdown-item {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0.125rem 0.875rem;
+		color: #263747;
+		font-weight: 500;
+	}
+	
+</style>
 <!-- END :: CSS -->
 
 <!-- START :: JAVASCRIPT -->
@@ -139,48 +208,65 @@ function execDaumPostcode() {
 	
 	<div class="container">
 		<!-- TEXT AREA / BUTTON AREA-->
-		<div class="address">
-			<h1>주소 입력</h1> <BR> 
+		<div class="form-group" class="address">
+			<BR> 
 			
-			<form id="reserv_form" method="post" action="/SINGLE/life/clean/update.do">
+			<form class="form-inline" id="reserv_form" method="post" action="/SINGLE/life/clean/update.do">
 				<input type="hidden" id="CLEAN_CODE" name="CLEAN_CODE" value="${clean_info.CLEAN_CODE}">
 				<input type="hidden" id="CLEAN_TIME" name="CLEAN_TIME">
 				<input type="hidden" id="CLEAN_MANAGER" name="CLEAN_MANAGER">
 				<input class="btn btn-info" type="button" onclick="execDaumPostcode()" value="주소수정"><br><br>
-				<input class="form-control" type="text" id="CLEAN_POSTCODE" name="CLEAN_POSTCODE" placeholder="우편번호" value="${clean_info.CLEAN_POSTCODE }" onclick="execDaumPostcode()">
-				
-				<input class="form-control" type="text" id="CLEAN_ADDRESS" name="CLEAN_ADDRESS" placeholder="주소" style="width:400px;" value="${clean_info.CLEAN_ADDRESS }" onclick="execDaumPostcode()"><br>
+				<input class="form-control" type="text" id="CLEAN_POSTCODE" name="CLEAN_POSTCODE" placeholder="우편번호" style="width:200px;" value="${clean_info.CLEAN_POSTCODE }" onclick="execDaumPostcode()">
+				<input class="form-control" type="text" id="CLEAN_ADDRESS" name="CLEAN_ADDRESS" placeholder="주소" style="width:200px;" value="${clean_info.CLEAN_ADDRESS }" onclick="execDaumPostcode()">
+				<input class="form-control" type="text" id="CLEAN_DETAIL_ADDRESS" name="CLEAN_DETAIL_ADDRESS" placeholder="상세주소" style="width:200px;" value="${clean_info.CLEAN_DETAIL_ADDRESS }">
 				<!-- <input type="text" id="extraAddress" placeholder="참고항목"> -->
-				<input class="form-control" type="text" id="CLEAN_DETAIL_ADDRESS" name="CLEAN_DETAIL_ADDRESS" placeholder="상세주소" style="width:400px;" value="${clean_info.CLEAN_DETAIL_ADDRESS }">
 			</form>
 		</div>
-		
+		<BR>
+		<BR>
+		<h1>날짜 선택</h1>
+		<BR>
+		<div class="btn-group btn-group-toggle" data-toggle="buttons">
 		<div class="time_div" id="time_div">	
-		<div class="btn-group-vertical">		
+		
 			<div class="first" >
 				<pre id="first_pre"></pre>
-				<input type="radio" name="time_radio" value="1"> <input type="button" class="btn btn-outline-dark" value="오후 4시 ~ 6시"  readonly="readonly" onclick="setWashTime(1)" ><br>
-			    <input type="radio" name="time_radio" value="2"> <input type="button" class="btn btn-outline-dark" value="오후 6시 ~ 8시"  readonly="readonly" onclick="setWashTime(2)" ><br>
-			    <input type="radio" name="time_radio" value="3"> <input type="button" class="btn btn-outline-dark" value="오후 8시 ~ 10시" readonly="readonly" onclick="setWashTime(3)" ><br>
-			    <input type="radio" name="time_radio" value="4"> <input type="button" class="btn btn-outline-dark" value="오후 10시 ~ 자정" readonly="readonly" onclick="setWashTime(4)" ><br>
+				
+				<label class="btn btn-outline-dark">
+				<input type="radio" name="time_radio" value="1"> 오후 4시 ~ 6시   </label>
+				<label class="btn btn-outline-dark">
+				<input type="radio" name="time_radio" value="2"> 오후 6시 ~ 8시   </label>
+				<label class="btn btn-outline-dark">
+				<input type="radio" name="time_radio" value="3"> 오후 8시 ~ 10시   </label>
+				<label class="btn btn-outline-dark">
+				<input type="radio" name="time_radio" value="4"> 오후 10시 ~ 자정   </label>
 			</div>
 			
 			<div class="second" style="margin-top: 25px;">
 				<pre id="second_pre"></pre>
-				<input type="radio" name="time_radio" value="5"> <input type="button" class="btn btn-outline-dark" value="오후 4시 ~ 6시"  readonly="readonly" onclick="setWashTime(5)" ><br>
-				<input type="radio" name="time_radio" value="6"> <input type="button" class="btn btn-outline-dark" value="오후 6시 ~ 8시"  readonly="readonly" onclick="setWashTime(6)" ><br>
-				<input type="radio" name="time_radio" value="7"> <input type="button" class="btn btn-outline-dark" value="오후 8시 ~ 10시" readonly="readonly" onclick="setWashTime(7)" ><br>
-				<input type="radio" name="time_radio" value="8"> <input type="button" class="btn btn-outline-dark" value="오후 10시 ~ 자정" readonly="readonly" onclick="setWashTime(8)" ><br>
-			</div>                                               
-			                                                     
-			<div class="third" style="margin-top: 50px;">        
-				<pre id="third_pre"></pre>                       
-				<input type="radio" name="time_radio" value="9"> <input type="button" class="btn btn-outline-dark" value="오후 4시 ~ 6시"  readonly="readonly" onclick="setWashTime(9)" ><br>
-				<input type="radio" name="time_radio" value="10"> <input type="button" class="btn btn-outline-dark" value="오후 6시 ~ 8시"  readonly="readonly" onclick="setWashTime(10)" ><br>
-				<input type="radio" name="time_radio" value="11"> <input type="button" class="btn btn-outline-dark" value="오후 8시 ~ 10시" readonly="readonly" onclick="setWashTime(11)" ><br>
-				<input type="radio" name="time_radio" value="12"> <input type="button" class="btn btn-outline-dark" value="오후 10시 ~ 자정" readonly="readonly" onclick="setWashTime(12)" ><br>
-			</div>                                               
-			                                                     
+				<label class="btn btn-outline-dark">
+				<input type="radio" name="time_radio" value="5"> 오후 4시 ~ 6시   </label>
+				<label class="btn btn-outline-dark">
+				<input type="radio" name="time_radio" value="6"> 오후 6시 ~ 8시   </label>
+				<label class="btn btn-outline-dark">
+				<input type="radio" name="time_radio" value="7"> 오후 8시 ~ 10시   </label>
+				<label class="btn btn-outline-dark">
+				<input type="radio" name="time_radio" value="8"> 오후 10시 ~ 자정   </label>
+			</div>   
+			                                                                                
+			<div class="third" style="margin-top: 25px;">        
+				<pre id="third_pre"></pre>
+				<label class="btn btn-outline-dark">
+				<input type="radio" name="time_radio" value="9"> 오후 4시 ~ 6시   </label>
+				<label class="btn btn-outline-dark">
+				<input type="radio" name="time_radio" value="10"> 오후 6시 ~ 8시   </label>
+				<label class="btn btn-outline-dark">
+				<input type="radio" name="time_radio" value="11"> 오후 8시 ~ 10시   </label>
+				<label class="btn btn-outline-dark">
+				<input type="radio" name="time_radio" value="12"> 오후 10시 ~ 자정   </label>
+			</div>
+			
+			<!--                                    
 			<div class="fourth" style="margin-top: 25px;">       
 				<pre id="fourth_pre"></pre>                      
 				<input type="radio" name="time_radio" value="13"> <input type="button" class="btn btn-outline-dark" value="오후 4시 ~ 6시"  readonly="readonly" onclick="setWashTime(13)" ><br>
@@ -188,22 +274,29 @@ function execDaumPostcode() {
 				<input type="radio" name="time_radio" value="15"> <input type="button" class="btn btn-outline-dark" value="오후 8시 ~ 10시" readonly="readonly" onclick="setWashTime(15)" ><br>
 				<input type="radio" name="time_radio" value="16"> <input type="button" class="btn btn-outline-dark" value="오후 10시 ~ 자정" readonly="readonly" onclick="setWashTime(16)" ><br>
 			</div>
-			</div>
+			--> 
 		</div>
+		</div>
+		<BR>
+		<BR>
+		<BR>
+		<h1>매니저 선택</h1>
+		<BR>
 	 
-		 
 		 <div class="manager" id="manager" >
-		 	<input type="radio" name="manager_radio" value="1" <c:if test="${clean_info.CLEAN_MANAGER eq '1'}">checked="checked"</c:if> ><img id="img1" alt="웃음 아이콘" src="${pageContext.request.contextPath}/resources/images/wash/smile.png" style="width:60px;height:60px">
-		 	클린닥터
-		 	<BR><BR>
-		 	<input type="radio" name="manager_radio" value="2" <c:if test="${clean_info.CLEAN_MANAGER eq '2'}">checked="checked"</c:if>><img id="img2" alt="세탁기 아이콘 첫번째" src="${pageContext.request.contextPath}/resources/images/wash/washer.png" style="width:60px;height:60px">
-		 	세탁연구소	
-		 	<BR><BR>
-		 	<input type="radio" name="manager_radio" value="3" <c:if test="${clean_info.CLEAN_MANAGER eq '3'}">checked="checked"</c:if>><img id="img3" alt="세탁기 아이콘 두번째" src="${pageContext.request.contextPath}/resources/images/wash/washer2.png" style="width:60px;height:60px">
-		 	일원세탁
+		 	<input type="radio" name="manager_radio" value="1" <c:if test="${clean_info.CLEAN_MANAGER eq '1'}">checked="checked"</c:if>><!--<img id="img1" alt="웃음 아이콘" src="${pageContext.request.contextPath}/resources/images/wash/smile.png" style="width:60px;height:60px">-->
+		 	청소박사 강혜정
+		 	<BR>
+		 	<input type="radio" name="manager_radio" value="2" <c:if test="${clean_info.CLEAN_MANAGER eq '2'}">checked="checked"</c:if>><!--<img id="img2" alt="세탁기 아이콘 첫번째" src="${pageContext.request.contextPath}/resources/images/wash/washer.png" style="width:60px;height:60px">-->
+		 	MISO
+		 	<BR>
+		 	<input type="radio" name="manager_radio" value="3" <c:if test="${clean_info.CLEAN_MANAGER eq '3'}">checked="checked"</c:if>><!--<img id="img3" alt="세탁기 아이콘 두번째" src="${pageContext.request.contextPath}/resources/images/wash/washer2.png" style="width:60px;height:60px">-->
+		 	청소일번지
 		 	<BR><BR>
 		 <input class="btn btn-info" type="button" value="수정하기" onclick="formSubmit()"><BR><BR>
+		 <!--
 		 <input class="btn btn-info" type="button" value="돌아가기" onclick="goEdit()">
+		 -->
 		 
 		 </div>
 	</div>

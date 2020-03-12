@@ -21,18 +21,16 @@ import com.single.model.biz.member.MemberBizImpl;
 import com.single.model.dto.map.FoodDto;
 import com.single.model.dto.member.KakaoMemberDTO;
 import com.single.model.dto.member.MemberDTO;
+import com.single.model.dto.member.MemberProfileDTO;
 import com.single.model.dto.member.NaverMemberDTO;
 
-@WebServlet( //
-		name = "food", //
-		urlPatterns = { //
-				"foodUpload.do", // 식재료 등록
-				"foodList.do", // 지도 내 식재료 리스트
-				"MyFoodList.do", // 내 식재료 리스트
-				"myFoodUpdate.do", // 식재료 수정 폼 이동
-				"myFoodUpdateRes.do", // 식재료 수정
-				"myFoodDelete.do" // 식재료 삭제
-		})
+@WebServlet(name = "food", urlPatterns = { "foodUpload.do", // 식재료 등록
+		"foodList.do", // 지도 내 식재료 리스트
+		"MyFoodList.do", // 내 식재료 리스트
+		"myFoodUpdate.do", // 식재료 수정 폼 이동
+		"myFoodUpdateRes.do", // 식재료 수정
+		"myFoodDelete.do" // 식재료 삭제
+})
 
 public class FoodController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -53,23 +51,25 @@ public class FoodController extends HttpServlet {
 		System.out.println("[ " + command + " ]");
 
 		if (command.endsWith("/foodUpload.do")) {
+
 			foodUpload(request, response);
-		}
 
-		else if (command.endsWith("/foodList.do")) {
+		} else if (command.endsWith("/foodList.do")) {
+
 			foodList(request, response);
-		}
 
-		else if (command.endsWith("/myFoodUpdate.do")) {
+		} else if (command.endsWith("/myFoodUpdate.do")) {
+
 			selectOneFood(request, response);
-		}
 
-		else if (command.endsWith("/myFoodUpdateRes.do")) {
+		} else if (command.endsWith("/myFoodUpdateRes.do")) {
+
 			foodUpdate(request, response);
-		}
 
-		else if (command.endsWith("/myFoodDelete.do")) {
+		} else if (command.endsWith("/myFoodDelete.do")) {
+
 			myFoodDelete(request, response);
+
 		}
 	}
 
@@ -97,10 +97,8 @@ public class FoodController extends HttpServlet {
 
 		FoodDto dto = new FoodDto();
 
-		String uploadDir = this.getClass().getResource("").getPath();
-
-		uploadDir = uploadDir.substring(1, uploadDir.indexOf(".metadata"))
-				+ "/SINGLE/WebContent/resources/images/uploadImg";
+		String path = "/resources/images/uploadImg/";
+		String uploadDir = getServletContext().getRealPath(path);
 
 		int maxSize = 1024 * 1024 * 100;
 		String encoding = "UTF-8";
@@ -155,9 +153,9 @@ public class FoodController extends HttpServlet {
 
 		session = request.getSession();
 
-		MemberDTO loginMember = (MemberDTO) session.getAttribute("loginMember");
-		KakaoMemberDTO loginKakao = (KakaoMemberDTO) session.getAttribute("loginKakao");
-		NaverMemberDTO loginNaver = (NaverMemberDTO) session.getAttribute("loginNaver");
+		MemberProfileDTO loginMember = (MemberProfileDTO) session.getAttribute("loginMember");
+		MemberProfileDTO loginKakao = (MemberProfileDTO) session.getAttribute("loginKakao");
+		MemberProfileDTO loginNaver = (MemberProfileDTO) session.getAttribute("loginNaver");
 
 		int MEMBER_CODE = 0;
 
@@ -178,9 +176,11 @@ public class FoodController extends HttpServlet {
 		List<FoodDto> foodList = biz.foodList();
 
 		List<FoodDto> myFoodList = biz.MyFoodList(MEMBER_CODE);
+		MemberProfileDTO member_profile = mbiz.selectMemberProfile(MEMBER_CODE);
 
 		request.setAttribute("myFoodList", myFoodList);
 		request.setAttribute("foodList", foodList);
+		request.setAttribute("info", member_profile);
 
 		dispatch("/views/map/foodMap.jsp", request, response);
 	}
@@ -190,10 +190,9 @@ public class FoodController extends HttpServlet {
 			throws ServletException, IOException {
 
 		FoodDto dto = new FoodDto();
-		String uploadDir = this.getClass().getResource("").getPath();
-
-		uploadDir = uploadDir.substring(1, uploadDir.indexOf(".metadata"))
-				+ "/SINGLE/WebContent/resources/images/uploadImg";
+		
+		String path = "/resources/images/uploadImg/";
+		String uploadDir = getServletContext().getRealPath(path);
 
 		int maxSize = 1024 * 1024 * 100;
 		String encoding = "UTF-8";
@@ -227,21 +226,19 @@ public class FoodController extends HttpServlet {
 
 	}
 
-	/*
-	 * Servlet Basic Template : PLEASE DO NOT MODIFY !!!!!
-	 */
-	private void dispatch(String url, HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		RequestDispatcher dispatcher = request.getRequestDispatcher(url);
-		dispatcher.forward(request, response);
-	}
-
 	private void jsResponse(String msg, String url, HttpServletResponse response) throws IOException {
+
 		PrintWriter out = response.getWriter();
 		out.println("<script type='text/javascript'>");
 		out.println("alert('" + msg + "')");
 		out.println("location.href='" + url + "'");
 		out.println("</script>");
+	}
+
+	private void dispatch(String url, HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		RequestDispatcher dispatcher = request.getRequestDispatcher(url);
+		dispatcher.forward(request, response);
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
